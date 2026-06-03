@@ -6,6 +6,7 @@ import { downloadJson } from '../../utils/download.js';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCheck } from '@fortawesome/free-solid-svg-icons/faCheck';
 import { machine } from '../../services/ApiService.js';
+import { computed } from '@preact/signals';
 
 const imageUrlToBase64 = async blob => {
   return new Promise((onSuccess, onError) => {
@@ -20,6 +21,8 @@ const imageUrlToBase64 = async blob => {
     }
   });
 };
+
+const connected = computed(() => machine.value.connected);
 
 export function OTA() {
   const apiService = useContext(ApiServiceContext);
@@ -85,10 +88,10 @@ export function OTA() {
     };
   }, [apiService]);
   useEffect(() => {
-    setTimeout(() => {
+    if (connected.value) {
       apiService.send({ tp: 'req:ota-settings' });
-    }, 500);
-  }, [apiService]);
+    }
+  }, [apiService, connected.value]);
 
   const formRef = useRef();
 

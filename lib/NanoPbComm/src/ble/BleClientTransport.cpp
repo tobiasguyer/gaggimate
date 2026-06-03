@@ -18,10 +18,7 @@ void BleClientTransport::scan() {
     _readyForConnection = false;
     _scanner->clearDuplicateCache();
     _scanner->setAdvertisedDeviceCallbacks(this, true);
-    // BLE and Wi-Fi share the single 2.4 GHz radio. A low-duty passive scan
-    // (1.25% duty, listen-only) keeps Wi-Fi RTT responsive; discovery is a touch
-    // slower but still reliable. (Carried over from the previous transport.)
-    _scanner->setInterval(4000);
+    _scanner->setInterval(1000);
     _scanner->setWindow(50);
     _scanner->setMaxResults(0);
     _scanner->setDuplicateFilter(false);
