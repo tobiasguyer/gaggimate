@@ -200,8 +200,8 @@ void Controller::setupBluetooth() {
         }
     });
     pluginManager->on("ota:update:end", [this](Event const &) { applyConnectionPriority(true); });
-    comms.onSensorData([this](float temp, float pressure, float puckFlow, float pumpFlow, float puckResistance) {
-        onTempRead(temp);
+    comms.onSensorData([this](float temp, float pressure, float puckFlow, float pumpFlow, float puckResistance, const float temperature2) {
+        onTempRead(temp, temperature2);
         this->pressure = pressure;
         this->currentPuckFlow = puckFlow;
         this->currentPumpFlow = pumpFlow;
@@ -449,6 +449,8 @@ void Controller::loop() {
 
     if (comms.isReadyForConnection() && comms.connectToServer()) {
         waitingForController = false;
+        
+        comms.sendTempControl(settings.getBoilerLowPass(), settings.getGroupLowPass());
     }
 
     // Keepalive: updateControl() only sends control deltas now, so a steady-state
@@ -822,6 +824,7 @@ void Controller::activate() {
     delay(200);
     switch (mode) {
     case MODE_BREW:
+        brewProcessFlag = true;
         startProcess(new BrewProcess(profileManager->getSelectedProfile(),
                                      profileManager->getSelectedProfile().isVolumetric() && isVolumetricAvailable()
                                          ? ProcessTarget::VOLUMETRIC
@@ -851,6 +854,7 @@ void Controller::deactivate() {
     applyConnectionPriority(); // shot ended -> relaxed BLE interval
     if (lastProcess->getType() == MODE_BREW) {
         pluginManager->trigger("controller:brew:end");
+        brewProcessFlag = false;
     } else if (lastProcess->getType() == MODE_GRIND) {
         pluginManager->trigger("controller:grind:end");
     }
@@ -918,10 +922,13 @@ void Controller::setMode(int newMode) {
     setTargetTemp(getTargetTemp());
 }
 
-void Controller::onTempRead(float temperature) {
+void Controller::onTempRead(float temperature, float temperature2) {
     float temp = temperature - static_cast<float>(settings.getTemperatureOffset());
-    Event event = pluginManager->trigger("boiler:currentTemperature:change", "value", temp);
+    float temp2 = temperature2 + static_cast<float>(settings.getGroupHeadOffset());
+
+    Event event = pluginManager->trigger("boiler:currentTemperature:change", "value", temp, "value2", temp2);
     currentTemp = event.getFloat("value");
+    currentTemp2 = event.getFloat("value2");
 }
 
 void Controller::updateLastAction() { lastAction = millis(); }

@@ -26,17 +26,37 @@ lv_obj_t *ui_dials_create(lv_obj_t *comp_parent) {
     lv_arc_set_range(cui_tempGauge, 0, 160);
     lv_arc_set_value(cui_tempGauge, 80);
     lv_arc_set_bg_angles(cui_tempGauge, 118, 242);
-    lv_obj_set_style_arc_width(cui_tempGauge, 35, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_width(cui_tempGauge, 20, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_arc_rounded(cui_tempGauge, false, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_arc_img_src(cui_tempGauge, &ui_img_untitled_png, LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    lv_obj_set_style_arc_width(cui_tempGauge, 35, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+    lv_obj_set_style_arc_width(cui_tempGauge, 20, LV_PART_INDICATOR | LV_STATE_DEFAULT);
     lv_obj_set_style_arc_rounded(cui_tempGauge, false, LV_PART_INDICATOR | LV_STATE_DEFAULT);
     lv_obj_set_style_arc_img_src(cui_tempGauge, &ui_img_489054950, LV_PART_INDICATOR | LV_STATE_DEFAULT);
 
     lv_obj_set_style_bg_color(cui_tempGauge, lv_color_hex(0xD10000), LV_PART_KNOB | LV_STATE_DEFAULT);
     lv_obj_set_style_bg_opa(cui_tempGauge, 0, LV_PART_KNOB | LV_STATE_DEFAULT);
 
+// --- Secondary temp gauge (PT500 / MAX31865) --- inner ring ---
+lv_obj_t *cui_tempGauge2;
+cui_tempGauge2 = lv_arc_create(cui_dials);
+lv_obj_set_width(cui_tempGauge2, 440);
+lv_obj_set_height(cui_tempGauge2, 440);
+lv_obj_set_align(cui_tempGauge2, LV_ALIGN_CENTER);
+lv_obj_add_state(cui_tempGauge2, LV_STATE_DISABLED);
+lv_arc_set_range(cui_tempGauge2, 0, 160);
+lv_arc_set_value(cui_tempGauge2, 80);
+lv_arc_set_bg_angles(cui_tempGauge2, 118, 242);
+lv_obj_set_style_arc_width(cui_tempGauge2, 15, LV_PART_MAIN | LV_STATE_DEFAULT);
+lv_obj_set_style_arc_rounded(cui_tempGauge2, false, LV_PART_MAIN | LV_STATE_DEFAULT);
+lv_obj_set_style_arc_img_src(cui_tempGauge2, &ui_img_untitled_png, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+lv_obj_set_style_arc_width(cui_tempGauge2, 15, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+lv_obj_set_style_arc_rounded(cui_tempGauge2, false, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+lv_obj_set_style_arc_img_src(cui_tempGauge2, &ui_img_489054950, LV_PART_INDICATOR | LV_STATE_DEFAULT);
+lv_obj_set_style_bg_color(cui_tempGauge, lv_color_hex(0xFF9900), LV_PART_KNOB | LV_STATE_DEFAULT);
+
+lv_obj_set_style_bg_opa(cui_tempGauge2, 0, LV_PART_KNOB | LV_STATE_DEFAULT);
     lv_obj_t *cui_tempTarget;
     cui_tempTarget = lv_img_create(cui_dials);
     lv_img_set_src(cui_tempTarget, &ui_img_340686386);
@@ -94,7 +114,7 @@ lv_obj_t *ui_dials_create(lv_obj_t *comp_parent) {
     cui_pressureText = lv_label_create(cui_dials);
     lv_obj_set_width(cui_pressureText, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(cui_pressureText, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(cui_pressureText, 50);
+    lv_obj_set_x(cui_pressureText, 60);
     lv_obj_set_y(cui_pressureText, -205);
     lv_obj_set_align(cui_pressureText, LV_ALIGN_CENTER);
     lv_label_set_text(cui_pressureText, "9 bar");
@@ -102,17 +122,17 @@ lv_obj_t *ui_dials_create(lv_obj_t *comp_parent) {
                                            _ui_theme_color_NiceWhite);
     ui_object_set_themeable_style_property(cui_pressureText, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_TEXT_OPA,
                                            _ui_theme_alpha_NiceWhite);
-    lv_obj_set_style_text_font(cui_pressureText, &lv_font_montserrat_24, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_left(cui_pressureText, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_right(cui_pressureText, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(cui_pressureText, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_left(cui_pressureText, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(cui_pressureText, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(cui_pressureText, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_bottom(cui_pressureText, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-
+// --- Primary temp label (thermocouple) ---
     lv_obj_t *cui_tempText;
     cui_tempText = lv_label_create(cui_dials);
-    lv_obj_set_width(cui_tempText, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(cui_tempText, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(cui_tempText, -50);
+    lv_obj_set_width(cui_tempText, LV_SIZE_CONTENT);
+    lv_obj_set_height(cui_tempText, LV_SIZE_CONTENT);
+    lv_obj_set_x(cui_tempText, -120);
     lv_obj_set_y(cui_tempText, -205);
     lv_obj_set_align(cui_tempText, LV_ALIGN_CENTER);
     lv_label_set_text(cui_tempText, "92°C");
@@ -120,14 +140,38 @@ lv_obj_t *ui_dials_create(lv_obj_t *comp_parent) {
                                            _ui_theme_color_NiceWhite);
     ui_object_set_themeable_style_property(cui_tempText, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_TEXT_OPA,
                                            _ui_theme_alpha_NiceWhite);
-    lv_obj_set_style_text_font(cui_tempText, &lv_font_montserrat_24, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(cui_tempText, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
     ui_object_set_themeable_style_property(cui_tempText, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_COLOR,
                                            _ui_theme_color_Dark);
-    ui_object_set_themeable_style_property(cui_tempText, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_OPA, _ui_theme_alpha_Dark);
-    lv_obj_set_style_pad_left(cui_tempText, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_pad_right(cui_tempText, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
+    ui_object_set_themeable_style_property(cui_tempText, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_OPA,
+                                           _ui_theme_alpha_Dark);
+    lv_obj_set_style_pad_left(cui_tempText, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(cui_tempText, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_top(cui_tempText, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
     lv_obj_set_style_pad_bottom(cui_tempText, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // --- Secondary temp label (PT500) ---
+    lv_obj_t *cui_tempText2;
+    cui_tempText2 = lv_label_create(cui_dials);
+    lv_obj_set_width(cui_tempText2, LV_SIZE_CONTENT);
+    lv_obj_set_height(cui_tempText2, LV_SIZE_CONTENT);
+    lv_obj_set_x(cui_tempText2, 0);
+    lv_obj_set_y(cui_tempText2, -205);  
+    lv_obj_set_align(cui_tempText2, LV_ALIGN_CENTER);
+    lv_label_set_text(cui_tempText2, "92°C");
+    ui_object_set_themeable_style_property(cui_tempText2, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_TEXT_COLOR,
+                                           _ui_theme_color_NiceWhite);
+    ui_object_set_themeable_style_property(cui_tempText2, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_TEXT_OPA,
+                                           _ui_theme_alpha_NiceWhite);
+    lv_obj_set_style_text_font(cui_tempText2, &lv_font_montserrat_18, LV_PART_MAIN | LV_STATE_DEFAULT);
+    ui_object_set_themeable_style_property(cui_tempText2, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_COLOR,
+                                           _ui_theme_color_Dark);
+    ui_object_set_themeable_style_property(cui_tempText2, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_OPA,
+                                           _ui_theme_alpha_Dark);
+    lv_obj_set_style_pad_left(cui_tempText2, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_right(cui_tempText2, 2, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_top(cui_tempText2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_pad_bottom(cui_tempText2, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
 
     lv_obj_t *cui_tempIcon;
     cui_tempIcon = lv_img_create(cui_dials);
@@ -167,6 +211,8 @@ lv_obj_t *ui_dials_create(lv_obj_t *comp_parent) {
     children[UI_COMP_DIALS_TEMPTEXT] = cui_tempText;
     children[UI_COMP_DIALS_TEMPICON] = cui_tempIcon;
     children[UI_COMP_DIALS_IMAGE6] = cui_Image6;
+    children[UI_COMP_DIALS_TEMPGAUGE2] = cui_tempGauge2;
+    children[UI_COMP_DIALS_TEMPTEXT2] = cui_tempText2;
     lv_obj_add_event_cb(cui_dials, get_component_child_event_cb, LV_EVENT_GET_COMP_CHILD, children);
     lv_obj_add_event_cb(cui_dials, del_component_child_event_cb, LV_EVENT_DELETE, children);
     ui_comp_dials_create_hook(cui_dials);

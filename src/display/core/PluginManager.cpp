@@ -57,6 +57,14 @@ Event PluginManager::trigger(const String &eventId, const String &key, const flo
     return event;
 }
 
+Event PluginManager::trigger(const String &eventId, const String &key, const float value, const String &key2, const float value2) {
+    Event event;
+    event.id = eventId;
+    event.setFloat(key, value, key2, value2);
+    trigger(event);
+    return event;
+}
+
 void PluginManager::trigger(Event &event) {
     ESP_LOGV("PluginManager", "Triggering event: %s", event.id.c_str());
     if (listeners.count(std::string(event.id.c_str()))) {

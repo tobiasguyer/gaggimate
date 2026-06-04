@@ -97,21 +97,22 @@ void WebUIPlugin::loop() {
     }
     if (now > lastStatus + STATUS_PERIOD && !ws.getClients().empty()) {
         lastStatus = now;
-        statusDoc.clear();
-        statusDoc["tp"] = "evt:status";
-        statusDoc["ct"] = controller->getCurrentTemp();
-        statusDoc["tt"] = controller->getTargetTemp();
-        statusDoc["pr"] = controller->getCurrentPressure();
-        statusDoc["fl"] = controller->getCurrentPumpFlow();
-        statusDoc["pt"] = controller->getTargetPressure();
-        statusDoc["m"] = controller->getMode();
-        statusDoc["p"] = controller->getProfileManager()->getSelectedProfile().label;
-        statusDoc["puid"] = controller->getProfileManager()->getSelectedProfile().id;
-        statusDoc["cp"] = controller->getSystemInfo().capabilities.pressure;
-        statusDoc["cd"] = controller->getSystemInfo().capabilities.dimming;
-        statusDoc["tw"] = profileManager->getSelectedProfile().getTotalVolume(); // total target weight for the process
-        statusDoc["bta"] = controller->isVolumetricAvailable() ? 1 : 0;
-        statusDoc["bt"] =
+        JsonDocument doc;
+        doc["tp"] = "evt:status";
+        doc["ct"] = controller->getCurrentTemp();
+        doc["ct2"] = controller->getCurrentTemp2();
+        doc["tt"] = controller->getTargetTemp();
+        doc["pr"] = controller->getCurrentPressure();
+        doc["fl"] = controller->getCurrentPumpFlow();
+        doc["pt"] = controller->getTargetPressure();
+        doc["m"] = controller->getMode();
+        doc["p"] = controller->getProfileManager()->getSelectedProfile().label;
+        doc["puid"] = controller->getProfileManager()->getSelectedProfile().id;
+        doc["cp"] = controller->getSystemInfo().capabilities.pressure;
+        doc["cd"] = controller->getSystemInfo().capabilities.dimming;
+        doc["tw"] = profileManager->getSelectedProfile().getTotalVolume(); // total target weight for the process
+        doc["bta"] = controller->isVolumetricAvailable() ? 1 : 0;
+        doc["bt"] =
             controller->isVolumetricAvailable() && controller->getProfileManager()->getSelectedProfile().isVolumetric() ? 1 : 0;
         statusDoc["btd"] = profileManager->getSelectedProfile().getTotalDuration();
         statusDoc["led"] = controller->getSystemInfo().capabilities.ledControl;
@@ -224,6 +225,7 @@ void WebUIPlugin::setupServer() {
         doc["mode"] = controller->getMode();
         doc["tt"] = controller->getTargetTemp();
         doc["ct"] = controller->getCurrentTemp();
+        doc["ct2"] = controller->getCurrentTemp2();
         serializeJson(doc, *response);
         request->send(response);
     });
@@ -235,7 +237,7 @@ void WebUIPlugin::setupServer() {
     if (controller->isSDCard()) {
         fs = &SD_MMC;
     }
-    server.serveStatic("/api/history/", *fs, "/h/").setCacheControl("no-store");
+    // Register explicit route for index.bin BEFORE serveStatic to prevent shadowing
     server.on("/api/history/index.bin", HTTP_GET, [this, fs](AsyncWebServerRequest *request) {
         // Serve the binary index file directly
         if (fs->exists("/h/index.bin")) {
@@ -244,6 +246,7 @@ void WebUIPlugin::setupServer() {
             request->send(404, "text/plain", "Index not found");
         }
     });
+    server.serveStatic("/api/history/", *fs, "/h/").setCacheControl("no-store");
     server.on("/api/core-dump", HTTP_GET, [this](AsyncWebServerRequest *request) { handleCoreDumpDownload(request); });
     server.onNotFound([](AsyncWebServerRequest *request) { request->send(LittleFS, "/w/index.html"); });
     // Content-hashed build assets (Vite emits them under /assets/ with a hash in the filename) never change for a
@@ -531,6 +534,12 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
                 settings->setTargetWaterTemp(request->arg("targetWaterTemp").toInt());
             if (request->hasArg("temperatureOffset"))
                 settings->setTemperatureOffset(request->arg("temperatureOffset").toInt());
+            if (request->hasArg("groupHeadOffset"))
+                settings->setGroupHeadOffset(request->arg("groupHeadOffset").toInt());
+            if (request->hasArg("boilerTempLowPass"))
+                settings->setBoilerLowPass(request->arg("boilerTempLowPass").toFloat());
+            if (request->hasArg("groupTempLowPass"))
+                settings->setGroupLowPass(request->arg("groupTempLowPass").toFloat());
             if (request->hasArg("pressureScaling"))
                 settings->setPressureScaling(request->arg("pressureScaling").toFloat());
             if (request->hasArg("pid"))
@@ -676,6 +685,9 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
     doc["wifiPassword"] = apMode ? "---unchanged---" : settings.getWifiPassword();
     doc["mdnsName"] = settings.getMdnsName();
     doc["temperatureOffset"] = String(settings.getTemperatureOffset());
+    doc["groupHeadOffset"] = String(settings.getGroupHeadOffset());
+    doc["boilerTempLowPass"] = String(settings.getBoilerLowPass());
+    doc["groupTempLowPass"] = String(settings.getGroupLowPass());
     doc["pressureScaling"] = String(settings.getPressureScaling());
     doc["boilerFillActive"] = settings.isBoilerFillActive();
     doc["startupFillTime"] = settings.getStartupFillTime() / 1000;

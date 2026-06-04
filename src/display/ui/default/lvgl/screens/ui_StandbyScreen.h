@@ -2,20 +2,22 @@
 // SquareLine Studio version: SquareLine Studio 1.5.4
 // LVGL version: 8.3.11
 // Project name: GaggiMate
+// Modified: Standby screen replaced with SBB railway clock
 
 #ifndef UI_STANDBYSCREEN_H
 #define UI_STANDBYSCREEN_H
 
+#include <time.h>
 #ifdef __cplusplus
 extern "C" {
 #endif
 
 // SCREEN: ui_StandbyScreen
 extern void ui_StandbyScreen_screen_init(void);
+extern void ui_Standby_screen_draw_sbb_clock(const struct tm *t);
 extern void ui_StandbyScreen_screen_destroy(void);
 extern void ui_event_StandbyScreen(lv_event_t *e);
 extern lv_obj_t *ui_StandbyScreen;
-extern lv_obj_t *ui_StandbyScreen_logo;
 extern lv_obj_t *ui_StandbyScreen_time;
 extern lv_obj_t *ui_StandbyScreen_statusContainer;
 extern lv_obj_t *ui_StandbyScreen_wifiIcon;

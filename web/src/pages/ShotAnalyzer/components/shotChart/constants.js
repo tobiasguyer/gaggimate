@@ -56,6 +56,7 @@ export const EXTERNAL_TOOLTIP_VERTICAL_OFFSET = 0;
 
 export const CHART_COLOR_FALLBACKS = {
   temp: '#F0561D',
+  temp2: '#f0c91d',
   tempTarget: '#731F00',
   pressure: '#0066CC',
   flow: '#63993D',
@@ -68,6 +69,7 @@ export const CHART_COLOR_FALLBACKS = {
 
 export const CHART_COLOR_TOKEN_MAP = {
   temp: '--analyzer-temp-anchor',
+  temp2: '--analyzer-temp2-anchor',
   tempTarget: '--analyzer-target-temp-anchor',
   pressure: '--analyzer-pressure-anchor',
   flow: '--analyzer-flow-anchor',
@@ -106,6 +108,7 @@ export const LEGEND_ORDER = [
   'Weight',
   'Weight Flow',
   'Temp',
+  'Temp2',
   'Target T',
 ];
 
@@ -122,6 +125,7 @@ export const TOOLTIP_ORDER = [
   WATER_DRAWN_PHASE_LABEL,
   WATER_DRAWN_TOTAL_LABEL,
   'Temp',
+  'Temp2',
   'Target T',
 ];
 
@@ -141,6 +145,7 @@ export const TOOLTIP_GROUP_BY_LABEL = {
   [WATER_DRAWN_PHASE_LABEL]: 'water',
   [WATER_DRAWN_TOTAL_LABEL]: 'water',
   Temp: 'temp',
+  Temp2: 'temp',
   'Target T': 'temp',
 };
 
@@ -148,6 +153,7 @@ export const VISIBILITY_KEY_BY_LABEL = {
   'Phase Names': 'phaseNames',
   Stops: 'stops',
   Temp: 'temp',
+  Temp2: 'temp2',
   'Target T': 'targetTemp',
   Pressure: 'pressure',
   'Target P': 'targetPressure',
@@ -163,6 +169,7 @@ export const INITIAL_VISIBILITY = {
   stops: true,
   brewModeLabel: true,
   temp: true,
+  temp2: true,
   targetTemp: true,
   pressure: true,
   targetPressure: true,
@@ -175,6 +182,7 @@ export const INITIAL_VISIBILITY = {
 
 export const UNIT_BY_LABEL = {
   Temp: '°C',
+  'Temp 2': '°C',
   'Target T': '°C',
   Pressure: 'bar',
   'Target P': 'bar',

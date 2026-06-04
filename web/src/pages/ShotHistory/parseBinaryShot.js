@@ -28,6 +28,7 @@ const FIELD_BITS = {
   EV: 10, // estimated weight
   PR: 11, // puck resistance
   SI: 12, // system info (v2+)
+  CT2: 13,
   // Phase number moved to header transitions in v5+
 };
 
@@ -63,6 +64,7 @@ const FIELD_DEFS = {
       extendedRecording: !!(val & 0x0010),
     }),
   },
+  [FIELD_BITS.CT2]: { name: 'ct2', type: 'uint16', scale: TEMP_SCALE },
   // Phase number field removed in v5+, moved to header transitions
 };
 

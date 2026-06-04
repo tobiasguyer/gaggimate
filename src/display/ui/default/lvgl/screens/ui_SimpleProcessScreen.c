@@ -6,11 +6,13 @@
 #include "../ui.h"
 
 lv_obj_t *uic_SimpleProcessScreen_dials_tempText;
+lv_obj_t *uic_SimpleProcessScreen_dials_tempText2;
 lv_obj_t *uic_SimpleProcessScreen_dials_pressureText;
 lv_obj_t *uic_SimpleProcessScreen_dials_pressureTarget;
 lv_obj_t *uic_SimpleProcessScreen_dials_pressureGauge;
 lv_obj_t *uic_SimpleProcessScreen_dials_tempTarget;
 lv_obj_t *uic_SimpleProcessScreen_dials_tempGauge;
+lv_obj_t *uic_SimpleProcessScreen_dials_tempGauge2;
 lv_obj_t *ui_SimpleProcessScreen = NULL;
 lv_obj_t *ui_SimpleProcessScreen_dials = NULL;
 lv_obj_t *ui_SimpleProcessScreen_ImgButton6 = NULL;
@@ -189,11 +191,13 @@ void ui_SimpleProcessScreen_screen_init(void) {
     lv_obj_add_event_cb(ui_SimpleProcessScreen_upTempButton, ui_event_SimpleProcessScreen_upTempButton, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_SimpleProcessScreen, ui_event_SimpleProcessScreen, LV_EVENT_ALL, NULL);
     uic_SimpleProcessScreen_dials_tempGauge = ui_comp_get_child(ui_SimpleProcessScreen_dials, UI_COMP_DIALS_TEMPGAUGE);
+    uic_SimpleProcessScreen_dials_tempGauge2 = ui_comp_get_child(ui_SimpleProcessScreen_dials, UI_COMP_DIALS_TEMPGAUGE2);
     uic_SimpleProcessScreen_dials_tempTarget = ui_comp_get_child(ui_SimpleProcessScreen_dials, UI_COMP_DIALS_TEMPTARGET);
     uic_SimpleProcessScreen_dials_pressureGauge = ui_comp_get_child(ui_SimpleProcessScreen_dials, UI_COMP_DIALS_PRESSUREGAUGE);
     uic_SimpleProcessScreen_dials_pressureTarget = ui_comp_get_child(ui_SimpleProcessScreen_dials, UI_COMP_DIALS_PRESSURETARGET);
     uic_SimpleProcessScreen_dials_pressureText = ui_comp_get_child(ui_SimpleProcessScreen_dials, UI_COMP_DIALS_PRESSURETEXT);
     uic_SimpleProcessScreen_dials_tempText = ui_comp_get_child(ui_SimpleProcessScreen_dials, UI_COMP_DIALS_TEMPTEXT);
+    uic_SimpleProcessScreen_dials_tempText2 = ui_comp_get_child(ui_SimpleProcessScreen_dials, UI_COMP_DIALS_TEMPTEXT2);
 }
 
 void ui_SimpleProcessScreen_screen_destroy(void) {
@@ -204,11 +208,13 @@ void ui_SimpleProcessScreen_screen_destroy(void) {
     ui_SimpleProcessScreen = NULL;
     ui_SimpleProcessScreen_dials = NULL;
     uic_SimpleProcessScreen_dials_tempGauge = NULL;
+    uic_SimpleProcessScreen_dials_tempGauge2 = NULL;
     uic_SimpleProcessScreen_dials_tempTarget = NULL;
     uic_SimpleProcessScreen_dials_pressureGauge = NULL;
     uic_SimpleProcessScreen_dials_pressureTarget = NULL;
     uic_SimpleProcessScreen_dials_pressureText = NULL;
     uic_SimpleProcessScreen_dials_tempText = NULL;
+    uic_SimpleProcessScreen_dials_tempText2 = NULL;
     ui_SimpleProcessScreen_ImgButton6 = NULL;
     ui_SimpleProcessScreen_contentPanel5 = NULL;
     ui_SimpleProcessScreen_mainLabel5 = NULL;

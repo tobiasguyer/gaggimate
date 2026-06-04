@@ -789,24 +789,89 @@ export function Settings() {
                 onChange={onChange('pumpModelCoeffs')}
               />
             </div>
-            <div className='form-control mb-4'>
-              <label htmlFor='temperatureOffset' className='mb-2 block text-sm font-medium'>
-                Temperature Offset (°C)
-              </label>
-              <div className='input-group'>
-                <label htmlFor='temperatureOffset' className='input w-full'>
-                  <input
-                    id='temperatureOffset'
-                    name='temperatureOffset'
-                    type='number'
-                    step='any'
-                    className='grow'
-                    placeholder='0'
-                    value={formData.temperatureOffset}
-                    onChange={onChange('temperatureOffset')}
-                  />
-                  <span aria-label='celsius'>°C</span>
+            <div className='grid grid-cols-2 gap-4'>
+              <div className='form-control'>
+                <label htmlFor='temperatureOffset' className='mb-2 block text-sm font-medium'>
+                  Temperature Offset (°C)
                 </label>
+                <div className='input-group'>
+                  <label htmlFor='temperatureOffset' className='input w-full'>
+                    <input
+                      id='temperatureOffset'
+                      name='temperatureOffset'
+                      type='number'
+                      step='any'
+                      className='grow'
+                      placeholder='0'
+                      value={formData.temperatureOffset}
+                      onChange={onChange('temperatureOffset')}
+                    />
+                    <span aria-label='celsius'>°C</span>
+                  </label>
+                </div>
+              </div>
+              <div className='form-control'>
+                <label htmlFor='groupHeadOffset' className='mb-2 block text-sm font-medium'>
+                  Brew Group Temperature Offset (°C)
+                </label>
+                <div className='input-group'>
+                  <label htmlFor='groupHeadOffset' className='input w-full'>
+                    <input
+                      id='groupHeadOffset'
+                      name='groupHeadOffset'
+                      type='number'
+                      step='any'
+                      className='grow'
+                      placeholder='0'
+                      value={formData.groupHeadOffset}
+                      onChange={onChange('groupHeadOffset')}
+                    />
+                    <span aria-label='celsius'>°C</span>
+                  </label>
+                </div>
+              </div>
+            </div>
+            
+            <div className='grid grid-cols-2 gap-4'>
+              <div className='form-control'>
+                <label htmlFor='boilerTempLowPass' className='mb-2 block text-sm font-medium'>
+                  Boiler Temperature Low Pass Filter (0...1)
+                </label>
+                <div className='input-group'>
+                  <label htmlFor='boilerTempLowPass' className='input w-full'>
+                    <input
+                      id='boilerTempLowPass'
+                      name='boilerTempLowPass'
+                      type='number'
+                      step='0.01'
+                      className='grow'
+                      placeholder='0.2'
+                      value={formData.boilerTempLowPass}
+                      onChange={onChange('boilerTempLowPass')}
+                    />
+                    <span aria-label='celsius'>°C</span>
+                  </label>
+                </div>
+              </div>
+              <div className='form-control'>
+                <label htmlFor='groupTempLowPass' className='mb-2 block text-sm font-medium'>
+                  Group Head Temperature Low Pass Filter (0...1)
+                </label>
+                <div className='input-group'>
+                  <label htmlFor='groupTempLowPass' className='input w-full'>
+                    <input
+                      id='groupTempLowPass'
+                      name='groupTempLowPass'
+                      type='number'
+                      step='0.01'
+                      className='grow'
+                      placeholder='0.2'
+                      value={formData.groupTempLowPass}
+                      onChange={onChange('groupTempLowPass')}
+                    />
+                    <span aria-label='celsius'>°C</span>
+                  </label>
+                </div>
               </div>
             </div>
             {pressureAvailable.value && (

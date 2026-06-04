@@ -270,6 +270,16 @@ export default function CompactProcessControls({ brew, mode, changeMode }) {
           target={s.targetTemperature ?? 0}
           unit='°C'
         />
+        <Metric
+  icon={faThermometerHalf}
+  current={
+    s.currentTemperature2 > 0
+      ? `${(s.currentTemperature ?? 0).toFixed(1)} / ${s.currentTemperature2.toFixed(1)}`
+      : (s.currentTemperature ?? 0).toFixed(1)
+  }
+  target={s.targetTemperature ?? 0}
+  unit='°C'
+/>
         {showWeight && (
           <Metric
             icon={faWeightScale}

@@ -57,6 +57,9 @@ class Settings {
     int getTargetSteamTemp() const { return targetSteamTemp; }
     int getTargetWaterTemp() const { return targetWaterTemp; }
     int getTemperatureOffset() const { return temperatureOffset; }
+    int getGroupHeadOffset() const { return groupHeadOffset; }
+    float getBoilerLowPass() const { return boilerTempLowPass; }
+    float getGroupLowPass() const { return groupTempLowPass; }
     float getPressureScaling() const { return pressureScaling; }
     double getTargetGrindVolume() const { return targetGrindVolume; }
     int getTargetGrindDuration() const { return targetGrindDuration; }
@@ -120,6 +123,9 @@ class Settings {
     void setTargetSteamTemp(int target_steam_temp);
     void setTargetWaterTemp(int target_water_temp);
     void setTemperatureOffset(int temperature_offset);
+    void setGroupHeadOffset(int temperature_offset);
+    void setBoilerLowPass(float boiler_low_pass);
+    void setGroupLowPass(float group_low_pass);
     void setPressureScaling(float pressure_scaling);
     void setTargetGrindVolume(double target_grind_volume);
     void setTargetGrindDuration(int target_duration);
@@ -188,6 +194,9 @@ class Settings {
     int targetSteamTemp = 155;
     int targetWaterTemp = 80;
     int temperatureOffset = DEFAULT_TEMPERATURE_OFFSET;
+    int groupHeadOffset = DEFAULT_TEMPERATURE_OFFSET;
+    float boilerTempLowPass = 0.2f;
+    float groupTempLowPass = 0.8f;
     float pressureScaling = DEFAULT_PRESSURE_SCALING;
     double targetGrindVolume = 18;
     int targetGrindDuration = 25000;

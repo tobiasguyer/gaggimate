@@ -34,6 +34,7 @@ function normalizeShotSampleForHistoryExport(sample = {}) {
     t: sample.t,
     tt: round2(sample.tt),
     ct: round2(sample.ct),
+    ct2: round2(sample.ct2),
     tp: round2(sample.tp),
     cp: round2(sample.cp),
     fl: round2(sample.fl),
