@@ -950,22 +950,22 @@ export function Settings() {
                   </div>
                 </label>
               </SettingsFormField>
-              <SettingsFormField label='Finished Color' htmlFor='sunriseSuccess'>
+              <SettingsFormField label='Finished Color' htmlFor='sunriseFinished'>
                 <label
                   className='input input-bordered w-full cursor-pointer p-1'
-                  htmlFor='sunriseSuccess'
+                  htmlFor='sunriseFinished'
                 >
                   <div
                     className='h-full w-full rounded-sm'
-                    style={{ backgroundColor: formData.sunriseSuccess || '#00ff00' }}
+                    style={{ backgroundColor: formData.sunriseFinished || '#00ff00' }}
                   >
                     <input
-                      id='sunriseSuccess'
-                      name='sunriseSuccess'
+                      id='sunriseFinished'
+                      name='sunriseFinished'
                       type='color'
                       className='input input-bordered invisible w-full'
-                      value={formData.sunriseSuccess || '#00ff00'}
-                      onChange={onChange('sunriseSuccess')}
+                      value={formData.sunriseFinished || '#00ff00'}
+                      onChange={onChange('sunriseFinished')}
                     />
                   </div>
                 </label>
