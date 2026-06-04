@@ -185,6 +185,11 @@ class Controller {
     bool updating = false;
     bool autotuning = false;
     bool isApConnection = false;
+    // WiFi up/down is signalled (flag only) from the Arduino WiFi event task and
+    // acted on in loop(): doing server/socket/mDNS start-stop in that small-stack
+    // callback corrupted the heap under load. See setupWifi() + loop().
+    volatile bool wifiConnectedPending = false;
+    volatile bool wifiDisconnectedPending = false;
     bool initialized = false;
     bool screenReady = false;
     bool waitingForController = false;

@@ -390,13 +390,16 @@ void Controller::setupWifi() {
         if (WiFi.status() == WL_CONNECTED) {
             ESP_LOGI(LOG_TAG, "Connected to %s with IP address %s", settings.getWifiSsid().c_str(),
                      WiFi.localIP().toString().c_str());
-            WiFi.onEvent([this](WiFiEvent_t, WiFiEventInfo_t) { pluginManager->trigger("controller:wifi:connect", "AP", 0); },
+            // These run in the Arduino WiFi event task (small stack). Only flag
+            // the change here; loop() fires the plugin events on the main loop so
+            // server/mDNS/socket teardown never runs in this callback context.
+            WiFi.onEvent([this](WiFiEvent_t, WiFiEventInfo_t) { wifiConnectedPending = true; },
                          WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_GOT_IP);
             WiFi.onEvent(
                 [this](WiFiEvent_t, WiFiEventInfo_t info) {
                     ESP_LOGI(LOG_TAG, "Lost WiFi connection. Reason: %s",
                              WiFi.disconnectReasonName(static_cast<wifi_err_reason_t>(info.wifi_sta_disconnected.reason)));
-                    pluginManager->trigger("controller:wifi:disconnect");
+                    wifiDisconnectedPending = true;
                 },
                 WiFiEvent_t::ARDUINO_EVENT_WIFI_STA_DISCONNECTED);
             configTzTime(resolve_timezone(settings.getTimezone()), NTP_SERVER);
@@ -427,6 +430,17 @@ void Controller::setupWifi() {
 }
 
 void Controller::loop() {
+    // Act on WiFi link-state changes flagged by the (small-stack) event task here
+    // on the main loop. Disconnect before connect so a flap is ordered correctly.
+    if (wifiDisconnectedPending) {
+        wifiDisconnectedPending = false;
+        pluginManager->trigger("controller:wifi:disconnect");
+    }
+    if (wifiConnectedPending) {
+        wifiConnectedPending = false;
+        pluginManager->trigger("controller:wifi:connect", "AP", isApConnection ? 1 : 0);
+    }
+
     pluginManager->loop();
 
     if (screenReady && !initialized) {

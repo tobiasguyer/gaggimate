@@ -50,7 +50,13 @@ void WebUIPlugin::setup(Controller *_controller, PluginManager *_pluginManager) 
         apMode = event.getInt("AP");
         start();
     });
-    pluginManager->on("controller:wifi:disconnect", [this](Event const &) { stop(); });
+    // Intentionally do NOT stop the server on a WiFi disconnect: the listen
+    // socket survives a reconnect, and tearing it down only to rebind moments
+    // later races AsyncTCP's async close (bind: -8) and churns sockets in the
+    // recovery path. The server keeps listening; clients reconnect on their own.
+    pluginManager->on("controller:wifi:disconnect", [this](Event const &) {
+        ws.cleanupClients(); // drop dead websocket clients; keep the listener up
+    });
     pluginManager->on("controller:ready", [this](Event const &) {
         ota->setControllerVersion(controller->getSystemInfo().version);
         ota->init(controller->getClientController()->getClient());
@@ -280,7 +286,13 @@ void WebUIPlugin::setupServer() {
 }
 
 void WebUIPlugin::start() {
-    stop();
+    if (serverRunning) {
+        // Already listening. The 0.0.0.0:80 listen socket survives a WiFi
+        // reconnect, so re-running end()+begin() only races AsyncTCP's async
+        // socket close and fails to rebind ("bind: -8, port in use"). A transient
+        // STA reconnect needs nothing done here.
+        return;
+    }
     server.begin();
     ESP_LOGI("WebUIPlugin", "Started webserver");
     if (apMode) {
@@ -597,14 +609,14 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
                 settings->setSteamPumpCutoff(request->arg("steamPumpCutoff").toFloat());
             if (request->hasArg("themeMode"))
                 settings->setThemeMode(request->arg("themeMode").toInt());
-            if (request->hasArg("sunriseR"))
-                settings->setSunriseR(request->arg("sunriseR").toInt());
-            if (request->hasArg("sunriseG"))
-                settings->setSunriseG(request->arg("sunriseG").toInt());
-            if (request->hasArg("sunriseB"))
-                settings->setSunriseB(request->arg("sunriseB").toInt());
-            if (request->hasArg("sunriseW"))
-                settings->setSunriseW(request->arg("sunriseW").toInt());
+            if (request->hasArg("sunriseIdle"))
+                settings->setSunriseIdle(request->arg("sunriseIdle"));
+            if (request->hasArg("sunriseActive"))
+                settings->setSunriseActive(request->arg("sunriseActive"));
+            if (request->hasArg("sunriseFinished"))
+                settings->setSunriseFinished(request->arg("sunriseFinished"));
+            if (request->hasArg("sunriseError"))
+                settings->setSunriseError(request->arg("sunriseError"));
             if (request->hasArg("sunriseExtBrightness"))
                 settings->setSunriseExtBrightness(request->arg("sunriseExtBrightness").toInt());
             if (request->hasArg("emptyTankDistance"))
@@ -708,10 +720,10 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
     doc["steamPumpPercentage"] = settings.getSteamPumpPercentage();
     doc["steamPumpCutoff"] = settings.getSteamPumpCutoff();
     doc["themeMode"] = settings.getThemeMode();
-    doc["sunriseR"] = settings.getSunriseR();
-    doc["sunriseG"] = settings.getSunriseG();
-    doc["sunriseB"] = settings.getSunriseB();
-    doc["sunriseW"] = settings.getSunriseW();
+    doc["sunriseIdle"] = settings.getSunriseIdle();
+    doc["sunriseActive"] = settings.getSunriseActive();
+    doc["sunriseFinished"] = settings.getSunriseFinished();
+    doc["sunriseError"] = settings.getSunriseError();
     doc["sunriseExtBrightness"] = settings.getSunriseExtBrightness();
     doc["emptyTankDistance"] = settings.getEmptyTankDistance();
     doc["fullTankDistance"] = settings.getFullTankDistance();
