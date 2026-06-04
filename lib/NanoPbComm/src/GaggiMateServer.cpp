@@ -60,13 +60,14 @@ void GaggiMateServer::pushSystemInfo() {
 }
 
 gm::Payload GaggiMateServer::buildSensorData(float temperature, float pressure, float puckFlow, float pumpFlow,
-                                             float puckResistance) {
+                                             float puckResistance, float temperature2) {
     gm::Payload p = gaggimate_Payload_init_zero;
     p.which_content = gaggimate_Payload_sensor_tag;
     p.content.sensor.boilers_count = 1; // boiler 0; schema allows more
     p.content.sensor.boilers[0].index = 0;
     p.content.sensor.boilers[0].temperature = temperature;
     p.content.sensor.boilers[0].pressure = pressure;
+    p.content.sensor.boilers[0].temperature2 = temperature2;
     p.content.sensor.puck_flow = puckFlow;
     p.content.sensor.pump_flow = pumpFlow;
     p.content.sensor.puck_resistance = puckResistance;
@@ -116,8 +117,8 @@ gm::Payload GaggiMateServer::buildError(int code) {
 // high-rate and self-refreshing, so a dropped sample is replaced by the next
 // one. This avoids the constant ACK chatter on the high-rate path. Button /
 // autotune-result / error / system-info stay reliable.
-void GaggiMateServer::sendSensorData(float temperature, float pressure, float puckFlow, float pumpFlow, float puckResistance) {
-    _endpoint.sendUnreliable(buildSensorData(temperature, pressure, puckFlow, pumpFlow, puckResistance));
+void GaggiMateServer::sendSensorData(float temperature, float pressure, float puckFlow, float pumpFlow, float puckResistance, float temperature2) {
+    _endpoint.sendUnreliable(buildSensorData(temperature, pressure, puckFlow, pumpFlow, puckResistance, temperature2));
 }
 
 void GaggiMateServer::sendButtonState(uint8_t index, bool pressed) { _endpoint.send(buildButtonState(index, pressed)); }

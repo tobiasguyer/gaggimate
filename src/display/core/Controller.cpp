@@ -450,7 +450,7 @@ void Controller::loop() {
     if (comms.isReadyForConnection() && comms.connectToServer()) {
         waitingForController = false;
         
-        comms.sendTempControl(settings.getBoilerLowPass(), settings.getGroupLowPass());
+        comms.sendThermostatControl(settings.getBoilerLowPass(), settings.getGroupLowPass());
     }
 
     // Keepalive: updateControl() only sends control deltas now, so a steady-state

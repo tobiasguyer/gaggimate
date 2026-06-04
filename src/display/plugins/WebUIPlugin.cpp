@@ -97,22 +97,22 @@ void WebUIPlugin::loop() {
     }
     if (now > lastStatus + STATUS_PERIOD && !ws.getClients().empty()) {
         lastStatus = now;
-        JsonDocument doc;
-        doc["tp"] = "evt:status";
-        doc["ct"] = controller->getCurrentTemp();
-        doc["ct2"] = controller->getCurrentTemp2();
-        doc["tt"] = controller->getTargetTemp();
-        doc["pr"] = controller->getCurrentPressure();
-        doc["fl"] = controller->getCurrentPumpFlow();
-        doc["pt"] = controller->getTargetPressure();
-        doc["m"] = controller->getMode();
-        doc["p"] = controller->getProfileManager()->getSelectedProfile().label;
-        doc["puid"] = controller->getProfileManager()->getSelectedProfile().id;
-        doc["cp"] = controller->getSystemInfo().capabilities.pressure;
-        doc["cd"] = controller->getSystemInfo().capabilities.dimming;
-        doc["tw"] = profileManager->getSelectedProfile().getTotalVolume(); // total target weight for the process
-        doc["bta"] = controller->isVolumetricAvailable() ? 1 : 0;
-        doc["bt"] =
+        statusDoc.clear();
+        statusDoc["tp"] = "evt:status";
+        statusDoc["ct"] = controller->getCurrentTemp();
+        statusDoc["ct2"] = controller->getCurrentTemp2();
+        statusDoc["tt"] = controller->getTargetTemp();
+        statusDoc["pr"] = controller->getCurrentPressure();
+        statusDoc["fl"] = controller->getCurrentPumpFlow();
+        statusDoc["pt"] = controller->getTargetPressure();
+        statusDoc["m"] = controller->getMode();
+        statusDoc["p"] = controller->getProfileManager()->getSelectedProfile().label;
+        statusDoc["puid"] = controller->getProfileManager()->getSelectedProfile().id;
+        statusDoc["cp"] = controller->getSystemInfo().capabilities.pressure;
+        statusDoc["cd"] = controller->getSystemInfo().capabilities.dimming;
+        statusDoc["tw"] = profileManager->getSelectedProfile().getTotalVolume(); // total target weight for the process
+        statusDoc["bta"] = controller->isVolumetricAvailable() ? 1 : 0;
+        statusDoc["bt"] =
             controller->isVolumetricAvailable() && controller->getProfileManager()->getSelectedProfile().isVolumetric() ? 1 : 0;
         statusDoc["btd"] = profileManager->getSelectedProfile().getTotalDuration();
         statusDoc["led"] = controller->getSystemInfo().capabilities.ledControl;

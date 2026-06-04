@@ -139,6 +139,14 @@ void GaggiMateClient::sendAutotune(uint32_t testTime, uint32_t samples, uint32_t
 
 void GaggiMateClient::sendPressureScale(float scale) { _endpoint.send(buildPressureScale(scale)); }
 
+void GaggiMateClient::sendThermostatControl(float boilerLowPass, float groupLowPass) {
+    gm::Payload p = gaggimate_Payload_init_zero;
+    p.which_content = gaggimate_Payload_thermostat_tag;
+    p.content.thermostat.boiler_low_pass = boilerLowPass;
+    p.content.thermostat.group_low_pass = groupLowPass;
+    _endpoint.send(p);
+}
+
 void GaggiMateClient::tare() { _endpoint.send(buildTare()); }
 
 void GaggiMateClient::sendLedControl(const LedChannelCommand *channels, size_t count) {
@@ -158,12 +166,14 @@ void GaggiMateClient::registerHandlers() {
         // The display tracks a single boiler today; read boiler 0 if present.
         float temperature = 0.0f;
         float pressure = 0.0f;
+        float temperature2 = 0.0f;
         if (p.content.sensor.boilers_count > 0) {
             temperature = p.content.sensor.boilers[0].temperature;
             pressure = p.content.sensor.boilers[0].pressure;
+            temperature2 = p.content.sensor.boilers[0].temperature2;
         }
         _sensorCb(temperature, pressure, p.content.sensor.puck_flow, p.content.sensor.pump_flow,
-                  p.content.sensor.puck_resistance);
+                  p.content.sensor.puck_resistance, temperature2);
     });
     _endpoint.on(gaggimate_Payload_button_tag, [this](const gm::Payload &p) {
         if (_buttonCb)

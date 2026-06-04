@@ -8,7 +8,6 @@ export function ChartComponent({ data, className, chartClassName }) {
   const [chart, setChart] = useState(null);
   const ref = useRef();
 
-  // Create chart on mount
   useEffect(() => {
     if (!ref.current) return;
 
@@ -17,10 +16,8 @@ export function ChartComponent({ data, className, chartClassName }) {
       options: {
         ...data.options,
         plugins: {
-          // default OFF for ALL charts
           dragData: false,
 
-          // allow per-chart override (radar will re-enable it)
           ...(data.options?.plugins ?? {}),
         },
       },
@@ -34,7 +31,6 @@ export function ChartComponent({ data, className, chartClassName }) {
     };
   }, []);
 
-  // Update chart data when history changes
   useEffect(() => {
     if (!chart) return;
 
@@ -61,18 +57,14 @@ export function ChartComponent({ data, className, chartClassName }) {
     chart.update();
   }, [data, chart]);
 
-  // Add resize event listener to update chart options dynamically
   useEffect(() => {
     if (!chart) return;
 
-    // Generic "get or create" helper for nested option objects.
     const ensure = (obj, key, def) => {
       if (!obj[key]) obj[key] = def;
       return obj[key];
     };
 
-    // Walk a path (array of keys) under chart.options creating objects.
-    // Guarantees a font object exists so we can safely assign size.
     const ensureFont = path => {
       const target = path.reduce((acc, key) => ensure(acc, key, {}), chart.options);
       if (!target.font) target.font = {}; // for scale tick objects that may embed font deeper
@@ -93,29 +85,22 @@ export function ChartComponent({ data, className, chartClassName }) {
 
       chart.resize();
 
-      // Update the chart to apply changes
-      chart.update('none'); // Use 'none' mode for better performance
+      chart.update('none'); 
     };
 
-    // Add event listeners for different orientation change scenarios
     window.addEventListener('resize', handleResize);
 
-    // iOS PWA specific: orientationchange event
     const handleOrientationChange = () => {
-      // Use a small delay to ensure the orientation change is complete
       setTimeout(handleResize, 100);
     };
     window.addEventListener('orientationchange', handleOrientationChange);
 
-    // iOS PWA specific: visualViewport change (for newer iOS versions)
     if (window.visualViewport) {
       window.visualViewport.addEventListener('resize', handleResize);
     }
 
-    // Initial call to ensure correct sizing
     handleResize();
 
-    // Cleanup
     return () => {
       window.removeEventListener('resize', handleResize);
       window.removeEventListener('orientationchange', handleOrientationChange);
