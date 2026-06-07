@@ -200,16 +200,17 @@ void Controller::setupBluetooth() {
         }
     });
     pluginManager->on("ota:update:end", [this](Event const &) { applyConnectionPriority(true); });
-    comms.onSensorData([this](float temp, float pressure, float puckFlow, float pumpFlow, float puckResistance, const float temperature2) {
-        onTempRead(temp, temperature2);
-        this->pressure = pressure;
-        this->currentPuckFlow = puckFlow;
-        this->currentPumpFlow = pumpFlow;
-        pluginManager->trigger("boiler:pressure:change", "value", pressure);
-        pluginManager->trigger("pump:puck-flow:change", "value", puckFlow);
-        pluginManager->trigger("pump:flow:change", "value", pumpFlow);
-        pluginManager->trigger("pump:puck-resistance:change", "value", puckResistance);
-    });
+    comms.onSensorData(
+        [this](float temp, float pressure, float puckFlow, float pumpFlow, float puckResistance, const float temperature2) {
+            onTempRead(temp, temperature2);
+            this->pressure = pressure;
+            this->currentPuckFlow = puckFlow;
+            this->currentPumpFlow = pumpFlow;
+            pluginManager->trigger("boiler:pressure:change", "value", pressure);
+            pluginManager->trigger("pump:puck-flow:change", "value", puckFlow);
+            pluginManager->trigger("pump:flow:change", "value", pumpFlow);
+            pluginManager->trigger("pump:puck-resistance:change", "value", puckResistance);
+        });
     comms.onButtonState([this](uint8_t index, bool pressed) {
         const int status = pressed ? 1 : 0;
         String behavior = settings.getButtonBehavior(index);
@@ -334,6 +335,7 @@ void Controller::onSystemInfo(const char *hardware, const char *version, uint32_
         parseFloatCsv(settings.getPid(), pid, 4, 0.0f);
         comms.sendPidSettings(pid[0], pid[1], pid[2], pid[3]);
         setPumpModelCoeffs();
+        comms.sendThermostatControl(settings.getBoilerLowPass(), settings.getGroupLowPass());
     }
 
     if (!loaded) {
@@ -463,8 +465,6 @@ void Controller::loop() {
 
     if (comms.isReadyForConnection() && comms.connectToServer()) {
         waitingForController = false;
-        
-        comms.sendThermostatControl(settings.getBoilerLowPass(), settings.getGroupLowPass());
     }
 
     // Keepalive: updateControl() only sends control deltas now, so a steady-state

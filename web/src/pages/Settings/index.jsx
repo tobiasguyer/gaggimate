@@ -21,7 +21,6 @@ import { faEye } from '@fortawesome/free-solid-svg-icons/faEye';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash';
 import { Tooltip } from '../../components/Tooltip.jsx';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
-import { I } from '../../../dist/assets/BdiWqh_z.js';
 
 const ledControl = computed(() => machine.value.capabilities.ledControl);
 const pressureAvailable = computed(() => machine.value.capabilities.pressure);
