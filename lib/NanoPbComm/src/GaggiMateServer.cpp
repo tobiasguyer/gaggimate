@@ -180,4 +180,8 @@ void GaggiMateServer::registerHandlers() {
             _ledCb(static_cast<uint8_t>(p.content.led.channels[i].channel),
                    static_cast<uint8_t>(p.content.led.channels[i].brightness));
     });
+    _endpoint.on(gaggimate_Payload_thermostat_tag, [this](const gm::Payload &p) {
+        if (_thermostatControlCb)
+            _thermostatControlCb(p.content.thermostat.boiler_low_pass, p.content.thermostat.group_low_pass);
+    });
 }
