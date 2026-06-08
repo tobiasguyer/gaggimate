@@ -89,6 +89,12 @@ void DefaultUI::init() {
             currentTemp = newTemp;
             rerender = true;
         }
+        newTemp = static_cast<int>(event.getFloat("value2"));
+        if(newTemp != currentTemp2)
+        {
+            currentTemp2 = newTemp;
+            rerender = true;
+        }
     });
     pluginManager->on("boiler:pressure:change", [=](Event const &event) {
         float newPressure = event.getFloat("value");
@@ -374,6 +380,7 @@ void DefaultUI::setupState() {
     grindAvailable = smartGrindActive || settings.getAltRelayFunction() == ALT_RELAY_GRIND;
     mode = controller->getMode();
     currentTemp = static_cast<int>(controller->getCurrentTemp());
+    currentTemp2 = static_cast<int>(controller->getCurrentTemp2());
     targetTemp = static_cast<int>(controller->getTargetTemp());
     targetDuration = profileManager->getSelectedProfile().getTotalDuration();
     targetVolume = profileManager->getSelectedProfile().getTotalVolume();
@@ -421,19 +428,25 @@ void DefaultUI::setupReactive() {
     effect_mgr.use_effect([=] { return currentScreen == ui_MenuScreen; },
                           [=]() {
                               lv_arc_set_value(uic_MenuScreen_dials_tempGauge, currentTemp);
+                              lv_arc_set_value(uic_MenuScreen_dials_tempGauge2, currentTemp2);
                               lv_label_set_text_fmt(uic_MenuScreen_dials_tempText, "%d°C", currentTemp);
+                              lv_label_set_text_fmt(uic_MenuScreen_dials_tempText2, "%d°C", currentTemp2);
                           },
                           &currentTemp);
     effect_mgr.use_effect([=] { return currentScreen == ui_StatusScreen; },
                           [=]() {
                               lv_arc_set_value(uic_StatusScreen_dials_tempGauge, currentTemp);
+                              lv_arc_set_value(uic_StatusScreen_dials_tempGauge2, currentTemp2);
                               lv_label_set_text_fmt(uic_StatusScreen_dials_tempText, "%d°C", currentTemp);
+                              lv_label_set_text_fmt(uic_StatusScreen_dials_tempText2, "%d°C", currentTemp2);
                           },
                           &currentTemp);
     effect_mgr.use_effect([=] { return currentScreen == ui_BrewScreen; },
                           [=]() {
                               lv_arc_set_value(uic_BrewScreen_dials_tempGauge, currentTemp);
+                              lv_arc_set_value(uic_BrewScreen_dials_tempGauge2, currentTemp2);
                               lv_label_set_text_fmt(uic_BrewScreen_dials_tempText, "%d°C", currentTemp);
+                              lv_label_set_text_fmt(uic_BrewScreen_dials_tempText2, "%d°C", currentTemp2);
                           },
                           &currentTemp);
     effect_mgr.use_effect([=] { return currentScreen == ui_GrindScreen; },
@@ -744,15 +757,8 @@ void DefaultUI::updateStandbyScreen() {
         localtime_r(&now, &timeinfo);
         // allocate enough space for both 12h/24h time formats
         if (getLocalTime(&timeinfo, 500)) {
-            char time[9];
-            Settings &settings = controller->getSettings();
-            const char *format = settings.isClock24hFormat() ? "%H:%M" : "%I:%M %p";
-            strftime(time, sizeof(time), format, &timeinfo);
-            lv_label_set_text(ui_StandbyScreen_time, time);
-            lv_obj_clear_flag(ui_StandbyScreen_time, LV_OBJ_FLAG_HIDDEN);
-
-            christmasMode = (timeinfo.tm_mon == 11 && timeinfo.tm_mday < 27) || (timeinfo.tm_mon == 0 && timeinfo.tm_mday < 6);
-        }
+            
+            ui_Standby_screen_draw_sbb_clock(&timeinfo);}
     } else {
         lv_obj_add_flag(ui_StandbyScreen_time, LV_OBJ_FLAG_HIDDEN);
     }

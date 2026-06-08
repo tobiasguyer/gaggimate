@@ -74,6 +74,7 @@ function getChartData(data) {
   // Calculate auto-scale ranges from visible data
   let tempValues = filteredData.map(i => i.currentTemperature);
   tempValues = tempValues.concat(filteredData.map(i => i.targetTemperature));
+tempValues = tempValues.concat(filteredData.filter(i => i.currentTemperature2).map(i => i.currentTemperature2));
 
   let pressureFlowValues = filteredData.map(i => i.currentPressure);
   pressureFlowValues = pressureFlowValues.concat(filteredData.map(i => i.targetPressure));
@@ -211,6 +212,13 @@ function getChartData(data) {
       borderColor: '#F0561D',
       pointStyle: false,
       data: data.map(i => ({ x: i.timestamp.toISOString(), y: i.currentTemperature })),
+    },{
+      label: 'Current Temperature 2',
+      borderColor: '#f0c91d',
+      pointStyle: false,
+      data: data
+        .filter(i => i.currentTemperature2 > 0)
+        .map(i => ({ x: i.timestamp.toISOString(), y: i.currentTemperature2 })),
     },
     {
       label: 'Target Temperature',

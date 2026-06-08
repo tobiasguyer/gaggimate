@@ -33,6 +33,10 @@ struct Event {
 
     void setFloat(const String &key, float value) { data.emplace_back(key, value); }
 
+    void setFloat(const String &key, float value, const String &key2, float value2) { data.emplace_back(key, value); data.emplace_back(key2, value2); }
+
+    void setFloats(const String &key, float value, const String &key2, float value2) { data.emplace_back(key, value); data.emplace_back(key2, value2); }
+
     void setString(const String &key, const String &value) { data.emplace_back(key, value); }
 
     int getInt(const String &key) const {

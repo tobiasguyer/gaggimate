@@ -8,18 +8,26 @@ Max31855Thermocouple::Max31855Thermocouple(const int csPin, const int misoPin, c
                                            const temperature_error_callback_t &error_callback)
     : taskHandle(nullptr), csPin(csPin), misoPin(misoPin), sckPin(sckPin) {
     max31855 = new MAX31855(csPin, misoPin, sckPin);
+    max31865 = new MAX31865;
     this->callback = callback;
     this->error_callback = error_callback;
 }
 
 float Max31855Thermocouple::read() { return isErrorState() ? 0.0f : temperature; }
+float Max31855Thermocouple::read2() { return isErrorState() ? 0.0f : temp2; }
 
 bool Max31855Thermocouple::isErrorState() { return temperature <= 0 || errorCount >= MAX31855_MAX_ERRORS; }
 
 void Max31855Thermocouple::setup() {
     SPI.begin();
+    vspi = new SPIClass(FSPI);
+    vspi->begin(17,18,44);
     pinMode(csPin, OUTPUT);
+    pinMode(39, OUTPUT);
     digitalWrite(csPin, HIGH);
+    max31865->begin(39, RTD_3_WIRE, RTD_TYPE_PT100, *vspi);
+  max31865->setLowFaultTemperature(20);  // Set the low fault threshold to 30 degrees C
+  max31865->setHighFaultTemperature(200); // Set the high fault threshold to 70 degrees C
     max31855->begin();
     max31855->setSPIspeed(1000000);
 
@@ -58,8 +66,14 @@ void Max31855Thermocouple::loop() {
 
     if (temp <= 0.0f)
         return;
-    temperature = 0.2f * temp + 0.8f * temperature;
+    temperature = boilerLowPass * temp + (1.0f - boilerLowPass) * temperature;
     ESP_LOGV(LOG_TAG, "Updated temperature: %2f\n", temperature);
+    max31865->sample();
+    temp = max31865->getTemperature();
+    if(temp >= 0.1f) {
+        temp2 = temp * groupLowPass + temp2 * (1.0f - groupLowPass);
+    }
+    ESP_LOGV(LOG_TAG, "Updated temperature2: %2f\n", temp2);
     callback(temperature);
 }
 

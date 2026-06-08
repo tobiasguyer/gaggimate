@@ -15,6 +15,9 @@ Settings::Settings() {
     grindDelay = preferences.getDouble("del_gd", 1000.0);
     delayAdjust = preferences.getBool("del_ad", true);
     temperatureOffset = preferences.getInt("to", DEFAULT_TEMPERATURE_OFFSET);
+    groupHeadOffset = preferences.getInt("gho", DEFAULT_TEMPERATURE_OFFSET);
+    groupTempLowPass = preferences.getFloat("glp", 0.2f);
+    boilerTempLowPass = preferences.getFloat("blp", 0.2f);
     pressureScaling = preferences.getFloat("ps", DEFAULT_PRESSURE_SCALING);
     pid = preferences.getString("pid", DEFAULT_PID);
     pumpModelCoeffs = preferences.getString("pmc", DEFAULT_PUMP_MODEL_COEFFS);
@@ -145,6 +148,20 @@ void Settings::setTargetWaterTemp(const int target_water_temp) {
 
 void Settings::setTemperatureOffset(const int temperature_offset) {
     temperatureOffset = temperature_offset;
+    save();
+}
+void Settings::setGroupHeadOffset(const int temperature_offset) {
+    groupHeadOffset = temperature_offset;
+    save();
+}
+
+void Settings::setBoilerLowPass(const float boiler_low_pass) {
+    boilerTempLowPass = boiler_low_pass;
+    save();
+}
+
+void Settings::setGroupLowPass(const float group_low_pass) {
+    groupTempLowPass = group_low_pass;
     save();
 }
 
@@ -485,6 +502,9 @@ void Settings::doSave() {
     preferences.putDouble("del_gd", grindDelay);
     preferences.putBool("del_ad", delayAdjust);
     preferences.putInt("to", temperatureOffset);
+    preferences.putInt("gho", groupHeadOffset);
+    preferences.putFloat("glp", groupTempLowPass);
+    preferences.putFloat("blp", boilerTempLowPass);
     preferences.putFloat("ps", pressureScaling);
     preferences.putString("pid", pid);
     preferences.putString("pmc", pumpModelCoeffs);

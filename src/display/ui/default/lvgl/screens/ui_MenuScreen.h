@@ -29,11 +29,13 @@ extern void ui_event_MenuScreen_grindBtn(lv_event_t *e);
 extern lv_obj_t *ui_MenuScreen_grindBtn;
 // CUSTOM VARIABLES
 extern lv_obj_t *uic_MenuScreen_dials_tempGauge;
+extern lv_obj_t *uic_MenuScreen_dials_tempGauge2;
 extern lv_obj_t *uic_MenuScreen_dials_tempTarget;
 extern lv_obj_t *uic_MenuScreen_dials_pressureGauge;
 extern lv_obj_t *uic_MenuScreen_dials_pressureTarget;
 extern lv_obj_t *uic_MenuScreen_dials_pressureText;
 extern lv_obj_t *uic_MenuScreen_dials_tempText;
+extern lv_obj_t *uic_MenuScreen_dials_tempText2;
 
 #ifdef __cplusplus
 } /*extern "C"*/

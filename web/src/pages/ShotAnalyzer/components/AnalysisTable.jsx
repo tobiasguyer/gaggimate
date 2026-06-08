@@ -949,6 +949,17 @@ function CellContent({ phase, col, results, isTotal = false }) {
       mainValue = sf(stats?.t?.avg);
       unit = '°';
       break;
+    // Temperature
+    case 't2_se':
+      mainValue = `${sf(stats?.t2?.start)}/${sf(stats?.t2?.end)}`;
+      break;
+    case 't2_mm':
+      mainValue = `${sf(stats?.t2?.min)}/${sf(stats?.t2?.max)}`;
+      break;
+    case 't2_avg':
+      mainValue = sf(stats?.t2?.avg);
+      unit = '°';
+      break;
 
     // Target Temperature
     case 'tt_se':

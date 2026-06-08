@@ -19,6 +19,7 @@ function getChartData(shot) {
   // Build sample point arrays once (numeric x for linear scale)
   const data = shot.samples;
   const ct = [];
+  const ct2 = [];
   const tt = [];
   const cp = [];
   const tp = [];
@@ -34,6 +35,7 @@ function getChartData(shot) {
     const x = s.t / 1000.0; // Convert time to seconds for chart display
 
     ct.push({ x, y: s.ct });
+    ct2.push({ x, y: s.ct2 });
     tt.push({ x, y: s.tt });
     cp.push({ x, y: s.cp });
     tp.push({ x, y: s.tp });
@@ -58,7 +60,9 @@ function getChartData(shot) {
   }
   // No phase tracking for versions before v5
   const tempValues = ct.map(i => i.y).concat(tt.map(i => i.y));
+  const tempValues2 = ct2.map(i => i.y).concat(tt.map(i => i.y));
   const timeValues = ct.map(i => i.x);
+  const timeValues2 = ct2.map(i => i.x);
   const minTemp = Math.floor(Math.min(...tempValues));
   const maxTemp = Math.ceil(Math.max(...tempValues));
   const minX = Math.min(...timeValues);
@@ -143,6 +147,12 @@ function getChartData(shot) {
           borderColor: '#F0561D',
           pointStyle: false,
           data: ct,
+        },
+        {
+          label: 'Current Brewhead Temperature',
+          borderColor: '#f0c91d',
+          pointStyle: false,
+          data: ct2,
         },
         {
           label: 'Target Temperature',

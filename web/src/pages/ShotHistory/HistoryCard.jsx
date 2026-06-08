@@ -43,6 +43,7 @@ export default function HistoryCard({ shot, onDelete, onLoad, onNotesChanged }) 
         t: s.t,
         tt: round2(s.tt),
         ct: round2(s.ct),
+        ct2: round2(s.ct2),
         tp: round2(s.tp),
         cp: round2(s.cp),
         fl: round2(s.fl),
