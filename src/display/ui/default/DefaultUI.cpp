@@ -757,8 +757,15 @@ void DefaultUI::updateStandbyScreen() {
         localtime_r(&now, &timeinfo);
         // allocate enough space for both 12h/24h time formats
         if (getLocalTime(&timeinfo, 500)) {
-            
-            ui_Standby_screen_draw_sbb_clock(&timeinfo);}
+            char time[9];
+            Settings &settings = controller->getSettings();
+            const char *format = settings.isClock24hFormat() ? "%H:%M" : "%I:%M %p";
+            strftime(time, sizeof(time), format, &timeinfo);
+            lv_label_set_text(ui_StandbyScreen_time, time);
+            lv_obj_clear_flag(ui_StandbyScreen_time, LV_OBJ_FLAG_HIDDEN);
+
+            christmasMode = (timeinfo.tm_mon == 11 && timeinfo.tm_mday < 27) || (timeinfo.tm_mon == 0 && timeinfo.tm_mday < 6);
+        }
     } else {
         lv_obj_add_flag(ui_StandbyScreen_time, LV_OBJ_FLAG_HIDDEN);
     }

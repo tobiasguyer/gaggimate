@@ -26,6 +26,7 @@ class GaggiMateServer {
     using PressureScaleCallback = std::function<void(float scale)>;
     using TareCallback = std::function<void()>;
     using LedCallback = std::function<void(uint8_t channel, uint8_t brightness)>;
+    using ThermostatControlCallback = std::function<void(float boilerLowPass, float groupLowPass)>;
 
     GaggiMateServer();
 
@@ -37,7 +38,7 @@ class GaggiMateServer {
 
     // Build a payload without sending (compose your own batch, then send()).
     // sendSensorData reports boiler 0; the wire format supports several boilers.
-    gm::Payload buildSensorData(float temperature, float pressure, float puckFlow, float pumpFlow, float puckResistance);
+    gm::Payload buildSensorData(float temperature, float pressure, float puckFlow, float pumpFlow, float puckResistance, float temperature2);
     gm::Payload buildButtonState(uint8_t index, bool pressed);
     gm::Payload buildAutotuneResult(float kp, float ki, float kd, float kf);
     gm::Payload buildVolumetricMeasurement(float volume);
@@ -45,7 +46,7 @@ class GaggiMateServer {
     gm::Payload buildError(int code);
 
     // Responses (controller -> display)
-    void sendSensorData(float temperature, float pressure, float puckFlow, float pumpFlow, float puckResistance);
+    void sendSensorData(float temperature, float pressure, float puckFlow, float pumpFlow, float puckResistance, float temperature2);
     void sendButtonState(uint8_t index, bool pressed);
     void sendAutotuneResult(float kp, float ki, float kd, float kf);
     void sendVolumetricMeasurement(float volume);
@@ -71,6 +72,9 @@ class GaggiMateServer {
     void onPressureScale(PressureScaleCallback cb) { _pressureScaleCb = std::move(cb); }
     void onTare(TareCallback cb) { _tareCb = std::move(cb); }
     void onLedControl(LedCallback cb) { _ledCb = std::move(cb); }
+    void onThermostatControl(ThermostatControlCallback cb) {
+        _thermostatControlCb = std::move(cb);
+    }
 
   private:
     BleServerTransport _transport;
@@ -87,7 +91,7 @@ class GaggiMateServer {
     PressureScaleCallback _pressureScaleCb;
     TareCallback _tareCb;
     LedCallback _ledCb;
-
+    ThermostatControlCallback _thermostatControlCb;
     void registerHandlers();
     void pushSystemInfo();
 
