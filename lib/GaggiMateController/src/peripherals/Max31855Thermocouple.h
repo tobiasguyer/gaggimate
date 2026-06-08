@@ -3,7 +3,6 @@
 
 #include "TemperatureSensor.h"
 #include <MAX31855.h>
-#include <PwFusion_MAX31865.h> 
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
@@ -21,25 +20,13 @@ class Max31855Thermocouple : public TemperatureSensor {
     Max31855Thermocouple(int csPin, int misoPin, int sckPin, const temperature_callback_t &callback,
                          const temperature_error_callback_t &error_callback);
     float read() override;
-    float read2() override;
-    void setLowPassFilter(float boilerLowPass_, float groupLowPass_){
-      if(boilerLowPass_ >= 0.0f){
-        boilerLowPass = boilerLowPass_;
-      }
-      if(groupLowPass_ >= 0.0f){
-        groupLowPass = groupLowPass_;
-      }
-    }
     bool isErrorState() override;
 
     void setup();
     void loop();
 
   private:
-
-    SPIClass *vspi = NULL;
     MAX31855 *max31855;
-    MAX31865 *max31865;
     xTaskHandle taskHandle;
 
     int errorCount = 0;
@@ -48,9 +35,6 @@ class Max31855Thermocouple : public TemperatureSensor {
     size_t bufferIndex = 0;
 
     float temperature = .0f;
-    float temp2 = 0.0f;
-    float boilerLowPass = .2f;
-    float groupLowPass = .8f;
 
     int csPin = 0;
     int misoPin = 0;

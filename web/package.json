@@ -19,7 +19,6 @@
     "chart.js": "^4.4.8",
     "chartjs-adapter-dayjs-4": "^1.0.4",
     "chartjs-plugin-annotation": "^3.1.0",
-    "chartjs-plugin-dragdata": "^2.3.1",
     "daisyui": "^5.5.20",
     "dayjs": "^1.11.13",
     "idb": "^8.0.3",
@@ -27,8 +26,6 @@
     "preact-fetching": "^1.0.0",
     "preact-iso": "^2.8.1",
     "preact-render-to-string": "^6.5.13",
-    "rechart": "^0.0.1",
-    "recharts": "^3.8.1",
     "sortablejs": "^1.15.7"
   },
   "devDependencies": {

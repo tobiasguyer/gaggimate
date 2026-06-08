@@ -156,9 +156,6 @@ void GaggiMateController::setup() {
         // Apply thermal feedforward parameters if available
         this->heater->setFeedforwardScale(Kf);
     });
-    _comms.onThermostatControl([this](float boilerLowPass, float groupLowPass) {
-        this->thermocouple->setLowPassFilter(boilerLowPass, groupLowPass);
-    });
     _comms.onPumpModelCoeffs([this](float a, float b, float c, float d) {
         if (_config.capabilites.dimming) {
             auto dimmedPump = static_cast<DimmedPump *>(pump);
@@ -288,10 +285,10 @@ void GaggiMateController::sendSensorData() {
             }
         }
         batch[n++] = _comms.buildSensorData(this->thermocouple->read(), this->pressureSensor->getPressure(), puckFlow, pumpFlow,
-                                            puckResistance, this->thermocouple->read2());
+                                            puckResistance);
         _comms.sendUnreliableBatch(batch, n); // telemetry: fire-and-forget
     } else {
-        _comms.sendSensorData(this->thermocouple->read(), 0.0f, 0.0f, 0.0f, 0.0f, this->thermocouple->read2());
+        _comms.sendSensorData(this->thermocouple->read(), 0.0f, 0.0f, 0.0f, 0.0f);
     }
 }
 

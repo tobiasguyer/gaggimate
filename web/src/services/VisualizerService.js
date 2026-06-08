@@ -39,7 +39,6 @@ export class VisualizerService {
       tf: sample.tf || 0, // Target flow
       tt: sample.tt || 0, // Target temperature
       ct: sample.ct || 0, // Current temperature
-      ct2: sample.ct2 || 0, // Current temperature 2
       v: sample.v || 0, // Scale weight
       ev: sample.ev || 0, // Estimated weight
       vf: sample.vf || 0, // Scale flow

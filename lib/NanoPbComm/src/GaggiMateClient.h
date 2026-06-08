@@ -24,7 +24,7 @@ class GaggiMateClient {
     using SystemInfoCallback = std::function<void(const char *hardware, const char *version, uint32_t protocolVersion,
                                                   bool dimming, bool pressure, bool ledControl, bool tof)>;
     using SensorCallback =
-        std::function<void(float temperature, float pressure, float puckFlow, float pumpFlow, float puckResistance, float temperature2)>;
+        std::function<void(float temperature, float pressure, float puckFlow, float pumpFlow, float puckResistance)>;
     using ButtonCallback = std::function<void(uint8_t index, bool pressed)>;
     using AutotuneResultCallback = std::function<void(float kp, float ki, float kd, float kf)>;
     using VolumetricCallback = std::function<void(float volume)>;
@@ -80,7 +80,6 @@ class GaggiMateClient {
     void sendPumpModelCoeffs(float a, float b, float c, float d);
     void sendAutotune(uint32_t testTime, uint32_t samples, uint32_t heaterWattage);
     void sendPressureScale(float scale);
-    void sendThermostatControl(float boilerLowPass, float groupLowPass);
     void tare();
     // Drive several LED channels in one message (avoids per-channel sends that
     // the outbound queue would coalesce down to a single channel).

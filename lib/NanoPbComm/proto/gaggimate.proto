@@ -44,7 +44,6 @@ message Payload {
         PressureScale pressure_scale = 9;
         Tare tare = 10;
         LedControl led = 11;
-        ThermostatControl thermostat = 12;
 
         // Responses: controller -> display
         SystemInfo system_info = 20;
@@ -122,11 +121,6 @@ message AutotuneRequest {
     uint32 heater_wattage = 3; // 0 = unknown, controller skips combinedKff derivation
 }
 
-message ThermostatControl {
-    float boiler_low_pass = 1;
-    float group_low_pass = 2;
-}
-
 message PressureScale {
     float scale = 1;
 }
@@ -171,7 +165,6 @@ message BoilerReading {
     uint32 index = 1;
     float temperature = 2;
     float pressure = 3;
-    float temperature2 = 4; // reserved for a second thermocouple on the same boiler (e.g. for thermal gradient monitoring)
 }
 
 message SensorData {

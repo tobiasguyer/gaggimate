@@ -860,7 +860,6 @@ export function calculateShotMetrics(shotData, profileData, settings) {
         pf: getMetricStats(samples, 'pf'),
         tf: getMetricStats(samples, 'tf'),
         t: getMetricStats(samples, 'ct'),
-        t2: getMetricStats(samples, 'ct2'),
         tt: getMetricStats(samples, 'tt'),
         w: getMetricStats(samples, 'v'),
         wf: getMetricStats(samples, 'vf'),

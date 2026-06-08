@@ -30,13 +30,11 @@ extern lv_obj_t *ui_SimpleProcessScreen_targetTemp;
 extern lv_obj_t *ui_SimpleProcessScreen_Image9;
 // CUSTOM VARIABLES
 extern lv_obj_t *uic_SimpleProcessScreen_dials_tempGauge;
-extern lv_obj_t *uic_SimpleProcessScreen_dials_tempGauge2;
 extern lv_obj_t *uic_SimpleProcessScreen_dials_tempTarget;
 extern lv_obj_t *uic_SimpleProcessScreen_dials_pressureGauge;
 extern lv_obj_t *uic_SimpleProcessScreen_dials_pressureTarget;
 extern lv_obj_t *uic_SimpleProcessScreen_dials_pressureText;
 extern lv_obj_t *uic_SimpleProcessScreen_dials_tempText;
-extern lv_obj_t *uic_SimpleProcessScreen_dials_tempText2;
 
 #ifdef __cplusplus
 } /*extern "C"*/

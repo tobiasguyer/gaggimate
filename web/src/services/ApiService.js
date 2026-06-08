@@ -164,7 +164,6 @@ export default class ApiService {
   _onStatus(message) {
     const newStatus = {
       currentTemperature: message.ct,
-      currentTemperature2: message.ct2,
       targetTemperature: message.tt,
       currentPressure: message.pr,
       targetPressure: message.pt,
@@ -217,7 +216,6 @@ export const machine = signal({
   connected: false,
   status: {
     currentTemperature: 0,
-    currentTemperature2: 0,
     targetTemperature: 0,
     mode: 0,
     selectedProfile: '',

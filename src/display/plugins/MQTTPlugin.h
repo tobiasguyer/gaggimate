@@ -23,7 +23,6 @@ class MQTTPlugin : public Plugin {
     WiFiClient net;
 
     float lastTemperature = 0;
-    float lastTemperature2 = 0;
 };
 
 #endif // MQTTPLUGIN_H

@@ -40,7 +40,6 @@ class Controller {
     float getTargetTemp() const;
     int getTargetGrindDuration() const;
     virtual float getCurrentTemp() const { return currentTemp; }
-    virtual float getCurrentTemp2() const { return currentTemp2; }
     bool isActive() const;
     bool isGrindActive() const;
     bool isUpdating() const;
@@ -129,7 +128,7 @@ class Controller {
     void applyConnectionPriority(bool force = false);
 
     // Event handlers
-    void onTempRead(float temperature, float temperature2);
+    void onTempRead(float temperature);
 
     void handleBrewButton(int brewButtonStatus);
     void handleSteamButton(int steamButtonStatus);
@@ -149,9 +148,7 @@ class Controller {
     ProfileManager *profileManager{};
 
     int mode = MODE_BREW;
-    bool brewProcessFlag = false;
     float currentTemp = 0;
-    float currentTemp2 = 0;
     float pressure = 0.0f;
     float targetPressure = 0.0f;
     float currentPuckFlow = 0.0f;

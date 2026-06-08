@@ -96,7 +96,6 @@ function buildSeries(samples) {
     flow: [],
     puckFlow: [],
     temp: [],
-    temp2: [],
     weight: [],
     weightFlow: [],
     targetPressure: [],
@@ -113,7 +112,6 @@ function buildSeries(samples) {
     const flow = toNumberOrNull(getFlowFromSample(sample));
     const puckFlow = toNumberOrNull(getSampleValue(sample, ['pf', 'puck_flow']));
     const temp = toNumberOrNull(getSampleValue(sample, ['ct', 'temperature']));
-    const temp2 = toNumberOrNull(getSampleValue(sample, ['ct2', 'temperature2']));
     const weight = toNumberOrNull(getSampleValue(sample, ['v', 'w', 'weight', 'm']));
     const weightFlow = toNumberOrNull(getSampleValue(sample, ['vf', 'weight_flow']));
     const targetPressure = toNumberOrNull(getSampleValue(sample, ['tp', 'target_pressure']));
@@ -124,7 +122,6 @@ function buildSeries(samples) {
     if (flow !== null) series.flow.push({ x: t, y: flow });
     if (puckFlow !== null) series.puckFlow.push({ x: t, y: puckFlow });
     if (temp !== null) series.temp.push({ x: t, y: temp });
-    if (temp2 !== null) series.temp2.push({ x: t, y: temp2 });
     if (weight !== null && weight >= 0) series.weight.push({ x: t, y: weight });
     if (weightFlow !== null) series.weightFlow.push({ x: t, y: Math.max(0, weightFlow) });
 

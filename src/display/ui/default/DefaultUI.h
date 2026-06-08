@@ -116,7 +116,6 @@ class DefaultUI {
 
     int mode = MODE_STANDBY;
     int currentTemp = 0;
-    int currentTemp2 = 0;
     int targetTemp = 0;
     float targetDuration = 0;
     float targetVolume = 0;

@@ -24,7 +24,6 @@ class PluginManager {
     Event trigger(const String &eventId, const String &key, const String &value);
     Event trigger(const String &eventId, const String &key, int value);
     Event trigger(const String &eventId, const String &key, float value);
-    Event trigger(const String &eventId, const String &key, float value, const String &key2, float value2 );
     void trigger(Event &event);
 
   private:

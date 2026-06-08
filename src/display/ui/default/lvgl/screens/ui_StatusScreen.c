@@ -6,13 +6,11 @@
 #include "../ui.h"
 
 lv_obj_t *uic_StatusScreen_dials_tempText;
-lv_obj_t *uic_StatusScreen_dials_tempText2;
 lv_obj_t *uic_StatusScreen_dials_pressureText;
 lv_obj_t *uic_StatusScreen_dials_pressureTarget;
 lv_obj_t *uic_StatusScreen_dials_pressureGauge;
 lv_obj_t *uic_StatusScreen_dials_tempTarget;
 lv_obj_t *uic_StatusScreen_dials_tempGauge;
-lv_obj_t *uic_StatusScreen_dials_tempGauge2;
 lv_obj_t *ui_StatusScreen = NULL;
 lv_obj_t *ui_StatusScreen_dials = NULL;
 lv_obj_t *ui_StatusScreen_ImgButton8 = NULL;
@@ -279,13 +277,11 @@ void ui_StatusScreen_screen_init(void) {
     lv_obj_add_event_cb(ui_StatusScreen_pauseButton, ui_event_StatusScreen_pauseButton, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_StatusScreen, ui_event_StatusScreen, LV_EVENT_ALL, NULL);
     uic_StatusScreen_dials_tempGauge = ui_comp_get_child(ui_StatusScreen_dials, UI_COMP_DIALS_TEMPGAUGE);
-    uic_StatusScreen_dials_tempGauge2 = ui_comp_get_child(ui_StatusScreen_dials, UI_COMP_DIALS_TEMPGAUGE2);
     uic_StatusScreen_dials_tempTarget = ui_comp_get_child(ui_StatusScreen_dials, UI_COMP_DIALS_TEMPTARGET);
     uic_StatusScreen_dials_pressureGauge = ui_comp_get_child(ui_StatusScreen_dials, UI_COMP_DIALS_PRESSUREGAUGE);
     uic_StatusScreen_dials_pressureTarget = ui_comp_get_child(ui_StatusScreen_dials, UI_COMP_DIALS_PRESSURETARGET);
     uic_StatusScreen_dials_pressureText = ui_comp_get_child(ui_StatusScreen_dials, UI_COMP_DIALS_PRESSURETEXT);
     uic_StatusScreen_dials_tempText = ui_comp_get_child(ui_StatusScreen_dials, UI_COMP_DIALS_TEMPTEXT);
-    uic_StatusScreen_dials_tempText2 = ui_comp_get_child(ui_StatusScreen_dials, UI_COMP_DIALS_TEMPTEXT2);
 }
 
 void ui_StatusScreen_screen_destroy(void) {
@@ -296,13 +292,11 @@ void ui_StatusScreen_screen_destroy(void) {
     ui_StatusScreen = NULL;
     ui_StatusScreen_dials = NULL;
     uic_StatusScreen_dials_tempGauge = NULL;
-    uic_StatusScreen_dials_tempGauge2 = NULL;
     uic_StatusScreen_dials_tempTarget = NULL;
     uic_StatusScreen_dials_pressureGauge = NULL;
     uic_StatusScreen_dials_pressureTarget = NULL;
     uic_StatusScreen_dials_pressureText = NULL;
     uic_StatusScreen_dials_tempText = NULL;
-    uic_StatusScreen_dials_tempText2 = NULL;
     ui_StatusScreen_ImgButton8 = NULL;
     ui_StatusScreen_contentPanel2 = NULL;
     ui_StatusScreen_targetDuration = NULL;

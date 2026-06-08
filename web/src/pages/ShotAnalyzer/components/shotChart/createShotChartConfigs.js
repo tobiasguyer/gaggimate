@@ -81,19 +81,6 @@ export function createShotChartConfigs({
       hidden: !visibility.temp,
     },
     {
-      label: 'Temp2',
-      data: model.series.temp2,
-      borderColor: colors.temp2,
-      backgroundColor: colors.temp2,
-      yAxisID: 'yTempOverlay',
-      pointRadius: 0,
-      pointHoverRadius: 0,
-      pointHitRadius: 12,
-      borderWidth: 0,
-      fill: false,
-      hidden: !visibility.temp2,
-    },
-    {
       label: 'Target T',
       data: model.series.targetTemp,
       borderColor: colors.tempTarget,
@@ -233,18 +220,6 @@ export function createShotChartConfigs({
       borderWidth: STANDARD_LINE_WIDTH,
       tension: 0.2,
       hidden: !visibility.temp,
-    },
-    {
-      label: 'Temp 2',
-      data: model.series.temp2,
-      borderColor: colors.temp2,
-      backgroundColor: colors.temp2,
-      borderDash: [2, 3],   // visually distinct from the target dashes
-      yAxisID: 'yTemp',
-      pointRadius: 0,
-      borderWidth: STANDARD_LINE_WIDTH,
-      tension: 0.2,
-      hidden: !visibility.temp2,
     },
     {
       label: 'Target T',

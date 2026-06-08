@@ -60,13 +60,11 @@ extern void ui_event_BrewScreen_saveAsNewButton(lv_event_t *e);
 extern lv_obj_t *ui_BrewScreen_saveAsNewButton;
 // CUSTOM VARIABLES
 extern lv_obj_t *uic_BrewScreen_dials_tempGauge;
-extern lv_obj_t *uic_BrewScreen_dials_tempGauge2;
 extern lv_obj_t *uic_BrewScreen_dials_tempTarget;
 extern lv_obj_t *uic_BrewScreen_dials_pressureGauge;
 extern lv_obj_t *uic_BrewScreen_dials_pressureTarget;
 extern lv_obj_t *uic_BrewScreen_dials_pressureText;
 extern lv_obj_t *uic_BrewScreen_dials_tempText;
-extern lv_obj_t *uic_BrewScreen_dials_tempText2;
 
 #ifdef __cplusplus
 } /*extern "C"*/

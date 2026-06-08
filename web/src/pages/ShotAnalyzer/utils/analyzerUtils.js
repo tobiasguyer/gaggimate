@@ -249,28 +249,6 @@ export const columnConfig = [
     group: 'temp',
     default: true,
   },
-// --- TEMPERATURE 2 (BREWHEAD) ---
-{
-  id: 't2_se',
-  label: 'Brewhead Temp (℃)',
-  type: 'se',
-  group: 'temp',
-  default: false,
-},
-{
-  id: 't2_mm',
-  label: 'Brewhead Temp (℃)',
-  type: 'mm',
-  group: 'temp',
-  default: false,
-},
-{
-  id: 't2_avg',
-  label: 'Brewhead Temp (℃)',
-  type: 'avg',
-  group: 'temp',
-  default: false,
-},
 
   // --- TARGET TEMPERATURE ---
   {

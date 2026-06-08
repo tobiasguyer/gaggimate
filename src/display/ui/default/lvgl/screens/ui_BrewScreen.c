@@ -6,13 +6,11 @@
 #include "../ui.h"
 
 lv_obj_t *uic_BrewScreen_dials_tempText;
-lv_obj_t *uic_BrewScreen_dials_tempText2;
 lv_obj_t *uic_BrewScreen_dials_pressureText;
 lv_obj_t *uic_BrewScreen_dials_pressureTarget;
 lv_obj_t *uic_BrewScreen_dials_pressureGauge;
 lv_obj_t *uic_BrewScreen_dials_tempTarget;
 lv_obj_t *uic_BrewScreen_dials_tempGauge;
-lv_obj_t *uic_BrewScreen_dials_tempGauge2;
 lv_obj_t *ui_BrewScreen = NULL;
 lv_obj_t *ui_BrewScreen_dials = NULL;
 lv_obj_t *ui_BrewScreen_ImgButton5 = NULL;
@@ -546,13 +544,11 @@ void ui_BrewScreen_screen_init(void) {
     lv_obj_add_event_cb(ui_BrewScreen_saveAsNewButton, ui_event_BrewScreen_saveAsNewButton, LV_EVENT_ALL, NULL);
     lv_obj_add_event_cb(ui_BrewScreen, ui_event_BrewScreen, LV_EVENT_ALL, NULL);
     uic_BrewScreen_dials_tempGauge = ui_comp_get_child(ui_BrewScreen_dials, UI_COMP_DIALS_TEMPGAUGE);
-    uic_BrewScreen_dials_tempGauge2 = ui_comp_get_child(ui_BrewScreen_dials, UI_COMP_DIALS_TEMPGAUGE2);
     uic_BrewScreen_dials_tempTarget = ui_comp_get_child(ui_BrewScreen_dials, UI_COMP_DIALS_TEMPTARGET);
     uic_BrewScreen_dials_pressureGauge = ui_comp_get_child(ui_BrewScreen_dials, UI_COMP_DIALS_PRESSUREGAUGE);
     uic_BrewScreen_dials_pressureTarget = ui_comp_get_child(ui_BrewScreen_dials, UI_COMP_DIALS_PRESSURETARGET);
     uic_BrewScreen_dials_pressureText = ui_comp_get_child(ui_BrewScreen_dials, UI_COMP_DIALS_PRESSURETEXT);
     uic_BrewScreen_dials_tempText = ui_comp_get_child(ui_BrewScreen_dials, UI_COMP_DIALS_TEMPTEXT);
-    uic_BrewScreen_dials_tempText2 = ui_comp_get_child(ui_BrewScreen_dials, UI_COMP_DIALS_TEMPTEXT2);
 }
 
 void ui_BrewScreen_screen_destroy(void) {
@@ -563,13 +559,11 @@ void ui_BrewScreen_screen_destroy(void) {
     ui_BrewScreen = NULL;
     ui_BrewScreen_dials = NULL;
     uic_BrewScreen_dials_tempGauge = NULL;
-    uic_BrewScreen_dials_tempGauge2 = NULL;
     uic_BrewScreen_dials_tempTarget = NULL;
     uic_BrewScreen_dials_pressureGauge = NULL;
     uic_BrewScreen_dials_pressureTarget = NULL;
     uic_BrewScreen_dials_pressureText = NULL;
     uic_BrewScreen_dials_tempText = NULL;
-    uic_BrewScreen_dials_tempText2 = NULL;
     ui_BrewScreen_ImgButton5 = NULL;
     ui_BrewScreen_contentPanel4 = NULL;
     ui_BrewScreen_mainLabel3 = NULL;

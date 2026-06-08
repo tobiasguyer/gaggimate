@@ -340,20 +340,7 @@ const ProcessControls = props => {
               </>
             )}
           </div>
-        )}<div className='flex flex-row items-center gap-2 text-center text-base sm:text-left sm:text-lg'>
-  <FontAwesomeIcon icon={faThermometerHalf} className='text-base-content/60' />
-  <span className='text-base-content'>
-    {status.value.currentTemperature.toFixed(1) || 0}
-  </span>
-  {status.value.currentTemperature2 > 0 && (
-    <span className='text-base-content/60 text-sm'>
-      {' '}/ {status.value.currentTemperature2.toFixed(1)}
-    </span>
-  )}
-  <span className='text-success font-semibold'>
-    {' '}/ {status.value.targetTemperature || 0}°C
-  </span>
-</div>
+        )}
         <div className='flex flex-row items-center gap-2 text-center text-base sm:text-right sm:text-lg'>
           <FontAwesomeIcon icon={faGauge} className='text-base-content/60' />
           <span className='text-base-content'>
