@@ -156,7 +156,7 @@ void GaggiMateController::setup() {
         // Apply thermal feedforward parameters if available
         this->heater->setFeedforwardScale(Kf);
     });
-    _comms.registerTemperatureControlCallback([this](float boilerLowPass, float groupLowPass) {
+    _comms.onThermostatControl([this](float boilerLowPass, float groupLowPass) {
         this->thermocouple->setLowPassFilter(boilerLowPass, groupLowPass);
     });
     _comms.onPumpModelCoeffs([this](float a, float b, float c, float d) {
