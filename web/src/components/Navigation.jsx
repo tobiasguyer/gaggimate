@@ -54,6 +54,7 @@ const NAVIGATION_SECTIONS = [
       { label: 'Shot History', link: '/history', icon: faTimeline },
       { label: 'Shot Analyzer', link: '/analyzer', icon: faMagnifyingGlassChart, isNew: true },
       { label: 'Statistics', link: '/statistics', icon: faChartSimple, isNew: true },
+      { label: 'Profile Generator', link: '/generator', icon: faCircleChevronLeft, isNew: true },
     ],
   },
   {
