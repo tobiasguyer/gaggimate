@@ -16,6 +16,7 @@ import { Navigation } from './components/Navigation.jsx';
 import { Spinner } from './components/Spinner.jsx';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faBars } from '@fortawesome/free-solid-svg-icons/faBars';
+import ProfileGenerator from './pages/ProfileGenerator/gaggimate-generator.jsx';
 
 // Each page lazy-loads as its own Vite chunk so the initial bundle stays small.
 // Chart.js, FontAwesome icon sets, and the analyzer/statistics views are too
@@ -94,6 +95,7 @@ export function App() {
                       <Route path='/history' component={ShotHistory} />
                       <Route path='/analyzer' component={ShotAnalyzer} />
                       <Route path='/statistics' component={StatisticsPage} />
+                      <Route path='/generator' component={ProfileGenerator} />
                       <Route
                         path='/statistics/:sourceAlias/:profileName'
                         component={StatisticsPage}
