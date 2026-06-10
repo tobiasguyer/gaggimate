@@ -57,6 +57,10 @@ function applyEasing(t, type) {
 // ─── Data preparation (identical to ExtendedProfileChart) ────────────────────
 
 function prepareData(phases, target) {
+  if (!Array.isArray(phases) || phases.length === 0) {
+    return [];
+  }
+
   const data = [];
   let time = 0;
   let phaseTime = 0;
@@ -286,10 +290,13 @@ function makeChartData(data, selectedPhase, isDarkMode, onPressureDrag, onFlowDr
     annotations: [],
   };
 
-  if (selectedPhase !== null) {
+  // Add highlighting box only if a phase is selected
+  if (selectedPhase !== null && phases.length > 0) {
     let start = 0;
-    for (let i = 0; i < selectedPhase; i++) start += parseFloat(data.phases[i].duration);
-    const end = start + parseFloat(data.phases[selectedPhase].duration);
+    for (let i = 0; i < selectedPhase; i++) {
+      start += Number.parseFloat(phases[i].duration);
+    }
+    let end = start + Number.parseFloat(phases[selectedPhase].duration);
     chartData.options.plugins.annotation.annotations.push({
       id: 'box1',
       type: 'box',
@@ -304,8 +311,8 @@ function makeChartData(data, selectedPhase, isDarkMode, onPressureDrag, onFlowDr
   const isSmall = window.innerWidth < 640;
 
   let phaseStart = 0;
-  for (let i = 0; i < data.phases.length; i++) {
-    const phase = data.phases[i];
+  for (let i = 0; i < phases.length; i++) {
+    const phase = phases[i];
     const phaseName = phase.name || `Phase ${i + 1}`;
     chartData.options.plugins.annotation.annotations.push({
       type: 'line',
@@ -330,7 +337,8 @@ function makeChartData(data, selectedPhase, isDarkMode, onPressureDrag, onFlowDr
         }
         : undefined,
     });
-    phaseStart += parseFloat(phase.duration);
+
+    phaseStart += Number.parseFloat(phase.duration);
   }
 
   return chartData;
