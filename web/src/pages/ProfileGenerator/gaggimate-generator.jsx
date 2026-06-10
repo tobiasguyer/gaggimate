@@ -1008,12 +1008,29 @@ function applyPumpMode(phases, mode, oneBarFlow = 10.205, nineBarFlow = 5.521) {
 }
 
 
-function ExtractionCurve({ curve }) {
+function ExtractionCurve({ curve, updatePhase }) {
   if (!curve.phases || !curve.phases.length) return null;
 
   return (
     <div style={{ width: '100%', padding: '6px 4px 2px' }}>
-      <ExtendedProfileChart data={curve} className='max-h-36' />
+      <ExtendedProfileChart data={curve} className='max-h-36' onFlowDrag={({ phaseIndex, field, value }) => {
+        updatePhase(phaseIndex, {
+          ...curve.phases[phaseIndex],
+          pump: {
+            ...curve.phases[phaseIndex].pump,
+            flow: value.y.toFixed(2)
+          }
+        });
+
+      }} onPressureDrag={({ phaseIndex, field, value }) => {
+        updatePhase(phaseIndex, {
+          ...curve.phases[phaseIndex],
+          pump: {
+            ...curve.phases[phaseIndex].pump,
+            pressure: value.y.toFixed(2)
+          }
+        });
+      }} />
     </div>
   );
 }
@@ -1578,326 +1595,395 @@ Output ONLY the JSON array, starting with [`;
           <h1 class="flex-grow text-2xl font-bold sm:text-3xl">Profile Generator</h1>
         </div>
       </div>
-      <div class="tabs tabs-boxed p-1">
-        <button class={`tab tab-sm font-bold flex-1 ${leftTab === 'variables' ? 'tab-active' : ''}`} onClick={() => setLeftTab('variables')}>Main Settings</button>
-        <button class={`tab tab-sm font-bold flex-1 ${leftTab === 'pipeline' ? 'tab-active' : ''}`} onClick={() => setLeftTab('pipeline')}>Phases ({activePhasesWithMode.length})</button>
-        <button class={`tab tab-sm font-bold flex-1 ${leftTab === 'registry' ? 'tab-active' : ''}`} onClick={() => setLeftTab('registry')}>Saved Files ({storedProfiles.length})</button>
-        <button class={`tab tab-sm font-bold flex-1 ${leftTab === 'ai' ? 'tab-active' : ''}`} onClick={() => setLeftTab('ai')}>AI</button>
-      </div>
       <div class="grid grid-cols-1 lg:grid-cols-12 gap-6 items-start">
 
-
         {/* LEFT COMPONENT DECK ROW */}
-        <div class="lg:col-span-7 bg-base-200 rounded-xl border border-base-content/5">
+        <div class="lg:col-span-7 space-y-2">
 
           {/* TAB: VARIABLES */}
-          {leftTab === 'variables' && (
-            <div class="space-y-6 p-4">
-              <div>
-                <HDivider label="Archetypes" />
-                <div class="grid grid-cols-2 md:grid-cols-4 gap-1.5">
-                  {ARCHETYPES.map(a => (
-                    <button key={a.id} type="button" onClick={() => {
-                      setArch(a.id);
-                      setProfileMeta({ ...profileMeta, title: a.id ?? 'Unknown Archetype' });
-                    }}
-                      class={`${arch === a.id ? buttonClassActive : buttonClassInactive}`}>
-                      <div class="truncate font-bold">{a.id}</div>
-                      <div class="text-[9px] opacity-40 truncate">{a.tag}</div>
-                    </button>
+          <details class="collapse collapse-arrow bg-base-200 border border-base-content/10 rounded-xl shadow-sm" open>
+            <summary class="collapse-title font-bold text-sm py-3 min-h-0 cursor-pointer select-none">Main Settings</summary>
+            <div class="collapse-content">
+              <div class="space-y-1 pb-2">
+
+                {/* ARCHETYPES */}
+                <details class="collapse collapse-arrow bg-base-300/40 border border-base-content/5 rounded-lg" open>
+                  <summary class="collapse-title py-2 min-h-0 font-bold text-[10px] uppercase tracking-wider opacity-70 cursor-pointer select-none">Archetypes</summary>
+                  <div class="collapse-content pb-3">
+                    <div class="grid grid-cols-2 md:grid-cols-4 gap-1.5 pt-1">
+                      {ARCHETYPES.map(a => (
+                        <button key={a.id} type="button" onClick={() => {
+                          setArch(a.id);
+                          setProfileMeta({ ...profileMeta, title: a.id ?? 'Unknown Archetype' });
+                        }}
+                          class={`${arch === a.id ? buttonClassActive : buttonClassInactive}`}>
+                          <div class="truncate font-bold">{a.id}</div>
+                          <div class="text-[9px] opacity-40 truncate">{a.tag}</div>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </details>
+
+                {/* PUMP CONTROL MODE */}
+                <details class="collapse collapse-arrow bg-base-300/40 border border-base-content/5 rounded-lg" open>
+                  <summary class="collapse-title py-2 min-h-0 font-bold text-[10px] uppercase tracking-wider opacity-70 cursor-pointer select-none">Pump Control Mode</summary>
+                  <div class="collapse-content pb-3">
+                    <div class="grid grid-cols-3 gap-1.5 mt-1">
+                      {PUMP_MODES.map(m => (
+                        <button key={m.id} type="button" onClick={() => setPumpMode(m.id)}
+                          class={`${pumpMode === m.id ? buttonClassActive : buttonClassInactive}`}>
+                          <div class="font-bold truncate">{m.label}</div>
+                          <div class="text-[9px] opacity-40 leading-tight mt-0.5">{m.desc}</div>
+                        </button>
+                      ))}
+                    </div>
+                    {pumpMode !== 'hybrid' && (
+                      <div class="mt-1.5 text-[10px] font-mono opacity-50 px-0.5">
+                        {pumpMode === 'flow' ? '↳ All brew phases use flow target — pressure acts as resistance cap' : '↳ All brew phases use pressure target — flow acts as soft limit'}
+                      </div>
+                    )}
+                  </div>
+                </details>
+
+                {/* SCALES */}
+                <details class="collapse collapse-arrow bg-base-300/40 border border-base-content/5 rounded-lg">
+                  <summary class="collapse-title py-2 min-h-0 font-bold text-[10px] uppercase tracking-wider opacity-70 cursor-pointer select-none">Scales</summary>
+                  <div class="collapse-content pb-3">
+                    <div class="grid grid-cols-1 gap-4 pt-2">
+                      <div class="flex flex-col md:flex-row text-xs gap-2">
+                        <div class="w-50 text-xs font-bold font-mono">Time Scale: {timeFactor}x</div>
+                        <input type="range" min="0.1" max="4.0" step="0.1" value={timeFactor} class="w-full md:flex-1 range range-xs range-primary" onInput={(e) => setTimeFactor(parseFloat(e.target.value))} />
+                      </div>
+                      <div class="flex flex-col md:flex-row text-xs gap-2">
+                        <div class="w-50 text-xs font-bold font-mono">Temp Scale: {tempFactor}x</div>
+                        <input type="range" min="0.7" max="1.2" step="0.01" value={tempFactor} class="w-full md:flex-1 range range-xs range-primary" onInput={(e) => setTempFactor(parseFloat(e.target.value))} />
+                      </div>
+                      <div class="flex flex-col md:flex-row text-xs gap-2">
+                        <div class="w-50 text-xs font-bold font-mono">Pressure Scale: {pressFactor}x</div>
+                        <input type="range" min="0.5" max="1.5" step="0.1" value={pressFactor} class="w-full md:flex-1 range range-xs range-primary" onInput={(e) => setPressFactor(parseFloat(e.target.value))} />
+                      </div>
+                      <div class="flex flex-col md:flex-row text-xs gap-2">
+                        <div class="w-50 text-xs font-bold font-mono">Flow Scale: {flowFactor}x</div>
+                        <input type="range" min="0.5" max="1.5" step="0.1" value={flowFactor} class="w-full md:flex-1 range range-xs range-primary" onInput={(e) => setFlowFactor(parseFloat(e.target.value))} />
+                      </div>
+                    </div>
+                  </div>
+                </details>
+
+                {/* ROAST PROFILE */}
+                <details class="collapse collapse-arrow bg-base-300/40 border border-base-content/5 rounded-lg" open>
+                  <summary class="collapse-title py-2 min-h-0 font-bold text-[10px] uppercase tracking-wider opacity-70 cursor-pointer select-none">Roast Profile</summary>
+                  <div class="collapse-content pb-3">
+                    <div class="grid grid-cols-1 gap-4 pt-2">
+                      <div class="flex flex-col md:flex-row text-xs gap-2">
+                        <div class="w-30 text-xs font-bold font-mono">Roast Grade</div>
+                        <input type="range" min="0" max="5" value={rl} step="1" class="w-full md:flex-1 range range-xs range-primary" onInput={e => setRl(parseInt(e.target.value))} />
+                        <div class="w-30 text-xs font-bold font-mono">{ROAST_LABELS[rl]}</div>
+                      </div>
+                      <div class="flex text-xs flex-col md:flex-row gap-2">
+                        <div class="w-30 text-xs font-bold font-mono">Roast Age</div>
+                        <input type="range" min="0" max="2" value={ra} step="1" class="w-full md:flex-1 range range-xs range-primary" onInput={e => setRa(parseInt(e.target.value))} />
+                        <div class="w-30 text-xs font-bold font-mono">{AGE_LABELS[ra]}</div>
+                      </div>
+                      <div class="flex text-xs gap-2 flex-col md:flex-row">
+                        <label class="w-30 text-xs font-bold font-mono">Robusta {rob}%</label>
+                        <input type="range" min="0" max="100" value={rob} step="5" class="w-full md:flex-1 range range-xs range-primary" onInput={e => setRob(parseInt(e.target.value))} />
+                        <div class="w-30 text-xs font-bold font-mono">Arabica {100 - rob}%</div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+
+                {/* SHOT PARAMETERS */}
+                <details class="collapse collapse-arrow bg-base-300/40 border border-base-content/5 rounded-lg" open>
+                  <summary class="collapse-title py-2 min-h-0 font-bold text-[10px] uppercase tracking-wider opacity-70 cursor-pointer select-none">Shot Parameters</summary>
+                  <div class="collapse-content pb-3">
+                    <div class="grid grid-cols-1 gap-4 pt-2">
+                      <div class="flex space-x-2 flex-col md:flex-row">
+                        <div class="w-30 text-xs font-bold font-mono">Shot Duration</div>
+                        <input type="range" min="0" max="4" value={dp} step="1" class="w-full md:flex-1 range range-xs range-primary" onInput={e => setDp(parseInt(e.target.value))} />
+                        <div class="w-30 text-xs font-bold font-mono">Weight Index: {dp}</div>
+                      </div>
+                      <div class="flex text-xs gap-2 flex-col md:flex-row">
+                        <label class="w-30 text-xs font-bold font-mono">Extraction Ratio</label>
+                        <input type="range" min="1" max="4" value={ratioTarget} step="0.1" class="w-full md:flex-1 range range-xs range-primary" onInput={e => setRatioTarget(parseFloat(e.target.value))} />
+                        <div class="w-30 text-xs font-bold font-mono">1 : {ratioTarget.toFixed(1)}</div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+
+                {/* BEAN PROCESSING */}
+                <details class="collapse collapse-arrow bg-base-300/40 border border-base-content/5 rounded-lg" open>
+                  <summary class="collapse-title py-2 min-h-0 font-bold text-[10px] uppercase tracking-wider opacity-70 cursor-pointer select-none">Bean Processing</summary>
+                  <div class="collapse-content pb-3">
+                    <div class="flex flex-wrap gap-1 pt-2">
+                      {PROCESSING.map(p => (
+                        <button key={p} type="button" onClick={() => handleToggleProc(p)} class={`btn btn-xs ${proc.includes(p) ? 'btn-secondary' : 'btn-ghost bg-base-300'}`}>{p}</button>
+                      ))}
+                    </div>
+                  </div>
+                </details>
+
+                {/* DOSE & YIELD */}
+                <details class="collapse collapse-arrow bg-base-300/40 border border-base-content/5 rounded-lg" open>
+                  <summary class="collapse-title py-2 min-h-0 font-bold text-[10px] uppercase tracking-wider opacity-70 cursor-pointer select-none">Dose &amp; Yield</summary>
+                  <div class="collapse-content pb-3">
+                    <div class="grid grid-cols-2 gap-4 pt-2">
+                      <div>
+                        <HDivider label="Bean Dose (g)" />
+                        <input type="number" step="0.1" value={dose} class="input input-xs input-bordered font-mono w-full" onInput={e => setDose(parseFloat(e.target.value) || 0)} />
+                      </div>
+                      <div>
+                        <HDivider label="Yield (g)" />
+                        <div class="flex items-center gap-2">
+                          <div class="link text-[10px] lowercase text-secondary" onClick={() => setYe(!ye)}>{ye ? 'switch to ratio calculation' : 'switch to fixed yield weight'}</div>
+                          {ye ? (
+                            <input type="number" step="0.5" value={yt} class="input input-xs input-bordered font-mono flex-1" onInput={e => setYt(parseFloat(e.target.value) || 0)} />
+                          ) : (
+                            <div class="bg-base-300 rounded text-xs font-mono font-bold text-center border border-base-content/5 opacity-70 flex-1">Calculated Yield: {profile.yv}g</div>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+
+              </div>
+            </div>
+          </details>
+
+          {/* TAB: PIPELINE */}
+          <details class="collapse collapse-arrow bg-base-200 border border-base-content/10 rounded-xl shadow-sm" open>
+            <summary class="collapse-title font-bold text-sm py-3 min-h-0 cursor-pointer select-none">Phases ({activePhasesWithMode.length})</summary>
+            <div class="collapse-content">
+              <div class="space-y-3 pb-4">
+
+                <div class="p-3 rounded-lg bg-base-300 border border-base-content/10 space-y-2">
+                  <div class="text-[10px] font-bold uppercase tracking-wider opacity-60">Apply Archetype Transitions To Imported Profile</div>
+                  <div class="flex flex-wrap gap-3">
+                    {[
+                      { key: 'pressure', label: 'Pressure' },
+                      { key: 'flow', label: 'Flow' },
+                      { key: 'temperature', label: 'Temperature' },
+                      { key: 'duration', label: 'Duration' },
+                      { key: 'transitions', label: 'Transitions' },
+                    ].map(({ key, label }) => (
+                      <label key={key} class="cursor-pointer flex items-center gap-1.5 select-none text-xs font-medium" style={{ color: overwriteFlags[key] ? 'var(--color-secondary)' : undefined }}>
+                        <input type="checkbox" class="checkbox checkbox-xs" checked={overwriteFlags[key]}
+                          style={{ accentColor: 'var(--color-secondary)' }}
+                          onChange={() => toggleOverwrite(key)} />
+                        {label}
+                      </label>
+                    ))}
+                  </div>
+                  <div class="text-[9px] opacity-40 font-mono">Select which dimensions will be applied to the profile.</div>
+                </div>
+
+                <div class="flex items-center justify-between px-1">
+                  <div class="label text-[10px] uppercase font-bold">PHASES</div>
+                  <button type="button" class="btn btn-xs btn-primary font-mono" onClick={addBlankPhase}>+ Add Phase</button>
+                </div>
+                <div class="overflow-y-auto pr-1">
+                  {activePhasesWithMode.map((ph, pIdx) => (
+                    <PhaseRow key={pIdx} ph={ph} basePhase={editPhases?.[pIdx] ?? ph} pIdx={pIdx} updatePhase={updatePhase} removePhase={removePhase} movePhase={movePhase} totalPhases={activePhasesWithMode.length} timeFactor={timeFactor} pressureFactor={pressFactor} flowFactor={flowFactor} temperatureFactor={tempFactor} />
                   ))}
                 </div>
               </div>
+            </div>
+          </details>
 
-              <div class="border-t border-base-content/5 pt-4">
-                <HDivider label="Pump Control Mode" />
-                <div class="grid grid-cols-3 gap-1.5 mt-1">
-                  {PUMP_MODES.map(m => (
-                    <button key={m.id} type="button" onClick={() => setPumpMode(m.id)}
-                      class={`${pumpMode === m.id ? buttonClassActive : buttonClassInactive}`}>
-                      <div class="font-bold truncate">{m.label}</div>
-                      <div class="text-[9px] opacity-40 leading-tight mt-0.5">{m.desc}</div>
-                    </button>
-                  ))}
-                </div>
-                {pumpMode !== 'hybrid' && (
-                  <div class="mt-1.5 text-[10px] font-mono opacity-50 px-0.5">
-                    {pumpMode === 'flow' ? '↳ All brew phases use flow target — pressure acts as resistance cap' : '↳ All brew phases use pressure target — flow acts as soft limit'}
+          {/* TAB: REGISTRY TABLE STORAGE */}
+          <details class="collapse collapse-arrow bg-base-200 border border-base-content/10 rounded-xl shadow-sm">
+            <summary class="collapse-title font-bold text-sm py-3 min-h-0 cursor-pointer select-none">Saved Files ({storedProfiles.length})</summary>
+            <div class="collapse-content">
+              <div class="pb-4">
+                <HDivider label="Stored Profiles" />
+                {loadingProfiles ? (
+                  <div style={{ fontSize: 11, color: T.muted, padding: 10, fontStyle: 'italic' }}>Querying hardware index...</div>
+                ) : (
+                  <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
+                    {storedProfiles.length === 0 && <span class="text-xs opacity-50 p-2 italic">No profiles stored on hardware filesystem.</span>}
+                    {storedProfiles.map(p => (
+                      <button key={p.id} onClick={() => importProfile(p)} style={{ padding: '6px 10px', textAlign: 'left', width: '100%', cursor: 'pointer', background: T.card, border: `1px solid ${T.border}`, color: T.text }} class="rounded-lg hover:bg-base-300 transition-colors">
+                        <div style={{ fontSize: 11, fontWeight: 500 }}>{p.label ?? p.id}</div>
+                        {p.description && <div style={{ fontSize: 9, color: T.muted, marginTop: 1 }}>{p.description}</div>}
+                      </button>
+                    ))}
                   </div>
                 )}
               </div>
-
-              <div class="grid grid-cols-1 gap-4 border-t border-base-content/5 pt-4">
-                <HDivider label="Scales" />
-                <div class="flex flex-col md:flex-row text-xs gap-2">
-                  <div class="w-50 text-xs font-bold font-mono">Time Scale: {timeFactor}x</div>
-                  <input type="range" min="0.1" max="4.0" step="0.1" value={timeFactor} class="w-full md:flex-1 range range-xs range-primary" onInput={(e) => setTimeFactor(parseFloat(e.target.value))} />
-                </div>
-
-                <div class="flex flex-col md:flex-row text-xs gap-2">
-                  <div class="w-50 text-xs font-bold font-mono">Temp Scale: {tempFactor}x</div>
-                  <input type="range" min="0.7" max="1.2" step="0.01" value={tempFactor} class="w-full md:flex-1 range range-xs range-primary" onInput={(e) => setTempFactor(parseFloat(e.target.value))} />
-                </div>
-
-                <div class="flex flex-col md:flex-row text-xs gap-2">
-                  <div class="w-50 text-xs font-bold font-mono">Pressure Scale: {pressFactor}x</div>
-                  <input type="range" min="0.5" max="1.5" step="0.1" value={pressFactor} class="w-full md:flex-1 range range-xs range-primary" onInput={(e) => setPressFactor(parseFloat(e.target.value))} />
-                </div>
-                <div class="flex flex-col md:flex-row text-xs gap-2">
-                  <div class="w-50 text-xs font-bold font-mono">Flow Scale: {flowFactor}x</div>
-                  <input type="range" min="0.5" max="1.5" step="0.1" value={flowFactor} class="w-full md:flex-1 range range-xs range-primary" onInput={(e) => setFlowFactor(parseFloat(e.target.value))} />
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 gap-4 border-t border-base-content/5 pt-4">
-                <HDivider label="Roast Profile" />
-                <div class="flex flex-col md:flex-row text-xs gap-2">
-                  <div class="w-30 text-xs font-bold font-mono">Roast Grade</div>
-                  <input type="range" min="0" max="5" value={rl} step="1" class="w-full md:flex-1 range range-xs range-primary" onInput={e => setRl(parseInt(e.target.value))} />
-                  <div class="w-30 text-xs font-bold font-mono">{ROAST_LABELS[rl]}</div>
-                </div>
-                <div class="flex  text-xs flex-col md:flex-row gap-2">
-                  <div class="w-30 text-xs font-bold font-mono">Roast Age</div>
-                  <input type="range" min="0" max="2" value={ra} step="1" class="w-full md:flex-1 range range-xs range-primary" onInput={e => setRa(parseInt(e.target.value))} />
-                  <div class="w-30 text-xs font-bold font-mono">{AGE_LABELS[ra]}</div>
-                </div>
-                <div class="flex  text-xs gap-2 flex-col md:flex-row  ">
-                  <label class="w-30 text-xs font-bold font-mono">Robusta {rob}%</label>
-                  <input type="range" min="0" max="100" value={rob} step="5" class="w-full md:flex-1 range range-xs range-primary" onInput={e => setRob(parseInt(e.target.value))} />
-                  <div class="w-30 text-xs font-bold font-mono">Arabica {100 - rob}%</div>
-                </div>
-              </div>
-
-              <div class="grid grid-cols-1 gap-4 border-t border-base-content/5 pt-4">
-                <HDivider label="Shot Parameters" />
-                <div class="flex space-x-2  flex-col md:flex-row ">
-                  <div class="w-30 text-xs font-bold font-mono">Shot Duration</div>
-                  <input type="range" min="0" max="4" value={dp} step="1" class="w-full md:flex-1 range range-xs range-primary" onInput={e => setDp(parseInt(e.target.value))} />
-                  <div class="w-30 text-xs font-bold font-mono">Weight Index: {dp}</div>
-                </div>
-                <div class="flex  text-xs gap-2 flex-col md:flex-row">
-                  <label class="w-30 text-xs font-bold font-mono">Extraction Ratio</label>
-                  <input type="range" min="1" max="4" value={ratioTarget} step="0.1" class="w-full md:flex-1 range range-xs range-primary" onInput={e => setRatioTarget(parseFloat(e.target.value))} />
-                  <div class="w-30 text-xs font-bold font-mono">1 : {ratioTarget.toFixed(1)}</div>
-                </div>
-              </div>
-
-              <div class="border-t border-base-content/5 pt-4">
-                <HDivider label="Bean Processing" />
-                <div class="flex flex-wrap gap-1">
-                  {PROCESSING.map(p => (
-                    <button key={p} type="button" onClick={() => handleToggleProc(p)} class={`btn btn-xs ${proc.includes(p) ? 'btn-secondary' : 'btn-ghost bg-base-300'}`}>{p}</button>
-                  ))}
-                </div>
-              </div>
-
-              <div class="grid grid-cols-2 gap-4 border-t border-base-content/5 pt-4">
-                <div>
-                  <HDivider label="Bean Dose (g)" />
-                  <input type="number" step="0.1" value={dose} class="input input-xs input-bordered font-mono w-full" onInput={e => setDose(parseFloat(e.target.value) || 0)} />
-                </div>
-                <div>
-                  <div>
-                    <HDivider label="Yield (g)" />
-                    <div class="flex items-center gap-2">
-                      <div class="link text-[10px] lowercase text-secondary" onClick={() => setYe(!ye)}>{ye ? 'switch to ratio calculation' : 'switch to fixed yield weight'}</div>
-                      {ye ? (
-                        <input type="number" step="0.5" value={yt} class="input input-xs input-bordered font-mono flex-1" onInput={e => setYt(parseFloat(e.target.value) || 0)} />
-                      ) : (
-                        <div class="bg-base-300 rounded text-xs font-mono font-bold text-center border border-base-content/5 opacity-70 flex-1">Calculated Yield: {profile.yv}g</div>
-                      )}
-                    </div>
-                  </div>
-                </div>
-              </div>
             </div>
-          )}
-
-          {/* TAB: PIPELINE */}
-          {leftTab === 'pipeline' && (
-            <div class="space-y-3 p-4">
-
-              <div class="p-3 rounded-lg bg-base-300 border border-base-content/10 space-y-2">
-                <div class="text-[10px] font-bold uppercase tracking-wider opacity-60">Apply Archetype Transitions To Imported Profile</div>
-                <div class="flex flex-wrap gap-3">
-                  {[
-                    { key: 'pressure', label: 'Pressure' },
-                    { key: 'flow', label: 'Flow' },
-                    { key: 'temperature', label: 'Temperature' },
-                    { key: 'duration', label: 'Duration' },
-                    { key: 'transitions', label: 'Transitions' },
-                  ].map(({ key, label }) => (
-                    <label key={key} class="cursor-pointer flex items-center gap-1.5 select-none text-xs font-medium" style={{ color: overwriteFlags[key] ? 'var(--color-secondary)' : undefined }}>
-                      <input type="checkbox" class="checkbox checkbox-xs" checked={overwriteFlags[key]}
-                        style={{ accentColor: 'var(--color-secondary)' }}
-                        onChange={() => toggleOverwrite(key)} />
-                      {label}
-                    </label>
-                  ))}
-                </div>
-                <div class="text-[9px] opacity-40 font-mono">Select which dimensions will be applied to the profile.</div>
-              </div>
-
-              <div class="flex items-center justify-between px-1">
-                <div class="label text-[10px] uppercase font-bold">PHASES</div>
-                <button type="button" class="btn btn-xs btn-primary font-mono" onClick={addBlankPhase}>+ Add Phase</button>
-              </div>
-              <div class="overflow-y-auto pr-1">
-                {activePhasesWithMode.map((ph, pIdx) => (
-                  <PhaseRow key={pIdx} ph={ph} basePhase={editPhases?.[pIdx] ?? ph} pIdx={pIdx} updatePhase={updatePhase} removePhase={removePhase} movePhase={movePhase} totalPhases={activePhasesWithMode.length} timeFactor={timeFactor} pressureFactor={pressFactor} flowFactor={flowFactor} temperatureFactor={tempFactor} />
-                ))}
-              </div>
-            </div>
-          )}
-
-          {/* TAB: REGISTRY TABLE STORAGE */}
-          {leftTab === 'registry' && (
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', overflow: 'hidden' }} class="p-4 rounded-xl border border-base-content/5">
-              <HDivider label="Stored Profiles" />
-              {loadingProfiles ? (
-                <div style={{ fontSize: 11, color: T.muted, padding: 10, fontStyle: 'italic' }}>Querying hardware index...</div>
-              ) : (
-                <div style={{ flex: 1, overflowY: 'auto', display: 'flex', flexDirection: 'column', gap: 4 }}>
-                  {storedProfiles.length === 0 && <span class="text-xs opacity-50 p-2 italic">No profiles stored on hardware filesystem.</span>}
-                  {storedProfiles.map(p => (
-                    <button key={p.id} onClick={() => importProfile(p)} style={{ padding: '6px 10px', textAlign: 'left', width: '100%', cursor: 'pointer', background: T.card, border: `1px solid ${T.border}`, color: T.text }} class="rounded-lg hover:bg-base-300 transition-colors">
-                      <div style={{ fontSize: 11, fontWeight: 500 }}>{p.label ?? p.id}</div>
-                      {p.description && <div style={{ fontSize: 9, color: T.muted, marginTop: 1 }}>{p.description}</div>}
-                    </button>
-                  ))}
-                </div>
-              )}
-            </div>
-          )}
+          </details>
 
           {/* TAB: AI ENGINE PROMPT */}
-          {leftTab === 'ai' && (
-            <div class="p-4 space-y-4">
-              {/* API KEY SECTION */}
-              <div>
-                <HDivider label="HuggingFace Token" />
-                <div class="flex gap-2 items-center mt-1">
-                  <input
-                    type={showKey ? 'text' : 'password'}
-                    class="input input-bordered input-xs flex-1 font-mono text-[10px]"
-                    placeholder="hf_..."
-                    value={apiKey}
-                    onInput={e => setApiKey(e.target.value)}
-                  />
-                  <button type="button" class="btn btn-xs btn-ghost opacity-60" onClick={() => setShowKey(s => !s)}>
-                    {showKey ? '🙈' : '👁'}
-                  </button>
-                  {apiKey && (
-                    <button type="button" class="btn btn-xs btn-ghost text-error" onClick={() => { clearKeyCookie(); setApiKey(''); }}>
-                      Clear
+          <details class="collapse collapse-arrow bg-base-200 border border-base-content/10 rounded-xl shadow-sm">
+            <summary class="collapse-title font-bold text-sm py-3 min-h-0 cursor-pointer select-none">AI</summary>
+            <div class="collapse-content">
+              <div class="space-y-4 pb-4">
+                {/* API KEY SECTION */}
+                <div>
+                  <HDivider label="HuggingFace Token" />
+                  <div class="flex gap-2 items-center mt-1">
+                    <input
+                      type={showKey ? 'text' : 'password'}
+                      class="input input-bordered input-xs flex-1 font-mono text-[10px]"
+                      placeholder="hf_..."
+                      value={apiKey}
+                      onInput={e => setApiKey(e.target.value)}
+                    />
+                    <button type="button" class="btn btn-xs btn-ghost opacity-60" onClick={() => setShowKey(s => !s)}>
+                      {showKey ? '🙈' : '👁'}
                     </button>
-                  )}
+                    {apiKey && (
+                      <button type="button" class="btn btn-xs btn-ghost text-error" onClick={() => { clearKeyCookie(); setApiKey(''); }}>
+                        Clear
+                      </button>
+                    )}
+                  </div>
+                  <div class="flex gap-2 mt-1.5">
+                    <button type="button" class="btn btn-xs btn-outline flex-1" onClick={() => { writeKeyCookie(apiKey); setAiMsg('✓ Token saved to cookie'); setTimeout(() => setAiMsg(''), 3000); }} disabled={!apiKey.trim()}>
+                      Save to Cookie
+                    </button>
+                    <span class={`text-[10px] font-mono my-auto ${apiKey ? 'text-success' : 'opacity-40'}`}>
+                      {apiKey ? (readKeyCookie() === apiKey ? '● saved' : '○ unsaved') : 'no token'}
+                    </span>
+                  </div>
+                  <p class="text-[9px] opacity-40 mt-1 font-mono">Free token from huggingface.co/settings/tokens — stored in browser cookie only.</p>
                 </div>
-                <div class="flex gap-2 mt-1.5">
-                  <button type="button" class="btn btn-xs btn-outline flex-1" onClick={() => { writeKeyCookie(apiKey); setAiMsg('✓ Token saved to cookie'); setTimeout(() => setAiMsg(''), 3000); }} disabled={!apiKey.trim()}>
-                    Save to Cookie
-                  </button>
-                  <span class={`text-[10px] font-mono my-auto ${apiKey ? 'text-success' : 'opacity-40'}`}>
-                    {apiKey ? (readKeyCookie() === apiKey ? '● saved' : '○ unsaved') : 'no token'}
-                  </span>
-                </div>
-                <p class="text-[9px] opacity-40 mt-1 font-mono">Free token from huggingface.co/settings/tokens — stored in browser cookie only.</p>
-              </div>
 
-              {/* PROMPT SECTION */}
-              <div>
-                <HDivider label="Natural Language Prompter" />
-                <textarea
-                  class="textarea textarea-bordered w-full text-xs h-20 font-mono mt-1"
-                  placeholder="e.g., Long lever-style gentle pressure decay for a light Ethiopian natural, targeting clarity and florals..."
-                  value={prompt}
-                  onInput={e => setPrompt(e.target.value)}
-                />
+                {/* PROMPT SECTION */}
+                <div>
+                  <HDivider label="Natural Language Prompter" />
+                  <textarea
+                    class="textarea textarea-bordered w-full text-xs h-20 font-mono mt-1"
+                    placeholder="e.g., Long lever-style gentle pressure decay for a light Ethiopian natural, targeting clarity and florals..."
+                    value={prompt}
+                    onInput={e => setPrompt(e.target.value)}
+                  />
+                </div>
+                <button type="button" class="btn btn-sm btn-accent w-full" onClick={generateAiProfile} disabled={isGenerating || !prompt.trim() || !apiKey.trim()}>
+                  {isGenerating ? <span class="loading loading-spinner loading-xs"></span> : 'Synthesize AI Profile'}
+                </button>
               </div>
-              <button type="button" class="btn btn-sm btn-accent w-full" onClick={generateAiProfile} disabled={isGenerating || !prompt.trim() || !apiKey.trim()}>
-                {isGenerating ? <span class="loading loading-spinner loading-xs"></span> : 'Synthesize AI Profile'}
-              </button>
             </div>
-          )}
+          </details>
 
           {aiMsg && <div class="p-2 rounded bg-base-300/80 font-mono text-[11px] border border-base-content/5">{aiMsg}</div>}
 
         </div>
 
         {/* RIGHT ANALYTICS COMPONENT PANEL */}
-        <div class="lg:col-span-5 space-y-6">
-          <div class="card bg-base-200 border border-base-content/10 shadow-lg p-4 space-y-4 sticky top-4">
-            <HDivider label="Flavour Diagram" />
+        <div class="lg:col-span-5 space-y-2">
+          <div class="card bg-base-200 border border-base-content/10 shadow-lg p-3 space-y-2 sticky top-4">
 
             {/* SPIDER GRID INTERACTIVE VECTOR */}
-            <div class="flex flex-col items-center py-4 bg-base-300 rounded-xl border border-base-content/5 space-y-3">
-              <ExtendedRadarChart
-                data={{
-                  labels: AXES,
-
-                  beanFlavour: AXES.map(k => beanBp[k]),
-                  intendedCupFlavour: AXES.map(k => cupBp[k]),
-                  archetypeTendency: AXES.map(k => profile.archTend[k]),
-                  predictedFlavour: AXES.map(k => profile.finalBp[k]),
-                }} className="max-w-[400px] max-h-[400px]" onDragEnd={(dataset) => {
-                  if (dataset.datasetIndex === 0) {
-                    setBeanBp(prev => ({ ...prev, [dataset.label]: dataset.value }));
-                  } else if (dataset.datasetIndex === 1) {
-                    setCupBp(prev => ({ ...prev, [dataset.label]: dataset.value }));
-                  }
-                }}
-              />
-            </div>
+            <details class="collapse collapse-arrow bg-base-300/40 border border-base-content/5 rounded-lg" open>
+              <summary class="collapse-title py-2 min-h-0 font-bold text-[10px] uppercase tracking-wider opacity-70 cursor-pointer select-none">Flavour Diagram</summary>
+              <div class="collapse-content pb-2">
+                <div class="flex flex-col items-center py-4 bg-base-300 rounded-xl border border-base-content/5 space-y-3">
+                  <ExtendedRadarChart
+                    data={{
+                      labels: AXES,
+                      beanFlavour: AXES.map(k => beanBp[k]),
+                      intendedCupFlavour: AXES.map(k => cupBp[k]),
+                      archetypeTendency: AXES.map(k => profile.archTend[k]),
+                      predictedFlavour: AXES.map(k => profile.finalBp[k]),
+                    }} className="max-w-[400px] max-h-[400px]" onDragEnd={(dataset) => {
+                      if (dataset.datasetIndex === 0) {
+                        setBeanBp(prev => ({ ...prev, [dataset.label]: dataset.value }));
+                      } else if (dataset.datasetIndex === 1) {
+                        setCupBp(prev => ({ ...prev, [dataset.label]: dataset.value }));
+                      }
+                    }}
+                  />
+                </div>
+              </div>
+            </details>
 
             {/* PARENT-BOUNDED DYNAMIC SVG CURVE */}
-
-            <div class="flex flex-col items-center py-4 bg-base-300 rounded-xl border border-base-content/5 space-y-3">
-              <div class="flex w-full text-center text-[10px] font-mono opacity-60 mb-1">
-                <div class="flex-1">Calculated Thermal Base: <b style={{ color: T.orange }}>{profile.baseTemp * tempFactor}°C</b></div>
-                <div class="flex-1">Shot Duration: <b>{profile.total}s</b></div>
-                {pumpMode !== 'hybrid' && (
-                  <div class="flex-1 text-accent font-bold uppercase">{pumpMode}-mode</div>
-                )}
-              </div>
-              <ExtractionCurve curve={{
-                label: profile.json.label,
-                type: 'pro',
-                description: profile.json.description ?? '',
-                temperature: Math.round(profile.baseTemp * tempFactor),
-                utility: false,
-                phases: activePhasesWithMode
-              }} />
-
-            </div>
-
-            {/* PROFILE META FIELDS */}
-            <div class="space-y-2">
-              <HDivider label="Profile Identity" />
-              <div class="flex gap-2">
-                <div class="flex-1">
-                  <label class="label text-[10px] font-bold p-0 mb-0.5 opacity-60">ID</label>
-                  <input class="input input-bordered input-xs w-full font-mono text-[10px]"
-                    placeholder={`${arch.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 16)}-xxxx`}
-                    value={getCompactId(profile.json.id, storedProfiles)}
-                    onInput={e => setProfileId(e.target.value)} />
+            <details class="collapse collapse-arrow bg-base-300/40 border border-base-content/5 rounded-lg" open>
+              <summary class="collapse-title py-2 min-h-0 font-bold text-[10px] uppercase tracking-wider opacity-70 cursor-pointer select-none">
+                Extraction Curve
+                <span class="ml-2 font-mono font-normal opacity-50">{profile.total}s · {profile.baseTemp * tempFactor}°C</span>
+              </summary>
+              <div class="collapse-content pb-2">
+                <div class="flex flex-col items-center py-4 bg-base-300 rounded-xl border border-base-content/5 space-y-3">
+                  <div class="flex w-full text-center text-[10px] font-mono opacity-60 mb-1">
+                    <div class="flex-1">Calculated Thermal Base: <b style={{ color: T.orange }}>{profile.baseTemp * tempFactor}°C</b></div>
+                    <div class="flex-1">Shot Duration: <b>{profile.total}s</b></div>
+                    {pumpMode !== 'hybrid' && (
+                      <div class="flex-1 text-accent font-bold uppercase">{pumpMode}-mode</div>
+                    )}
+                  </div>
+                  <ExtractionCurve curve={{
+                    label: profile.json.label,
+                    type: 'pro',
+                    description: profile.json.description ?? '',
+                    temperature: Math.round(profile.baseTemp * tempFactor),
+                    utility: false,
+                    phases: activePhasesWithMode.map(ph => ({
+                      name: ph.name,
+                      phase: ph.phase,
+                      valve: ph.valve ?? 1,
+                      duration: Math.round(ph.duration),
+                      temperature: Math.round(ph.temperature * 10) / 10,
+                      transition: {
+                        type: ph.transition?.type || 'linear',
+                        duration: Math.round(ph.transition?.duration || 0),
+                        adaptive: ph.transition?.adaptive || false
+                      },
+                      pump: {
+                        target: ph.pump?.target || 'pressure',
+                        pressure: ph.pump?.pressure ? parseFloat(ph.pump.pressure.toFixed(1)) : 0,
+                        flow: ph.pump?.flow ? parseFloat(ph.pump.flow.toFixed(2)) : 0
+                      },
+                      targets: (ph.targets || []).map(tgt => ({
+                        type: tgt.type,
+                        operator: tgt.operator,
+                        value: tgt.value
+                      }))
+                    }))
+                  }} updatePhase={updatePhase} />
                 </div>
-                <div class="flex-[2]">
-                  <label class="label text-[10px] font-bold p-0 mb-0.5 opacity-60">Label</label>
-                  <input class="input input-bordered input-xs w-full text-xs"
-                    placeholder={`${arch} (${ROAST_LABELS[rl]})`}
-                    value={profileLabel}
-                    onInput={e => setProfileLabel(e.target.value)} />
+              </div>
+            </details>
+
+            {/* PROFILE META FIELDS (ID, Label, Description) */}
+            <details class="collapse collapse-arrow bg-base-300/40 border border-base-content/5 rounded-lg" open>
+              <summary class="collapse-title py-2 min-h-0 font-bold text-[10px] uppercase tracking-wider opacity-70 cursor-pointer select-none">Profile Identity</summary>
+              <div class="collapse-content pb-2">
+                <div class="space-y-2 pt-1">
+                  <div class="flex gap-2">
+                    <div class="flex-1">
+                      <label class="label text-[10px] font-bold p-0 mb-0.5 opacity-60">ID</label>
+                      <input class="input input-bordered input-xs w-full font-mono text-[10px]"
+                        placeholder={`${arch.toLowerCase().replace(/[^a-z0-9]+/g, '-').slice(0, 16)}-xxxx`}
+                        value={getCompactId(profile.json.id, storedProfiles)}
+                        onInput={e => setProfileId(e.target.value)} />
+                    </div>
+                    <div class="flex-[2]">
+                      <label class="label text-[10px] font-bold p-0 mb-0.5 opacity-60">Label</label>
+                      <input class="input input-bordered input-xs w-full text-xs"
+                        placeholder={`${arch} (${ROAST_LABELS[rl]})`}
+                        value={profileLabel}
+                        onInput={e => setProfileLabel(e.target.value)} />
+                    </div>
+                  </div>
+                  <div>
+                    <label class="label text-[10px] font-bold p-0 mb-0.5 opacity-60">Description</label>
+                    <input class="input input-bordered input-xs w-full text-xs"
+                      placeholder={`Generated for ${ROAST_LABELS[rl]} roast, ${AGE_LABELS[ra]} age profile via engine layout.`}
+                      value={profileDescription}
+                      onInput={e => setProfileDescription(e.target.value)} />
+                  </div>
                 </div>
               </div>
-              <div>
-                <label class="label text-[10px] font-bold p-0 mb-0.5 opacity-60">Description</label>
-                <input class="input input-bordered input-xs w-full text-xs"
-                  placeholder={`Generated for ${ROAST_LABELS[rl]} roast, ${AGE_LABELS[ra]} age profile via engine layout.`}
-                  value={profileDescription}
-                  onInput={e => setProfileDescription(e.target.value)} />
-              </div>
-            </div>
-            <div class="flex w-full gap-2 p-4">
+            </details>
+
+            {/* ACTION BUTTONS */}
+            <div class="flex w-full gap-2 px-1 py-2">
               {basePhases &&
                 <button class="btn btn-sm btn-outline btn-secondary h-auto flex-1 bg-base-200" onClick={() => {
                   setBasePhases(null); setBaseTempRef(null); setEditPhases(null); setRightTab('engine'); setProfileMeta({ ...profileMeta, title: 'Phases' });
@@ -1913,9 +1999,10 @@ Output ONLY the JSON array, starting with [`;
                 Synchronize imported Profile
               </button>
             </div>
+
             {/* RAW CODE STRUCT PAYLOAD EXPOSE */}
-            <details class="collapse collapse-arrow bg-base-200 border border-base-content/5 rounded-lg text-xs">
-              <summary class="collapse-title font-mono font-bold py-2 min-h-0">Raw JSON Profile</summary>
+            <details class="collapse collapse-arrow bg-base-300/40 border border-base-content/5 rounded-lg text-xs">
+              <summary class="collapse-title font-mono font-bold py-2 min-h-0 text-[10px] uppercase tracking-wider opacity-70">Raw JSON Profile</summary>
               <div class="collapse-content pt-1">
                 <pre class="bg-base-300 text-[10px] p-2 rounded overflow-x-auto max-h-40 font-mono">
                   {JSON.stringify({
@@ -1951,6 +2038,7 @@ Output ONLY the JSON array, starting with [`;
                 </pre>
               </div>
             </details>
+
           </div>
         </div>
 
