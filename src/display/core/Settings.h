@@ -106,13 +106,21 @@ class Settings {
     int getHistoryIndex() const { return historyIndex; }
 
     [[deprecated]]
-    int getSunriseR() const { return sunriseR; }
+    int getSunriseR() const {
+        return sunriseR;
+    }
     [[deprecated]]
-    int getSunriseG() const { return sunriseG; }
+    int getSunriseG() const {
+        return sunriseG;
+    }
     [[deprecated]]
-    int getSunriseB() const { return sunriseB; }
+    int getSunriseB() const {
+        return sunriseB;
+    }
     [[deprecated]]
-    int getSunriseW() const { return sunriseW; }
+    int getSunriseW() const {
+        return sunriseW;
+    }
     String getSunriseIdle() const { return sunriseIdle; }
     String getSunriseActive() const { return sunriseActive; }
     String getSunriseFinished() const { return sunriseFinished; }
@@ -129,6 +137,11 @@ class Settings {
         return "";
     };
     std::vector<String> getButtonBehaviorList() const { return buttonBehavior; }
+    float getCommutationGain() const { return commutationGain; }
+    float getConvergenceGain() const { return convergenceGain; }
+    float getIntegralGain() const { return integralGain; }
+    float getMaxPumpPower() const { return maxPumpPower; }
+
     void setTargetSteamTemp(int target_steam_temp);
     void setTargetWaterTemp(int target_water_temp);
     void setTemperatureOffset(int temperature_offset);
@@ -202,6 +215,11 @@ class Settings {
     void setButtonBehavior(int index, String behavior);
     void setButtonBehaviorList(const std::vector<String> &behavior_list);
 
+    void setCommutationGain(float commutationGain);
+    void setConvergenceGain(float convergenceGain);
+    void setIntegralGain(float integralGain);
+    void setMaxPumpPower(float maxPumpPower);
+
   private:
     Preferences preferences;
     bool dirty = false;
@@ -225,7 +243,6 @@ class Settings {
     std::vector<AutoWakeupSchedule> autowakeupSchedules;
     int standbyTimeout = DEFAULT_STANDBY_TIMEOUT_MS;
     String pid = DEFAULT_PID;
-    String pumpModelCoeffs = DEFAULT_PUMP_MODEL_COEFFS;
     String wifiSsid = "";
     String wifiPassword = "";
     String mdnsName = DEFAULT_MDNS_NAME;
@@ -274,8 +291,16 @@ class Settings {
     int sunriseExtBrightness = 255;
     int emptyTankDistance = 200;
     int fullTankDistance = 50;
+
     int altRelayFunction = ALT_RELAY_GRIND; // Default to grind
     std::vector<String> buttonBehavior;
+
+    // Pump settings
+    String pumpModelCoeffs = DEFAULT_PUMP_MODEL_COEFFS;
+    float commutationGain = DEFAULT_COMMUTATION_GAIN;
+    float convergenceGain = DEFAULT_CONVERGENCE_GAIN;
+    float integralGain = DEFAULT_INTEGRAL_GAIN;
+    float maxPumpPower = 1.0f;
 
     void doSave();
     xTaskHandle taskHandle;
