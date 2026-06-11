@@ -365,6 +365,7 @@ void DefaultUI::setupPanel() {
     // Set initial brightness based on settings
     const Settings &settings = controller->getSettings();
     setBrightness(settings.getMainBrightness());
+    setupStandbyScreen(settings.getStandbyLogo(), settings.getStandbyStatus(), settings.getStandbyTouchIcon());
 }
 
 void DefaultUI::setupState() {

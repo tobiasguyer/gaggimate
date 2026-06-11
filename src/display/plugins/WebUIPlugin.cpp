@@ -639,12 +639,9 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
                 settings->setThemeMode(request->arg("themeMode").toInt());
             if (request->hasArg("standbyThemeMode"))
                 settings->setStandbyThemeMode(request->arg("standbyThemeMode").toInt());
-            if (request->hasArg("standbyLogo"))
-                settings->setStandbyLogo(request->arg("standbyLogo"));
-            if (request->hasArg("standbyStatus"))
-                settings->setStandbyStatus(request->arg("standbyStatus"));
-            if (request->hasArg("standbyTouchIcon"))
-                settings->setStandbyTouchIcon(request->arg("standbyTouchIcon"));            
+            settings->setStandbyLogo(request->hasArg("standbyLogo"));
+            settings->setStandbyStatus(request->hasArg("standbyStatus"));
+            settings->setStandbyTouchIcon(request->hasArg("standbyTouchIcon"));            
             if (request->hasArg("sunriseIdle"))
                 settings->setSunriseIdle(request->arg("sunriseIdle"));
             if (request->hasArg("sunriseActive"))
