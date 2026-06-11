@@ -339,7 +339,7 @@ bool BLE_OTA_DFU::configure_OTA(NimBLEServer *pServer) {
         return false;
     }
 
-    auto *bleOTACharacteristicCallbacksRX = new BLEOverTheAirDeviceFirmwareUpdate(this);
+    auto *bleOTACharacteristicCallbacksRX = new BLEOverTheAirDeviceFirmwareUpdate();
     bleOTACharacteristicCallbacksRX->OTA_DFU_BLE = this;
     pCharacteristic_BLE_OTA_DFU_RX->setCallbacks(bleOTACharacteristicCallbacksRX);
 
