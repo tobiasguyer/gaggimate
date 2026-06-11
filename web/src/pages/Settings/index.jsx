@@ -561,6 +561,18 @@ export function Settings() {
                 <option value={1}>Light Theme</option>
               </select>
             </SettingsFormField>
+            <SettingsFormField label='Standby Theme' htmlFor='themeMode' noMargin>
+              <select
+                id='standbyThemeMode'
+                name='standbyThemeMode'
+                className='select select-bordered w-full'
+                value={formData.standbyThemeMode}
+                onChange={onChange('standbyThemeMode')}
+              >
+                <option value={0}>Dark Theme</option>
+                <option value={1}>Light Theme</option>
+              </select>
+            </SettingsFormField>
           </Card>
 
           {/* User Preferences */}

@@ -2,11 +2,12 @@
 // SquareLine Studio version: SquareLine Studio 1.5.4
 // LVGL version: 8.3.11
 // Project name: GaggiMate
+// Modified: Standby screen replaced with SBB railway clock
 
 #include "../ui.h"
+#include <math.h>
 
 lv_obj_t *ui_StandbyScreen = NULL;
-lv_obj_t *ui_StandbyScreen_logo = NULL;
 lv_obj_t *ui_StandbyScreen_time = NULL;
 lv_obj_t *ui_StandbyScreen_statusContainer = NULL;
 lv_obj_t *ui_StandbyScreen_wifiIcon = NULL;
@@ -14,161 +15,360 @@ lv_obj_t *ui_StandbyScreen_bluetoothIcon = NULL;
 lv_obj_t *ui_StandbyScreen_updateIcon = NULL;
 lv_obj_t *ui_StandbyScreen_touchIcon = NULL;
 lv_obj_t *ui_StandbyScreen_mainLabel = NULL;
-// event funtions
+lv_obj_t *ui_StandbyScreen_logo = NULL;
+lv_obj_t *hour_hand;
+lv_obj_t *min_hand;
+lv_obj_t *sec_hand;
+lv_obj_t *sec_dot;
+static lv_obj_t *tick_lines[60];
+static lv_point_t tick_pts[60][2];
+static lv_point_t min_pts[2];
+static lv_point_t sec_pts[2];
+static lv_point_t hour_pts[2];
+static lv_obj_t *center_dot;
+// --------------------------------------------------------------------------
+// SBB clock drawing helpers
+// --------------------------------------------------------------------------
+#define CLOCK_SIZE 240 // canvas px (square)
+#define CLOCK_R 360    // outer radius
+#define CLOCK_CX 240   // centre x
+#define CLOCK_CY 240   // centre y
+static void drawClockTicks(lv_obj_t *parent) {
+    for (int i = 0; i < 60; i++) {
+        float angle_deg = i * 6.0f;
+        float rad = (angle_deg - 90.0f) * (float)M_PI / 180.0f;
+
+        float outer_r, inner_r;
+        int width;
+
+        if (i % 5 == 0) {
+            outer_r = 220.0f;
+            inner_r = 185.0f;
+            width = 10;
+        } else {
+            outer_r = 220.0f;
+            inner_r = 210.0f;
+            width = 5;
+        }
+
+        tick_pts[i][0].x = (int32_t)(240 + inner_r * cosf(rad));
+        tick_pts[i][0].y = (int32_t)(240 + inner_r * sinf(rad));
+        tick_pts[i][1].x = (int32_t)(240 + outer_r * cosf(rad));
+        tick_pts[i][1].y = (int32_t)(240 + outer_r * sinf(rad));
+
+        tick_lines[i] = lv_line_create(parent);
+        lv_line_set_points(tick_lines[i], tick_pts[i], 2);
+        lv_obj_add_flag(tick_lines[i], LV_OBJ_FLAG_ADV_HITTEST);
+        lv_obj_clear_flag(tick_lines[i], LV_OBJ_FLAG_SCROLLABLE);
+        ui_object_set_themeable_style_property(
+            tick_lines[i], LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_LINE_COLOR,
+            _ui_theme_color_NiceWhite);
+        ui_object_set_themeable_style_property(
+            tick_lines[i], LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_LINE_OPA,
+            _ui_theme_alpha_NiceWhite);
+        lv_obj_set_style_line_width(tick_lines[i], width, 0);
+        lv_obj_set_style_line_rounded(tick_lines[i], false, 0);
+    }
+}
+static lv_obj_t *create_hand(lv_obj_t *parent, lv_color_t color, int width) {
+    lv_obj_t *line = lv_line_create(parent);
+    if (width == 6) {
+        lv_obj_set_style_line_color(line, color, 0);
+    } else {
+        lv_obj_add_flag(line, LV_OBJ_FLAG_ADV_HITTEST);
+        lv_obj_clear_flag(line, LV_OBJ_FLAG_SCROLLABLE);
+        ui_object_set_themeable_style_property(
+            line, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_LINE_COLOR,
+            _ui_theme_color_NiceWhite);
+        ui_object_set_themeable_style_property(
+            line, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_LINE_OPA,
+            _ui_theme_alpha_NiceWhite);
+    }
+    lv_obj_set_style_line_width(line, width, 0);
+    lv_obj_set_style_line_rounded(line, false, 0);
+
+    return line;
+}
+// static lv_timer_t *clock_timer = NULL;
+
+// Convert polar coords to cartesian (angle in degrees, 0 = 12 o'clock)
+static void polar_to_xy(float angle_deg, float radius, int32_t *x_out,
+                        int32_t *y_out) {
+    float rad = (angle_deg - 90.0f) * (float)M_PI / 180.0f;
+    *x_out = (int32_t)(CLOCK_CX + radius * cosf(rad));
+    *y_out = (int32_t)(CLOCK_CY + radius * sinf(rad));
+}
+
+void ui_Standby_screen_draw_sbb_clock(const struct tm *t) {
+    int h = t->tm_hour % 12;
+    int m = t->tm_min;
+    int s = t->tm_sec;
+
+    // Use floats for smooth movement if desired, otherwise s, m, h
+    float sec_angle = s * 6.0f;
+    float min_angle = (m + s / 60.0f) * 6.0f;
+    float hr_angle = (h + m / 60.0f) * 30.0f;
+
+    int32_t x1, y1, x2, y2;
+
+    // --- SEC HAND ---
+    polar_to_xy(sec_angle, 160, &x2, &y2);
+    polar_to_xy(sec_angle, -30, &x1, &y1); // Adjusted tail length
+    sec_pts[0] = (lv_point_t){x1, y1};
+    sec_pts[1] = (lv_point_t){x2, y2};
+    lv_line_set_points(sec_hand, sec_pts, 2);
+    lv_obj_set_pos(sec_dot, x2 - 240,
+                   y2 - 240); // Offset by half-width (radius)
+
+    // --- MIN HAND ---
+    polar_to_xy(min_angle, 215, &x2, &y2);
+    polar_to_xy(min_angle, -50, &x1, &y1);
+    min_pts[0] = (lv_point_t){x1, y1};
+    min_pts[1] = (lv_point_t){x2, y2};
+    lv_line_set_points(min_hand, min_pts, 2);
+
+    // --- HOUR HAND ---
+    polar_to_xy(hr_angle, 160, &x2, &y2);
+    polar_to_xy(hr_angle, -40, &x1, &y1);
+    hour_pts[0] = (lv_point_t){x1, y1};
+    hour_pts[1] = (lv_point_t){x2, y2};
+    lv_line_set_points(hour_hand, hour_pts, 2);
+}
+
+// --------------------------------------------------------------------------
+// event functions
+// --------------------------------------------------------------------------
 void ui_event_StandbyScreen(lv_event_t *e) {
     lv_event_code_t event_code = lv_event_get_code(e);
-
     if (event_code == LV_EVENT_CLICKED) {
         onWakeup(e);
     }
 }
 
-// build funtions
-
+// --------------------------------------------------------------------------
+// build functions
+// --------------------------------------------------------------------------
 void ui_StandbyScreen_screen_init(void) {
     ui_StandbyScreen = lv_obj_create(NULL);
-    lv_obj_clear_flag(ui_StandbyScreen, LV_OBJ_FLAG_SCROLLABLE); /// Flags
-    lv_obj_add_event_cb(ui_StandbyScreen, scr_unloaded_delete_cb, LV_EVENT_SCREEN_UNLOADED, ui_StandbyScreen_screen_destroy);
-    ui_object_set_themeable_style_property(ui_StandbyScreen, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_COLOR,
-                                           _ui_theme_color_Dark);
-    ui_object_set_themeable_style_property(ui_StandbyScreen, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_OPA,
-                                           _ui_theme_alpha_Dark);
+    lv_obj_set_width(ui_StandbyScreen, LV_SIZE_CONTENT);
+    lv_obj_set_height(ui_StandbyScreen, LV_SIZE_CONTENT);
+    lv_obj_set_align(ui_StandbyScreen, LV_ALIGN_CENTER);
+    lv_obj_clear_flag(ui_StandbyScreen, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_event_cb(ui_StandbyScreen, scr_unloaded_delete_cb,
+                        LV_EVENT_SCREEN_UNLOADED,
+                        ui_StandbyScreen_screen_destroy);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_COLOR,
+        _ui_theme_color_Dark);
+
+    // Start 1-second refresh timer
+    // clock_timer = lv_timer_create(clock_timer_cb, 1000, NULL);
+
+    // --- time label (hidden by default, shown after wakeup) ---
+    ui_StandbyScreen_time = lv_label_create(ui_StandbyScreen);
+    lv_obj_set_width(ui_StandbyScreen_time, LV_SIZE_CONTENT);
+    lv_obj_set_height(ui_StandbyScreen_time, LV_SIZE_CONTENT);
+    lv_obj_set_x(ui_StandbyScreen_time, 0);
+    lv_obj_set_y(ui_StandbyScreen_time, -140);
+    lv_obj_set_align(ui_StandbyScreen_time, LV_ALIGN_CENTER);
+    lv_label_set_text(ui_StandbyScreen_time, "0:00");
+    lv_obj_add_flag(ui_StandbyScreen_time, LV_OBJ_FLAG_HIDDEN);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_time, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_TEXT_COLOR, _ui_theme_color_NiceWhite);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_time, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_TEXT_OPA, _ui_theme_alpha_NiceWhite);
+    lv_obj_set_style_text_align(ui_StandbyScreen_time, LV_TEXT_ALIGN_CENTER,
+                                LV_PART_MAIN | LV_STATE_DEFAULT);
+    lv_obj_set_style_text_font(ui_StandbyScreen_time, &lv_font_montserrat_34,
+                               LV_PART_MAIN | LV_STATE_DEFAULT);
+
+    // --- status icon container ---
+    ui_StandbyScreen_statusContainer = lv_obj_create(ui_StandbyScreen);
+    lv_obj_remove_style_all(ui_StandbyScreen_statusContainer);
+    lv_obj_set_width(ui_StandbyScreen_statusContainer, 300);
+    lv_obj_set_height(ui_StandbyScreen_statusContainer, 20);
+    lv_obj_set_x(ui_StandbyScreen_statusContainer, 0);
+    lv_obj_set_y(ui_StandbyScreen_statusContainer, -140);
+    lv_obj_set_align(ui_StandbyScreen_statusContainer, LV_ALIGN_CENTER);
+    lv_obj_set_flex_flow(ui_StandbyScreen_statusContainer, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(ui_StandbyScreen_statusContainer,
+                          LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER,
+                          LV_FLEX_ALIGN_CENTER);
+    lv_obj_add_flag(ui_StandbyScreen_statusContainer, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_clear_flag(ui_StandbyScreen_statusContainer,
+                      LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
+
+    // wifi icon
+    ui_StandbyScreen_wifiIcon = lv_img_create(ui_StandbyScreen_statusContainer);
+    lv_img_set_src(ui_StandbyScreen_wifiIcon, &ui_img_364513079);
+    lv_obj_set_width(ui_StandbyScreen_wifiIcon, LV_SIZE_CONTENT);
+    lv_obj_set_height(ui_StandbyScreen_wifiIcon, LV_SIZE_CONTENT);
+    lv_obj_set_x(ui_StandbyScreen_wifiIcon, 20);
+    lv_obj_set_y(ui_StandbyScreen_wifiIcon, -140);
+    lv_obj_set_align(ui_StandbyScreen_wifiIcon, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_StandbyScreen_wifiIcon, LV_OBJ_FLAG_ADV_HITTEST);
+    lv_obj_clear_flag(ui_StandbyScreen_wifiIcon, LV_OBJ_FLAG_SCROLLABLE);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_wifiIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_BORDER_COLOR, _ui_theme_color_Dark);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_wifiIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_BORDER_OPA, _ui_theme_alpha_Dark);
+    lv_obj_set_style_border_width(ui_StandbyScreen_wifiIcon, 10,
+                                  LV_PART_MAIN | LV_STATE_DEFAULT);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_wifiIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR, _ui_theme_color_NiceWhite);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_wifiIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR_OPA, _ui_theme_alpha_NiceWhite);
+
+    // bluetooth icon
+    ui_StandbyScreen_bluetoothIcon =
+        lv_img_create(ui_StandbyScreen_statusContainer);
+    lv_img_set_src(ui_StandbyScreen_bluetoothIcon, &ui_img_1091371356);
+    lv_obj_set_width(ui_StandbyScreen_bluetoothIcon, LV_SIZE_CONTENT);
+    lv_obj_set_height(ui_StandbyScreen_bluetoothIcon, LV_SIZE_CONTENT);
+    lv_obj_set_x(ui_StandbyScreen_bluetoothIcon, -20);
+    lv_obj_set_y(ui_StandbyScreen_bluetoothIcon, -140);
+    lv_obj_set_align(ui_StandbyScreen_bluetoothIcon, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_StandbyScreen_bluetoothIcon, LV_OBJ_FLAG_ADV_HITTEST);
+    lv_obj_clear_flag(ui_StandbyScreen_bluetoothIcon, LV_OBJ_FLAG_SCROLLABLE);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_bluetoothIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_BORDER_COLOR, _ui_theme_color_Dark);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_bluetoothIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_BORDER_OPA, _ui_theme_alpha_Dark);
+    lv_obj_set_style_border_width(ui_StandbyScreen_bluetoothIcon, 10,
+                                  LV_PART_MAIN | LV_STATE_DEFAULT);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_bluetoothIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR, _ui_theme_color_NiceWhite);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_bluetoothIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR_OPA, _ui_theme_alpha_NiceWhite);
+
+    // update icon
+    ui_StandbyScreen_updateIcon =
+        lv_img_create(ui_StandbyScreen_statusContainer);
+    lv_img_set_src(ui_StandbyScreen_updateIcon, &ui_img_1765671371);
+    lv_obj_set_width(ui_StandbyScreen_updateIcon, LV_SIZE_CONTENT);
+    lv_obj_set_height(ui_StandbyScreen_updateIcon, LV_SIZE_CONTENT);
+    lv_obj_set_x(ui_StandbyScreen_updateIcon, -20);
+    lv_obj_set_y(ui_StandbyScreen_updateIcon, -140);
+    lv_obj_set_align(ui_StandbyScreen_updateIcon, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_StandbyScreen_updateIcon, LV_OBJ_FLAG_ADV_HITTEST);
+    lv_obj_clear_flag(ui_StandbyScreen_updateIcon, LV_OBJ_FLAG_SCROLLABLE);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_updateIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_BORDER_COLOR, _ui_theme_color_Dark);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_updateIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_BORDER_OPA, _ui_theme_alpha_Dark);
+    lv_obj_set_style_border_width(ui_StandbyScreen_updateIcon, 10,
+                                  LV_PART_MAIN | LV_STATE_DEFAULT);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_updateIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR, _ui_theme_color_NiceWhite);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_updateIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR_OPA, _ui_theme_alpha_NiceWhite);
+
+    drawClockTicks(ui_StandbyScreen);
+    // touch icon
+    ui_StandbyScreen_touchIcon = lv_img_create(ui_StandbyScreen);
+    lv_img_set_src(ui_StandbyScreen_touchIcon, &ui_img_1732953241);
+    lv_obj_set_width(ui_StandbyScreen_touchIcon, LV_SIZE_CONTENT);
+    lv_obj_set_height(ui_StandbyScreen_touchIcon, LV_SIZE_CONTENT);
+    lv_obj_set_x(ui_StandbyScreen_touchIcon, 0);
+    lv_obj_set_y(ui_StandbyScreen_touchIcon, 120);
+    lv_obj_set_align(ui_StandbyScreen_touchIcon, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_StandbyScreen_touchIcon,
+                    LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_ADV_HITTEST);
+    lv_obj_clear_flag(ui_StandbyScreen_touchIcon, LV_OBJ_FLAG_SCROLLABLE);
+    lv_img_set_zoom(ui_StandbyScreen_touchIcon, 210);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_touchIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR, _ui_theme_color_NiceWhite);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_touchIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR_OPA, _ui_theme_alpha_NiceWhite);
+
+    // main label
 
     ui_StandbyScreen_logo = lv_img_create(ui_StandbyScreen);
     lv_img_set_src(ui_StandbyScreen_logo, &ui_img_logo_png);
     lv_obj_set_width(ui_StandbyScreen_logo, LV_SIZE_CONTENT);  /// 1
     lv_obj_set_height(ui_StandbyScreen_logo, LV_SIZE_CONTENT); /// 1
     lv_obj_set_align(ui_StandbyScreen_logo, LV_ALIGN_CENTER);
+    lv_obj_set_y(ui_StandbyScreen_logo, -100);
     lv_obj_add_flag(ui_StandbyScreen_logo, LV_OBJ_FLAG_ADV_HITTEST);  /// Flags
     lv_obj_clear_flag(ui_StandbyScreen_logo, LV_OBJ_FLAG_SCROLLABLE); /// Flags
-    lv_img_set_zoom(ui_StandbyScreen_logo, 210);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_logo, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_IMG_RECOLOR,
-                                           _ui_theme_color_NiceWhite);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_logo, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_IMG_RECOLOR_OPA,
-                                           _ui_theme_alpha_NiceWhite);
-
-    ui_StandbyScreen_time = lv_label_create(ui_StandbyScreen);
-    lv_obj_set_width(ui_StandbyScreen_time, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_StandbyScreen_time, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_StandbyScreen_time, 0);
-    lv_obj_set_y(ui_StandbyScreen_time, -150);
-    lv_obj_set_align(ui_StandbyScreen_time, LV_ALIGN_CENTER);
-    lv_label_set_text(ui_StandbyScreen_time, "0:00");
-    lv_obj_add_flag(ui_StandbyScreen_time, LV_OBJ_FLAG_HIDDEN); /// Flags
-    ui_object_set_themeable_style_property(ui_StandbyScreen_time, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_TEXT_COLOR,
-                                           _ui_theme_color_NiceWhite);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_time, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_TEXT_OPA,
-                                           _ui_theme_alpha_NiceWhite);
-    lv_obj_set_style_text_align(ui_StandbyScreen_time, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
-    lv_obj_set_style_text_font(ui_StandbyScreen_time, &lv_font_montserrat_34, LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_StandbyScreen_statusContainer = lv_obj_create(ui_StandbyScreen);
-    lv_obj_remove_style_all(ui_StandbyScreen_statusContainer);
-    lv_obj_set_width(ui_StandbyScreen_statusContainer, 300);
-    lv_obj_set_height(ui_StandbyScreen_statusContainer, 20);
-    lv_obj_set_x(ui_StandbyScreen_statusContainer, 0);
-    lv_obj_set_y(ui_StandbyScreen_statusContainer, -210);
-    lv_obj_set_align(ui_StandbyScreen_statusContainer, LV_ALIGN_CENTER);
-    lv_obj_set_flex_flow(ui_StandbyScreen_statusContainer, LV_FLEX_FLOW_ROW);
-    lv_obj_set_flex_align(ui_StandbyScreen_statusContainer, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-    lv_obj_add_flag(ui_StandbyScreen_statusContainer, LV_OBJ_FLAG_HIDDEN);                               /// Flags
-    lv_obj_clear_flag(ui_StandbyScreen_statusContainer, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE); /// Flags
-
-    ui_StandbyScreen_wifiIcon = lv_img_create(ui_StandbyScreen_statusContainer);
-    lv_img_set_src(ui_StandbyScreen_wifiIcon, &ui_img_364513079);
-    lv_obj_set_width(ui_StandbyScreen_wifiIcon, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_StandbyScreen_wifiIcon, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_StandbyScreen_wifiIcon, 20);
-    lv_obj_set_y(ui_StandbyScreen_wifiIcon, -210);
-    lv_obj_set_align(ui_StandbyScreen_wifiIcon, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_StandbyScreen_wifiIcon, LV_OBJ_FLAG_ADV_HITTEST);  /// Flags
-    lv_obj_clear_flag(ui_StandbyScreen_wifiIcon, LV_OBJ_FLAG_SCROLLABLE); /// Flags
-    ui_object_set_themeable_style_property(ui_StandbyScreen_wifiIcon, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BORDER_COLOR,
-                                           _ui_theme_color_Dark);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_wifiIcon, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BORDER_OPA,
-                                           _ui_theme_alpha_Dark);
-    lv_obj_set_style_border_width(ui_StandbyScreen_wifiIcon, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_wifiIcon, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_IMG_RECOLOR,
-                                           _ui_theme_color_NiceWhite);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_wifiIcon, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_IMG_RECOLOR_OPA,
-                                           _ui_theme_alpha_NiceWhite);
-
-    ui_StandbyScreen_bluetoothIcon = lv_img_create(ui_StandbyScreen_statusContainer);
-    lv_img_set_src(ui_StandbyScreen_bluetoothIcon, &ui_img_1091371356);
-    lv_obj_set_width(ui_StandbyScreen_bluetoothIcon, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_StandbyScreen_bluetoothIcon, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_StandbyScreen_bluetoothIcon, -20);
-    lv_obj_set_y(ui_StandbyScreen_bluetoothIcon, -210);
-    lv_obj_set_align(ui_StandbyScreen_bluetoothIcon, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_StandbyScreen_bluetoothIcon, LV_OBJ_FLAG_ADV_HITTEST);  /// Flags
-    lv_obj_clear_flag(ui_StandbyScreen_bluetoothIcon, LV_OBJ_FLAG_SCROLLABLE); /// Flags
-    ui_object_set_themeable_style_property(ui_StandbyScreen_bluetoothIcon, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BORDER_COLOR,
-                                           _ui_theme_color_Dark);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_bluetoothIcon, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BORDER_OPA,
-                                           _ui_theme_alpha_Dark);
-    lv_obj_set_style_border_width(ui_StandbyScreen_bluetoothIcon, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_bluetoothIcon, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_IMG_RECOLOR,
-                                           _ui_theme_color_NiceWhite);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_bluetoothIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
-                                           LV_STYLE_IMG_RECOLOR_OPA, _ui_theme_alpha_NiceWhite);
-
-    ui_StandbyScreen_updateIcon = lv_img_create(ui_StandbyScreen_statusContainer);
-    lv_img_set_src(ui_StandbyScreen_updateIcon, &ui_img_1765671371);
-    lv_obj_set_width(ui_StandbyScreen_updateIcon, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_StandbyScreen_updateIcon, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_StandbyScreen_updateIcon, -20);
-    lv_obj_set_y(ui_StandbyScreen_updateIcon, -210);
-    lv_obj_set_align(ui_StandbyScreen_updateIcon, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_StandbyScreen_updateIcon, LV_OBJ_FLAG_ADV_HITTEST);  /// Flags
-    lv_obj_clear_flag(ui_StandbyScreen_updateIcon, LV_OBJ_FLAG_SCROLLABLE); /// Flags
-    ui_object_set_themeable_style_property(ui_StandbyScreen_updateIcon, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BORDER_COLOR,
-                                           _ui_theme_color_Dark);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_updateIcon, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BORDER_OPA,
-                                           _ui_theme_alpha_Dark);
-    lv_obj_set_style_border_width(ui_StandbyScreen_updateIcon, 10, LV_PART_MAIN | LV_STATE_DEFAULT);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_updateIcon, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_IMG_RECOLOR,
-                                           _ui_theme_color_NiceWhite);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_updateIcon, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_IMG_RECOLOR_OPA,
-                                           _ui_theme_alpha_NiceWhite);
-
-    ui_StandbyScreen_touchIcon = lv_img_create(ui_StandbyScreen);
-    lv_img_set_src(ui_StandbyScreen_touchIcon, &ui_img_1732953241);
-    lv_obj_set_width(ui_StandbyScreen_touchIcon, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_StandbyScreen_touchIcon, LV_SIZE_CONTENT); /// 1
-    lv_obj_set_x(ui_StandbyScreen_touchIcon, 0);
-    lv_obj_set_y(ui_StandbyScreen_touchIcon, 150);
-    lv_obj_set_align(ui_StandbyScreen_touchIcon, LV_ALIGN_CENTER);
-    lv_obj_add_flag(ui_StandbyScreen_touchIcon, LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_ADV_HITTEST); /// Flags
-    lv_obj_clear_flag(ui_StandbyScreen_touchIcon, LV_OBJ_FLAG_SCROLLABLE);                     /// Flags
-    lv_img_set_zoom(ui_StandbyScreen_touchIcon, 210);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_touchIcon, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_IMG_RECOLOR,
-                                           _ui_theme_color_NiceWhite);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_touchIcon, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_IMG_RECOLOR_OPA,
-                                           _ui_theme_alpha_NiceWhite);
-
+    lv_img_set_zoom(ui_StandbyScreen_logo, 80);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_logo, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR, _ui_theme_color_NiceWhite);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_logo, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR_OPA, _ui_theme_alpha_Dark);
     ui_StandbyScreen_mainLabel = lv_label_create(ui_StandbyScreen);
-    lv_obj_set_width(ui_StandbyScreen_mainLabel, LV_SIZE_CONTENT);  /// 1
-    lv_obj_set_height(ui_StandbyScreen_mainLabel, LV_SIZE_CONTENT); /// 1
+    lv_obj_set_width(ui_StandbyScreen_mainLabel, LV_SIZE_CONTENT);
+    lv_obj_set_height(ui_StandbyScreen_mainLabel, LV_SIZE_CONTENT);
     lv_obj_set_x(ui_StandbyScreen_mainLabel, 0);
-    lv_obj_set_y(ui_StandbyScreen_mainLabel, 150);
+    lv_obj_set_y(ui_StandbyScreen_mainLabel, 120);
     lv_obj_set_align(ui_StandbyScreen_mainLabel, LV_ALIGN_CENTER);
     lv_label_set_text(ui_StandbyScreen_mainLabel, "Starting...");
-    ui_object_set_themeable_style_property(ui_StandbyScreen_mainLabel, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_TEXT_COLOR,
-                                           _ui_theme_color_NiceWhite);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_mainLabel, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_TEXT_OPA,
-                                           _ui_theme_alpha_NiceWhite);
-    lv_obj_set_style_text_font(ui_StandbyScreen_mainLabel, &lv_font_montserrat_20, LV_PART_MAIN | LV_STATE_DEFAULT);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_mainLabel, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_TEXT_COLOR, _ui_theme_color_NiceWhite);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_mainLabel, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_TEXT_OPA, _ui_theme_alpha_NiceWhite);
+    lv_obj_set_style_text_font(ui_StandbyScreen_mainLabel,
+                               &lv_font_montserrat_20,
+                               LV_PART_MAIN | LV_STATE_DEFAULT);
 
-    lv_obj_add_event_cb(ui_StandbyScreen, ui_event_StandbyScreen, LV_EVENT_ALL, NULL);
+    hour_hand = create_hand(ui_StandbyScreen, lv_color_black(), 18);
+    min_hand = create_hand(ui_StandbyScreen, lv_color_black(), 14);
+    sec_hand = create_hand(ui_StandbyScreen, lv_color_hex(0xE30613), 6);
+    sec_dot = lv_obj_create(ui_StandbyScreen);
+    lv_obj_set_width(sec_dot, 25);
+    lv_obj_set_height(sec_dot, 25);
+    lv_obj_set_align(sec_dot, LV_ALIGN_CENTER);
+    lv_obj_set_style_radius(sec_dot, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_bg_color(sec_dot, lv_color_hex(0xE30613), 0);
+    lv_obj_set_style_border_width(sec_dot, 0, 0);
+    lv_obj_clear_flag(sec_dot, LV_OBJ_FLAG_SCROLLABLE);
+    center_dot = lv_obj_create(ui_StandbyScreen);
+    lv_obj_set_width(center_dot, 10);
+    lv_obj_set_height(center_dot, 10);
+    lv_obj_set_align(center_dot, LV_ALIGN_CENTER);
+    lv_obj_set_style_radius(center_dot, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_bg_color(center_dot, lv_color_hex(0xE30613), 0);
+    lv_obj_set_style_border_width(center_dot, 0, 0);
+    lv_obj_clear_flag(center_dot, LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_add_event_cb(ui_StandbyScreen, ui_event_StandbyScreen, LV_EVENT_ALL,
+                        NULL);
 }
 
 void ui_StandbyScreen_screen_destroy(void) {
+    // Stop the clock timer before destroying the screen
     if (ui_StandbyScreen)
         lv_obj_del(ui_StandbyScreen);
 
-    // NULL screen variables
     ui_StandbyScreen = NULL;
     ui_StandbyScreen_logo = NULL;
+    hour_hand = NULL;
+    min_hand = NULL;
+    sec_hand = NULL;
+    sec_dot = NULL;
+    center_dot = NULL;
+    for (int i = 0; i < 60; i++) {
+        tick_lines[i] = NULL;
+    }
     ui_StandbyScreen_time = NULL;
     ui_StandbyScreen_statusContainer = NULL;
     ui_StandbyScreen_wifiIcon = NULL;

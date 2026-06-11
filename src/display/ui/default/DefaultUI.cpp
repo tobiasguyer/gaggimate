@@ -736,6 +736,13 @@ void DefaultUI::handleScreenChange() {
 
         _ui_screen_change(targetScreen, LV_SCR_LOAD_ANIM_NONE, 0, 0, targetScreenInit);
         lv_obj_del(current);
+
+        if (*targetScreen == ui_StandbyScreen) {
+            _ui_theme_set_variable_styles(UI_VARIABLE_STYLES_MODE_INIT,
+                                          ui_StandbyScreen,
+                                          standbyThemeMode);
+        }
+
         rerender = true;
     }
 }
@@ -757,15 +764,8 @@ void DefaultUI::updateStandbyScreen() {
         localtime_r(&now, &timeinfo);
         // allocate enough space for both 12h/24h time formats
         if (getLocalTime(&timeinfo, 500)) {
-            char time[9];
-            Settings &settings = controller->getSettings();
-            const char *format = settings.isClock24hFormat() ? "%H:%M" : "%I:%M %p";
-            strftime(time, sizeof(time), format, &timeinfo);
-            lv_label_set_text(ui_StandbyScreen_time, time);
-            lv_obj_clear_flag(ui_StandbyScreen_time, LV_OBJ_FLAG_HIDDEN);
-
-            christmasMode = (timeinfo.tm_mon == 11 && timeinfo.tm_mday < 27) || (timeinfo.tm_mon == 0 && timeinfo.tm_mday < 6);
-        }
+            
+            ui_Standby_screen_draw_sbb_clock(&timeinfo);}
     } else {
         lv_obj_add_flag(ui_StandbyScreen_time, LV_OBJ_FLAG_HIDDEN);
     }
@@ -931,14 +931,23 @@ inline void DefaultUI::adjustTempTarget(lv_obj_t *dials) {
 void DefaultUI::applyTheme() {
     const Settings &settings = controller->getSettings();
     int newThemeMode = settings.getThemeMode();
+    int newStandbyThemeMode = settings.getStandbyThemeMode();
 
-    if (newThemeMode != currentThemeMode) {
-        currentThemeMode = newThemeMode;
-        ui_theme_set(currentThemeMode);
+    bool themeChanged = (newThemeMode != currentThemeMode);
+    bool standbyThemeChanged = (newStandbyThemeMode != standbyThemeMode);
 
-        if (AmoledDisplayDriver::getInstance() == panelDriver && currentThemeMode == UI_THEME_DEFAULT) {
-            enable_amoled_black_theme_override(lv_disp_get_default());
-        }
+    if (!themeChanged && !standbyThemeChanged) return;
+
+    currentThemeMode = newThemeMode;
+    standbyThemeMode = newStandbyThemeMode;
+
+    ui_theme_idx = currentThemeMode;
+    _ui_theme_set_variable_styles(UI_VARIABLE_STYLES_MODE_FOLLOW, NULL, 0);
+
+    _ui_theme_set_variable_styles(UI_VARIABLE_STYLES_MODE_FOLLOW, ui_StandbyScreen, newStandbyThemeMode);
+
+    if (AmoledDisplayDriver::getInstance() == panelDriver && currentThemeMode == UI_THEME_DEFAULT) {
+        enable_amoled_black_theme_override(lv_disp_get_default());
     }
 }
 

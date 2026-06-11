@@ -53,10 +53,10 @@ void ui_object_set_local_style_property(lv_obj_t *object_p, lv_style_selector_t 
 void ui_object_set_themeable_style_property(lv_obj_t *object_p, lv_style_selector_t selector, lv_style_prop_t property,
                                             const ui_theme_variable_t *theme_variable_p);
 
-void _ui_theme_set_variable_styles(uint8_t mode);
+void _ui_theme_set_variable_styles(uint8_t mode, lv_obj_t *object_p, uint8_t ui_specific_theme_idx);
 
 lv_style_value_t _ui_style_value_convert(lv_style_prop_t property, ui_style_variable_t value);
-ui_style_variable_t ui_get_theme_value(const ui_theme_variable_t *var);
+ui_style_variable_t ui_get_theme_value(const ui_theme_variable_t *var, uint8_t theme_idx);
 
 _ui_local_style_t *_ui_local_style_create(const ui_style_variable_t *style_variable_p, bool is_themeable);
 

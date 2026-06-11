@@ -98,7 +98,8 @@ Settings::Settings() {
     standbyBrightness = preferences.getInt("standby_b", 8);
     standbyBrightnessTimeout = preferences.getInt("standby_bt", 60000);
     wifiApTimeout = preferences.getInt("wifi_apt", DEFAULT_WIFI_AP_TIMEOUT_MS);
-    themeMode = preferences.getInt("theme", 0);
+    themeMode = preferences.getInt("mtheme", 0);
+    standbyThemeMode = preferences.getInt("stheme", 0);
 
     // Sunrise settings
     sunriseR = preferences.getInt("sr_r", 0);
@@ -405,6 +406,10 @@ void Settings::setThemeMode(int theme_mode) {
     themeMode = theme_mode;
     save();
 }
+void Settings::setStandbyThemeMode(int standby_theme_mode) {
+    standbyThemeMode = standby_theme_mode;
+    save();
+}
 
 void Settings::setHistoryIndex(int history_index) {
     historyIndex = history_index;
@@ -585,7 +590,8 @@ void Settings::doSave() {
     preferences.putInt("standby_b", standbyBrightness);
     preferences.putInt("standby_bt", standbyBrightnessTimeout);
     preferences.putInt("wifi_apt", wifiApTimeout);
-    preferences.putInt("theme", themeMode);
+    preferences.putInt("mtheme", themeMode);
+    preferences.putInt("stheme", standbyThemeMode);
 
     // Sunrise Settings
     preferences.putString("sr_i", sunriseIdle);

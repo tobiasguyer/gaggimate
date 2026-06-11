@@ -637,6 +637,8 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
                 settings->setSteamPumpCutoff(request->arg("steamPumpCutoff").toFloat());
             if (request->hasArg("themeMode"))
                 settings->setThemeMode(request->arg("themeMode").toInt());
+            if (request->hasArg("standbyThemeMode"))
+                settings->setStandbyThemeMode(request->arg("standbyThemeMode").toInt());
             if (request->hasArg("sunriseIdle"))
                 settings->setSunriseIdle(request->arg("sunriseIdle"));
             if (request->hasArg("sunriseActive"))
@@ -756,6 +758,7 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
     doc["steamPumpPercentage"] = settings.getSteamPumpPercentage();
     doc["steamPumpCutoff"] = settings.getSteamPumpCutoff();
     doc["themeMode"] = settings.getThemeMode();
+    doc["standbyThemeMode"] = settings.getStandbyThemeMode();
     doc["sunriseIdle"] = settings.getSunriseIdle();
     doc["sunriseActive"] = settings.getSunriseActive();
     doc["sunriseFinished"] = settings.getSunriseFinished();
