@@ -12,31 +12,47 @@ export function ChartComponent({ data, className, chartClassName }) {
   useEffect(() => {
     if (!ref.current) return;
 
-    const newChart = new Chart(ref.current, data);
+    const chartConfig = {
+      ...data,
+      options: {
+        ...data.options,
+        plugins: {
+          // default OFF for ALL charts
+          dragData: false,
+
+          // allow per-chart override (radar will re-enable it)
+          ...(data.options?.plugins ?? {}),
+        },
+      },
+    };
+
+    const newChart = new Chart(ref.current, chartConfig);
     setChart(newChart);
 
-    // Cleanup function to destroy chart on unmount
     return () => {
-      if (newChart) {
-        newChart.destroy();
-      }
+      newChart.destroy();
     };
-  }, []); // Empty dependency array - only run on mount
+  }, []);
 
   // Update chart data when history changes
   useEffect(() => {
     if (!chart) return;
 
-    // Preserve dataset visibility state when updating data
     const hiddenDatasets = chart.data.datasets.map((dataset, index) => {
       return chart.getDatasetMeta(index).hidden;
     });
 
     chart.data = data.data;
-    chart.options = data.options;
 
-    // Restore dataset visibility state
-    chart.data.datasets.forEach((dataset, index) => {
+    chart.options = {
+      ...data.options,
+      plugins: {
+        dragData: false,
+        ...(data.options?.plugins ?? {}),
+      },
+    };
+
+    chart.data.datasets.forEach((_, index) => {
       if (hiddenDatasets[index] !== undefined) {
         chart.getDatasetMeta(index).hidden = hiddenDatasets[index];
       }
@@ -66,22 +82,15 @@ export function ChartComponent({ data, className, chartClassName }) {
     const handleResize = () => {
       const isSmallScreen = window.innerWidth < 640;
 
-      // Update legend font size
       ensureFont(['plugins', 'legend', 'labels']).font.size = isSmallScreen ? 10 : 12;
-
-      // Update title font size
       ensureFont(['plugins', 'title']).font.size = isSmallScreen ? 14 : 16;
-
-      // Update axis font sizes
       ensureFont(['scales', 'y', 'ticks']).font.size = isSmallScreen ? 10 : 12;
       ensureFont(['scales', 'y1', 'ticks']).font.size = isSmallScreen ? 10 : 12;
       ensureFont(['scales', 'x', 'ticks']).font.size = isSmallScreen ? 10 : 12;
 
-      // Update maxTicksLimit for x-axis
       const xTicks = ensureFont(['scales', 'x', 'ticks']);
       xTicks.maxTicksLimit = isSmallScreen ? 5 : 10;
 
-      // Force chart to resize and recalculate dimensions
       chart.resize();
 
       // Update the chart to apply changes
