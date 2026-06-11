@@ -1,8 +1,15 @@
 
+<p align="center">
+<img src="docs/assets/gaggimate_clock.gif" alt="Standby Screen" width="300px" />
+</p>
+
+This branch adds a analog clock to the standby display.
+
 This branch adds a new webpage to the gaggimate web interface
 
 ## Features
 
+- **Standby Clock**: Renders a SBB-like clock as standby display.
 - **Generate Profiles** based on predefined Archetypes
 - **Adapt Profiles** based on defined parameter like intended flavour, roast params etc.
 - **Simple Layout for Profiles**
@@ -21,11 +28,17 @@ cd <gaggimate>
 git remote add second_fork https://github.com/tobiasguyer/gaggimate.git 
 git fetch second_fork
 git checkout master
-git merge second_fork/generator
+git merge second_fork/all_features
+
 ```
 
 
 ## How to flash
+Easiest way to flash the Repo is with Visual Studio Code and platformio extension.\
+Open the folder in VSCode and choose the environement env:display(bottom menu).\
+Build and upload the code and your new kitchen clock is runnning :)
+
+## How to flash Filesystem (Web Interface)
 Easiest way to flash the Repo is with Visual Studio Code and platformio extension.\
 Open the folder in VSCode and choose the environement env:display(bottom menu).\
 Open up a new terminal in VSCode.
