@@ -197,6 +197,15 @@ export function Settings() {
         setFormData(newFormData);
         return;
       }
+      if(key === 'standbyStatus') {
+        value = !formData.standbyStatus;
+      }
+      if (key === 'standbyLogo') {
+        value = !formData.standbyLogo;
+      }
+      if (key === 'standbyTouchIcon') {
+        value = !formData.standbyTouchIcon;
+      }
       if (key === 'dashboardLayout') {
         setDashboardLayout(value);
       }

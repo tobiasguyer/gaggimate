@@ -590,6 +590,9 @@ void Settings::doSave() {
     preferences.putInt("wifi_apt", wifiApTimeout);
     preferences.putInt("mtheme", themeMode);
     preferences.putInt("stheme", standbyThemeMode);
+    preferences.putBool("slogo", standbyLogo);
+    preferences.putBool("sstatus", standbyStatus);
+    preferences.putBool("stouch", standbyTouchIcon);
 
     // Sunrise Settings
     preferences.putString("sr_i", sunriseIdle);
