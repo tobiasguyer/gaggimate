@@ -561,6 +561,9 @@ export function Settings() {
                 <option value={1}>Light Theme</option>
               </select>
             </SettingsFormField>
+          </Card>
+          {/* Standby Display Settings */}
+          <Card sm={10} lg={5} title='Standby Display Settings'>
             <SettingsFormField label='Standby Theme' htmlFor='themeMode' noMargin>
               <select
                 id='standbyThemeMode'
@@ -573,6 +576,27 @@ export function Settings() {
                 <option value={1}>Light Theme</option>
               </select>
             </SettingsFormField>
+            
+            <div className='grid grid-cols-1 gap-4'>
+              <ToggleField
+                label='Display Standby Logo'
+                htmlFor='standbyLogo'
+                checked={!!formData.standbyLogo}
+                onChange={onChange('standbyLogo')}
+              />
+              <ToggleField
+                label='Display Standby Status Container'
+                htmlFor='standbyStatus'
+                checked={!!formData.standbyStatus}
+                onChange={onChange('standbyStatus')}
+              />
+              <ToggleField
+                label='Display Standby Touch Icon'
+                htmlFor='standbyTouchIcon'
+                checked={!!formData.standbyTouchIcon}
+                onChange={onChange('standbyTouchIcon')}
+              />
+            </div>
           </Card>
 
           {/* User Preferences */}
