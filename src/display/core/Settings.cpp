@@ -100,6 +100,9 @@ Settings::Settings() {
     wifiApTimeout = preferences.getInt("wifi_apt", DEFAULT_WIFI_AP_TIMEOUT_MS);
     themeMode = preferences.getInt("mtheme", 0);
     standbyThemeMode = preferences.getInt("stheme", 0);
+    standbyLogo = preferences.getBool("slogo", false);
+    standbyStatus = preferences.getBool("sstatus", false);
+    standbyTouchIcon = preferences.getBool("stouch", false);
 
     // Sunrise settings
     sunriseR = preferences.getInt("sr_r", 0);
@@ -408,6 +411,21 @@ void Settings::setThemeMode(int theme_mode) {
 }
 void Settings::setStandbyThemeMode(int standby_theme_mode) {
     standbyThemeMode = standby_theme_mode;
+    save();
+}
+
+void Settings::setStandbyLogo(bool standby_logo) {
+    standbyLogo = standby_logo;
+    save();
+}
+
+void Settings::setStandbyStatus(bool standby_status) {
+    standbyStatus = standby_status;
+    save();
+}
+
+void Settings::setStandbyTouchIcon(bool standby_touch_icon) {
+    standbyTouchIcon = standby_touch_icon;
     save();
 }
 

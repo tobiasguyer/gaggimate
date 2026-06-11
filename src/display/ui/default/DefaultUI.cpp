@@ -551,9 +551,17 @@ void DefaultUI::setupReactive() {
                               } else {
                                   deactivated = !initialized;
                               }
+                              
+                              const Settings &settings = controller->getSettings();
                               _ui_flag_modify(ui_StandbyScreen_mainLabel, LV_OBJ_FLAG_HIDDEN, deactivated);
-                              _ui_flag_modify(ui_StandbyScreen_touchIcon, LV_OBJ_FLAG_HIDDEN, !deactivated);
-                              _ui_flag_modify(ui_StandbyScreen_statusContainer, LV_OBJ_FLAG_HIDDEN, !deactivated);
+                              _ui_flag_modify(ui_StandbyScreen_logo, LV_OBJ_FLAG_HIDDEN, settings.getStandbyLogo());
+                              if(!deactivated) {
+                                  _ui_flag_modify(ui_StandbyScreen_statusContainer, LV_OBJ_FLAG_HIDDEN, settings.getStandbyStatus());
+                                  _ui_flag_modify(ui_StandbyScreen_touchIcon, LV_OBJ_FLAG_HIDDEN, settings.getStandbyTouchIcon());
+                              } else {
+                                  _ui_flag_modify(ui_StandbyScreen_statusContainer, LV_OBJ_FLAG_HIDDEN, false);
+                                  _ui_flag_modify(ui_StandbyScreen_touchIcon, LV_OBJ_FLAG_HIDDEN, false);
+                              }
                           },
                           &updateAvailable, &error, &protocolMismatch, &autotuning, &waitingForController, &initialized);
     effect_mgr.use_effect([=] { return currentScreen == ui_BrewScreen; },
@@ -732,6 +740,8 @@ void DefaultUI::handleScreenChange() {
         } else if (current == ui_StandbyScreen) {
             const Settings &settings = controller->getSettings();
             setBrightness(settings.getMainBrightness());
+            setupStandbyScreen(settings.getStandbyLogo(), settings.getStandbyStatus(), settings.getStandbyTouchIcon());
+
         }
 
         _ui_screen_change(targetScreen, LV_SCR_LOAD_ANIM_NONE, 0, 0, targetScreenInit);
@@ -918,6 +928,24 @@ void DefaultUI::adjustDials(lv_obj_t *dials) {
     lv_obj_set_y(tempText, pressureAvailable ? -205 : -180);
     lv_arc_set_bg_angles(tempGauge, 118, pressureAvailable ? 242 : 62);
     lv_arc_set_range(pressureGauge, 0, pressureScaling * 10);
+}
+
+void DefaultUI::setupStandbyScreen(bool logo, bool status, bool touchicon) {
+    if(logo) {
+        lv_obj_add_flag(ui_StandbyScreen_logo, LV_OBJ_FLAG_HIDDEN);
+    } else {
+        lv_obj_clear_flag(ui_StandbyScreen_logo, LV_OBJ_FLAG_HIDDEN);
+    }
+    if(status) {
+        lv_obj_add_flag(ui_StandbyScreen_statusContainer, LV_OBJ_FLAG_HIDDEN);
+    } else {
+        lv_obj_clear_flag(ui_StandbyScreen_statusContainer, LV_OBJ_FLAG_HIDDEN);
+    }
+    if(touchicon) {
+        lv_obj_add_flag(ui_StandbyScreen_touchIcon, LV_OBJ_FLAG_HIDDEN);
+    } else {
+        lv_obj_clear_flag(ui_StandbyScreen_touchIcon, LV_OBJ_FLAG_HIDDEN);
+    }
 }
 
 inline void DefaultUI::adjustTempTarget(lv_obj_t *dials) {

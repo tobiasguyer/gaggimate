@@ -52,6 +52,8 @@ class DefaultUI {
 
     void applyTheme();
 
+    void setupStandbyScreen(bool logo, bool status, bool touchicon);
+
     bool isTaskHealthy() const {
         return is_task_healthy(eTaskGetState(taskHandle)) && is_task_healthy(eTaskGetState(profileTaskHandle));
     }

@@ -639,6 +639,12 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
                 settings->setThemeMode(request->arg("themeMode").toInt());
             if (request->hasArg("standbyThemeMode"))
                 settings->setStandbyThemeMode(request->arg("standbyThemeMode").toInt());
+            if (request->hasArg("standbyLogo"))
+                settings->setStandbyLogo(request->arg("standbyLogo"));
+            if (request->hasArg("standbyStatus"))
+                settings->setStandbyStatus(request->arg("standbyStatus"));
+            if (request->hasArg("standbyTouchIcon"))
+                settings->setStandbyTouchIcon(request->arg("standbyTouchIcon"));            
             if (request->hasArg("sunriseIdle"))
                 settings->setSunriseIdle(request->arg("sunriseIdle"));
             if (request->hasArg("sunriseActive"))
@@ -759,6 +765,9 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
     doc["steamPumpCutoff"] = settings.getSteamPumpCutoff();
     doc["themeMode"] = settings.getThemeMode();
     doc["standbyThemeMode"] = settings.getStandbyThemeMode();
+    doc["standbyLogo"] = settings.getStandbyLogo();
+    doc["standbyStatus"] = settings.getStandbyStatus();
+    doc["standbyTouchIcon"] = settings.getStandbyTouchIcon();
     doc["sunriseIdle"] = settings.getSunriseIdle();
     doc["sunriseActive"] = settings.getSunriseActive();
     doc["sunriseFinished"] = settings.getSunriseFinished();

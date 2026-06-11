@@ -104,6 +104,9 @@ class Settings {
     float getSteamPumpCutoff() const { return steamPumpCutoff; }
     int getThemeMode() const { return themeMode; }
     int getStandbyThemeMode() const { return standbyThemeMode; }
+    bool getStandbyLogo() const { return standbyLogo; }
+    bool getStandbyStatus() const { return standbyStatus; }
+    bool getStandbyTouchIcon() const { return standbyTouchIcon; }
     int getHistoryIndex() const { return historyIndex; }
 
     [[deprecated]]
@@ -195,6 +198,9 @@ class Settings {
     void setSteamPumpCutoff(float steam_pump_cutoff);
     void setThemeMode(int theme_mode);
     void setStandbyThemeMode(int standby_theme_mode);
+    void setStandbyLogo(bool standby_logo);
+    void setStandbyStatus(bool standby_status);
+    void setStandbyTouchIcon(bool standby_touchicon);
     void setHistoryIndex(int history_index);
     [[deprecated]]
     void setSunriseR(int sunrise_r);
@@ -281,6 +287,9 @@ class Settings {
     int wifiApTimeout = DEFAULT_WIFI_AP_TIMEOUT_MS;
     int themeMode = 0;
     int standbyThemeMode = 0;
+    bool standbyLogo = true;
+    bool standbyStatus = true;
+    bool standbyTouchIcon = true;
     // Sunrise settings
     int sunriseR = 0;
     int sunriseG = 0;
