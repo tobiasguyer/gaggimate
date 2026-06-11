@@ -58,14 +58,32 @@ static void drawClockTicks(lv_obj_t *parent) {
 
         tick_lines[i] = lv_line_create(parent);
         lv_line_set_points(tick_lines[i], tick_pts[i], 2);
-        lv_obj_set_style_line_color(tick_lines[i], lv_color_black(), 0);
+        lv_obj_add_flag(tick_lines[i], LV_OBJ_FLAG_ADV_HITTEST);
+        lv_obj_clear_flag(tick_lines[i], LV_OBJ_FLAG_SCROLLABLE);
+        ui_object_set_themeable_style_property(
+            tick_lines[i], LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_LINE_COLOR,
+            _ui_theme_color_NiceWhite);
+        ui_object_set_themeable_style_property(
+            tick_lines[i], LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_LINE_OPA,
+            _ui_theme_alpha_NiceWhite);
         lv_obj_set_style_line_width(tick_lines[i], width, 0);
         lv_obj_set_style_line_rounded(tick_lines[i], false, 0);
     }
 }
 static lv_obj_t *create_hand(lv_obj_t *parent, lv_color_t color, int width) {
     lv_obj_t *line = lv_line_create(parent);
-    lv_obj_set_style_line_color(line, color, 0);
+    if (width == 6) {
+        lv_obj_set_style_line_color(line, color, 0);
+    } else {
+        lv_obj_add_flag(line, LV_OBJ_FLAG_ADV_HITTEST);
+        lv_obj_clear_flag(line, LV_OBJ_FLAG_SCROLLABLE);
+        ui_object_set_themeable_style_property(
+            line, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_LINE_COLOR,
+            _ui_theme_color_NiceWhite);
+        ui_object_set_themeable_style_property(
+            line, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_LINE_OPA,
+            _ui_theme_alpha_NiceWhite);
+    }
     lv_obj_set_style_line_width(line, width, 0);
     lv_obj_set_style_line_rounded(line, false, 0);
 
@@ -143,10 +161,6 @@ void ui_StandbyScreen_screen_init(void) {
         ui_StandbyScreen, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_COLOR,
         _ui_theme_color_Dark);
 
-    ui_object_set_themeable_style_property(
-        ui_StandbyScreen, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_COLOR,
-        _ui_theme_color_NiceWhite);
-
     // Start 1-second refresh timer
     // clock_timer = lv_timer_create(clock_timer_cb, 1000, NULL);
 
@@ -185,12 +199,6 @@ void ui_StandbyScreen_screen_init(void) {
     lv_obj_add_flag(ui_StandbyScreen_statusContainer, LV_OBJ_FLAG_HIDDEN);
     lv_obj_clear_flag(ui_StandbyScreen_statusContainer,
                       LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
-    ui_object_set_themeable_style_property(
-        ui_StandbyScreen_statusContainer, LV_PART_MAIN | LV_STATE_DEFAULT,
-        LV_STYLE_TEXT_COLOR, _ui_theme_color_NiceWhite);
-    ui_object_set_themeable_style_property(
-        ui_StandbyScreen_statusContainer, LV_PART_MAIN | LV_STATE_DEFAULT,
-        LV_STYLE_TEXT_OPA, _ui_theme_alpha_NiceWhite);
 
     // wifi icon
     ui_StandbyScreen_wifiIcon = lv_img_create(ui_StandbyScreen_statusContainer);
@@ -204,19 +212,18 @@ void ui_StandbyScreen_screen_init(void) {
     lv_obj_clear_flag(ui_StandbyScreen_wifiIcon, LV_OBJ_FLAG_SCROLLABLE);
     ui_object_set_themeable_style_property(
         ui_StandbyScreen_wifiIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
-        LV_STYLE_BORDER_COLOR, _ui_theme_color_NiceWhite);
-    ui_object_set_themeable_style_property(
-        ui_StandbyScreen_wifiIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
-        LV_STYLE_BORDER_OPA, _ui_theme_alpha_NiceWhite);
-    lv_obj_set_style_border_width(ui_StandbyScreen_wifiIcon, 10,
-                                  LV_PART_MAIN | LV_STATE_DEFAULT);
-
-    ui_object_set_themeable_style_property(
-        ui_StandbyScreen_wifiIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
-        LV_STYLE_BORDER_COLOR, _ui_theme_color_NiceWhite);
+        LV_STYLE_BORDER_COLOR, _ui_theme_color_Dark);
     ui_object_set_themeable_style_property(
         ui_StandbyScreen_wifiIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
         LV_STYLE_BORDER_OPA, _ui_theme_alpha_Dark);
+    lv_obj_set_style_border_width(ui_StandbyScreen_wifiIcon, 10,
+                                  LV_PART_MAIN | LV_STATE_DEFAULT);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_wifiIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR, _ui_theme_color_NiceWhite);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_wifiIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR_OPA, _ui_theme_alpha_NiceWhite);
 
     // bluetooth icon
     ui_StandbyScreen_bluetoothIcon =
@@ -231,18 +238,18 @@ void ui_StandbyScreen_screen_init(void) {
     lv_obj_clear_flag(ui_StandbyScreen_bluetoothIcon, LV_OBJ_FLAG_SCROLLABLE);
     ui_object_set_themeable_style_property(
         ui_StandbyScreen_bluetoothIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
-        LV_STYLE_BORDER_COLOR, _ui_theme_color_NiceWhite);
+        LV_STYLE_BORDER_COLOR, _ui_theme_color_Dark);
     ui_object_set_themeable_style_property(
         ui_StandbyScreen_bluetoothIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
-        LV_STYLE_BORDER_OPA, _ui_theme_alpha_NiceWhite);
+        LV_STYLE_BORDER_OPA, _ui_theme_alpha_Dark);
     lv_obj_set_style_border_width(ui_StandbyScreen_bluetoothIcon, 10,
                                   LV_PART_MAIN | LV_STATE_DEFAULT);
     ui_object_set_themeable_style_property(
         ui_StandbyScreen_bluetoothIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
-        LV_STYLE_IMG_RECOLOR, _ui_theme_color_Dark);
+        LV_STYLE_IMG_RECOLOR, _ui_theme_color_NiceWhite);
     ui_object_set_themeable_style_property(
         ui_StandbyScreen_bluetoothIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
-        LV_STYLE_IMG_RECOLOR_OPA, _ui_theme_alpha_Dark);
+        LV_STYLE_IMG_RECOLOR_OPA, _ui_theme_alpha_NiceWhite);
 
     // update icon
     ui_StandbyScreen_updateIcon =
@@ -261,6 +268,15 @@ void ui_StandbyScreen_screen_init(void) {
     ui_object_set_themeable_style_property(
         ui_StandbyScreen_updateIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
         LV_STYLE_BORDER_OPA, _ui_theme_alpha_Dark);
+    lv_obj_set_style_border_width(ui_StandbyScreen_updateIcon, 10,
+                                  LV_PART_MAIN | LV_STATE_DEFAULT);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_updateIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR, _ui_theme_color_NiceWhite);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_updateIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR_OPA, _ui_theme_alpha_NiceWhite);
+
     drawClockTicks(ui_StandbyScreen);
     // touch icon
     ui_StandbyScreen_touchIcon = lv_img_create(ui_StandbyScreen);
@@ -276,10 +292,10 @@ void ui_StandbyScreen_screen_init(void) {
     lv_img_set_zoom(ui_StandbyScreen_touchIcon, 210);
     ui_object_set_themeable_style_property(
         ui_StandbyScreen_touchIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
-        LV_STYLE_IMG_RECOLOR, _ui_theme_color_Dark);
+        LV_STYLE_IMG_RECOLOR, _ui_theme_color_NiceWhite);
     ui_object_set_themeable_style_property(
         ui_StandbyScreen_touchIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
-        LV_STYLE_IMG_RECOLOR_OPA, _ui_theme_alpha_Dark);
+        LV_STYLE_IMG_RECOLOR_OPA, _ui_theme_alpha_NiceWhite);
 
     // main label
 
@@ -292,10 +308,12 @@ void ui_StandbyScreen_screen_init(void) {
     lv_obj_add_flag(ui_StandbyScreen_logo, LV_OBJ_FLAG_ADV_HITTEST);  /// Flags
     lv_obj_clear_flag(ui_StandbyScreen_logo, LV_OBJ_FLAG_SCROLLABLE); /// Flags
     lv_img_set_zoom(ui_StandbyScreen_logo, 80);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_logo, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_IMG_RECOLOR,
-                                           _ui_theme_color_Dark);
-    ui_object_set_themeable_style_property(ui_StandbyScreen_logo, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_IMG_RECOLOR_OPA,
-                                           _ui_theme_alpha_NiceWhite);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_logo, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR, _ui_theme_color_NiceWhite);
+    ui_object_set_themeable_style_property(
+        ui_StandbyScreen_logo, LV_PART_MAIN | LV_STATE_DEFAULT,
+        LV_STYLE_IMG_RECOLOR_OPA, _ui_theme_alpha_Dark);
     ui_StandbyScreen_mainLabel = lv_label_create(ui_StandbyScreen);
     lv_obj_set_width(ui_StandbyScreen_mainLabel, LV_SIZE_CONTENT);
     lv_obj_set_height(ui_StandbyScreen_mainLabel, LV_SIZE_CONTENT);
@@ -305,10 +323,10 @@ void ui_StandbyScreen_screen_init(void) {
     lv_label_set_text(ui_StandbyScreen_mainLabel, "Starting...");
     ui_object_set_themeable_style_property(
         ui_StandbyScreen_mainLabel, LV_PART_MAIN | LV_STATE_DEFAULT,
-        LV_STYLE_TEXT_COLOR, _ui_theme_color_Dark);
+        LV_STYLE_TEXT_COLOR, _ui_theme_color_NiceWhite);
     ui_object_set_themeable_style_property(
         ui_StandbyScreen_mainLabel, LV_PART_MAIN | LV_STATE_DEFAULT,
-        LV_STYLE_TEXT_OPA, _ui_theme_alpha_Dark);
+        LV_STYLE_TEXT_OPA, _ui_theme_alpha_NiceWhite);
     lv_obj_set_style_text_font(ui_StandbyScreen_mainLabel,
                                &lv_font_montserrat_20,
                                LV_PART_MAIN | LV_STATE_DEFAULT);
@@ -351,7 +369,6 @@ void ui_StandbyScreen_screen_destroy(void) {
     for (int i = 0; i < 60; i++) {
         tick_lines[i] = NULL;
     }
-
     ui_StandbyScreen_time = NULL;
     ui_StandbyScreen_statusContainer = NULL;
     ui_StandbyScreen_wifiIcon = NULL;

@@ -100,6 +100,7 @@ class Settings {
     float getSteamPumpPercentage() const { return steamPumpPercentage; }
     float getSteamPumpCutoff() const { return steamPumpCutoff; }
     int getThemeMode() const { return themeMode; }
+    int getStandbyThemeMode() const { return standbyThemeMode; }
     int getHistoryIndex() const { return historyIndex; }
 
     [[deprecated]]
@@ -187,6 +188,7 @@ class Settings {
     void setSteamPumpPercentage(float steam_pump_percentage);
     void setSteamPumpCutoff(float steam_pump_cutoff);
     void setThemeMode(int theme_mode);
+    void setStandbyThemeMode(int standby_theme_mode);
     void setHistoryIndex(int history_index);
     [[deprecated]]
     void setSunriseR(int sunrise_r);
@@ -269,7 +271,7 @@ class Settings {
     int standbyBrightnessTimeout = 60000; // 60 seconds default
     int wifiApTimeout = DEFAULT_WIFI_AP_TIMEOUT_MS;
     int themeMode = 0;
-
+    int standbyThemeMode = 0;
     // Sunrise settings
     int sunriseR = 0;
     int sunriseG = 0;

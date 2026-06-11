@@ -32,27 +32,32 @@ void ui_object_set_themeable_style_property(lv_obj_t *object_p, lv_style_selecto
         return;
 
     lv_obj_set_local_style_prop(
-        object_p, property, _ui_style_value_convert(property, ui_get_theme_value(theme_variable_p)),
+        object_p, property, _ui_style_value_convert(property, ui_get_theme_value(theme_variable_p, ui_theme_idx)),
         selector); // ui_object_set_local_style_property( object_p, selector, property, ui_get_theme_value(theme_variable_p) );
 }
 
 // This function goes through all registered style-property settings and if theme is changed, sets all of them to the theme. (If
 // called periodically, it can follow change of values automatically.)
-void _ui_theme_set_variable_styles(uint8_t mode) {
+void _ui_theme_set_variable_styles(uint8_t mode, lv_obj_t *target_screen, uint8_t ui_specific_theme_idx) {
     static uint8_t ui_theme_idx_previous = -1;
+    static uint8_t ui_specific_theme_idx_previous = -1;
     static uint32_t i, j;
     static _ui_local_style_property_setting_t *property_setting_p;
     static ui_style_variable_t style_value;
     static ui_style_variable_t *style_variable_p;
 
     uint8_t ui_Theme_Changed = (ui_theme_idx != ui_theme_idx_previous);
-    ui_theme_idx_previous = ui_theme_idx;
+    if(target_screen == NULL) ui_theme_idx_previous = ui_theme_idx;
+    else ui_Theme_Changed = true;
 
     for (i = 0; i < _ui_local_style_count; ++i) {
 
         style_variable_p = _ui_local_styles[i].style_variable_p;
-        if (_ui_local_styles[i].is_themeable)
-            style_value = ui_get_theme_value(style_variable_p);
+        if (_ui_local_styles[i].is_themeable){
+            if(target_screen == NULL) 
+                style_value = ui_get_theme_value(style_variable_p, ui_theme_idx);
+            else style_value = ui_get_theme_value(style_variable_p, ui_specific_theme_idx);
+        }
         else
             style_value = *style_variable_p;
 
@@ -64,7 +69,8 @@ void _ui_theme_set_variable_styles(uint8_t mode) {
             property_setting_p = _ui_local_styles[i].style_property_settings; // first item of linked list
             for (j = 0; j < _ui_local_styles[i].style_property_setting_count; ++j) {
                 if (property_setting_p->object_p != NULL) {
-                    ui_object_set_local_style_property(property_setting_p->object_p, property_setting_p->selector,
+                    if(target_screen != NULL && lv_obj_get_screen(property_setting_p->object_p) == target_screen)
+                        ui_object_set_local_style_property(property_setting_p->object_p, property_setting_p->selector,
                                                        property_setting_p->property, style_value);
                 }
                 if (property_setting_p->next_p != NULL)
@@ -77,7 +83,7 @@ void _ui_theme_set_variable_styles(uint8_t mode) {
     }
 }
 
-ui_style_variable_t ui_get_theme_value(const ui_theme_variable_t *var) { return var[ui_theme_idx]; }
+ui_style_variable_t ui_get_theme_value(const ui_theme_variable_t *var, uint8_t ui_theme_idx_ = ui_theme_idx) { return var[ui_theme_idx_]; }
 
 lv_style_value_t _ui_style_value_convert(lv_style_prop_t property, ui_style_variable_t value) {
     static lv_style_value_t

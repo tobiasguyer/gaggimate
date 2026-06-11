@@ -23,5 +23,5 @@ uint8_t ui_theme_idx = UI_THEME_DEFAULT;
 
 void ui_theme_set(uint8_t theme_idx) {
     ui_theme_idx = theme_idx;
-    _ui_theme_set_variable_styles(UI_VARIABLE_STYLES_MODE_FOLLOW);
+    _ui_theme_set_variable_styles(UI_VARIABLE_STYLES_MODE_FOLLOW, NULL, theme_idx);
 }

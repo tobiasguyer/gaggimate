@@ -723,6 +723,13 @@ void DefaultUI::handleScreenChange() {
 
         _ui_screen_change(targetScreen, LV_SCR_LOAD_ANIM_NONE, 0, 0, targetScreenInit);
         lv_obj_del(current);
+
+        if (*targetScreen == ui_StandbyScreen) {
+            _ui_theme_set_variable_styles(UI_VARIABLE_STYLES_MODE_INIT,
+                                          ui_StandbyScreen,
+                                          standbyThemeMode);
+        }
+
         rerender = true;
     }
 }
@@ -911,14 +918,23 @@ inline void DefaultUI::adjustTempTarget(lv_obj_t *dials) {
 void DefaultUI::applyTheme() {
     const Settings &settings = controller->getSettings();
     int newThemeMode = settings.getThemeMode();
+    int newStandbyThemeMode = settings.getStandbyThemeMode();
 
-    if (newThemeMode != currentThemeMode) {
-        currentThemeMode = newThemeMode;
-        ui_theme_set(currentThemeMode);
+    bool themeChanged = (newThemeMode != currentThemeMode);
+    bool standbyThemeChanged = (newStandbyThemeMode != standbyThemeMode);
 
-        if (AmoledDisplayDriver::getInstance() == panelDriver && currentThemeMode == UI_THEME_DEFAULT) {
-            enable_amoled_black_theme_override(lv_disp_get_default());
-        }
+    if (!themeChanged && !standbyThemeChanged) return;
+
+    currentThemeMode = newThemeMode;
+    standbyThemeMode = newStandbyThemeMode;
+
+    ui_theme_idx = currentThemeMode;
+    _ui_theme_set_variable_styles(UI_VARIABLE_STYLES_MODE_FOLLOW, NULL, 0);
+
+    _ui_theme_set_variable_styles(UI_VARIABLE_STYLES_MODE_FOLLOW, ui_StandbyScreen, newStandbyThemeMode);
+
+    if (AmoledDisplayDriver::getInstance() == panelDriver && currentThemeMode == UI_THEME_DEFAULT) {
+        enable_amoled_black_theme_override(lv_disp_get_default());
     }
 }
 
