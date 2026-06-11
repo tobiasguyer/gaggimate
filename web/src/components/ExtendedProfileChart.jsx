@@ -132,8 +132,9 @@ function resolvePhaseFromTime(phases, xTime, field) {
  * @param {function|null} onFlowDrag     – ({ phaseIndex, field:'flow',     value }) => void
  */
 function makeChartData(data, selectedPhase, isDarkMode, onPressureDrag, onFlowDrag) {
+  const phases = Array.isArray(data?.phases) ? data.phases : [];
   let duration = 0;
-  for (const phase of data.phases) duration += parseFloat(phase.duration);
+  for (const phase of phases) duration += Number.parseFloat(phase.duration);
 
   const pressureData = prepareData(data.phases, 'pressure');
   const flowData = prepareData(data.phases, 'flow');
