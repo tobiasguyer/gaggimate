@@ -6,6 +6,53 @@
 
 #include "../ui.h"
 #include <math.h>
+#include <stdio.h>
+
+// --- New Timer Types & States ---
+typedef enum {
+    TIMER_STATE_IDLE,
+    TIMER_STATE_EDITING,
+    TIMER_STATE_RUNNING,
+    TIMER_STATE_FINISHED
+} timer_state_t;
+
+typedef enum {
+    EDIT_FIELD_HOURS,
+    EDIT_FIELD_MINUTES,
+    EDIT_FIELD_SECONDS
+} edit_field_t;
+
+static timer_state_t current_state = TIMER_STATE_IDLE;
+static edit_field_t current_edit_field = EDIT_FIELD_SECONDS;
+
+// Duration values
+static int32_t edit_h = 0;
+static int32_t edit_m = 0;
+static int32_t edit_s = 0;
+static int32_t total_duration_secs = 0;
+static int32_t remaining_secs = 0;
+
+// New UI Objects
+static lv_obj_t *ui_timer_container = NULL;
+static lv_obj_t *ui_btn_up = NULL;
+static lv_obj_t *ui_btn_down = NULL;
+static lv_obj_t *ui_btn_set = NULL;
+static lv_obj_t *ui_lbl_h = NULL;
+static lv_obj_t *ui_lbl_m = NULL;
+static lv_obj_t *ui_lbl_s = NULL;
+static lv_obj_t *ui_lbl_colon1 = NULL;
+static lv_obj_t *ui_lbl_colon2 = NULL;
+static lv_obj_t *ui_timer_arc = NULL;
+static lv_timer_t *timer_countdown_job = NULL;
+
+// Forward Declarations
+static void update_edit_labels_display(void);
+static void timer_countdown_cb(lv_timer_t * t);
+
+void ui_Standby_Timer_Blink_Processor(void);
+// --------------------------------------------------------------------------
+// UI Interactivity & Event Handlers
+// --------------------------------------------------------------------------
 
 lv_obj_t *ui_StandbyScreen = NULL;
 lv_obj_t *ui_StandbyScreen_time = NULL;
@@ -31,8 +78,8 @@ static lv_obj_t *center_dot;
 // --------------------------------------------------------------------------
 #define CLOCK_SIZE 240 // canvas px (square)
 #define CLOCK_R 360    // outer radius
-#define CLOCK_CX 240   // centre x
-#define CLOCK_CY 240   // centre y
+uint16_t CLOCK_CX = 240;   // centre x
+uint16_t CLOCK_CY = 240;  // centre y
 static void drawClockTicks(lv_obj_t *parent) {
     for (int i = 0; i < 60; i++) {
         float angle_deg = i * 6.0f;
@@ -51,10 +98,10 @@ static void drawClockTicks(lv_obj_t *parent) {
             width = 5;
         }
 
-        tick_pts[i][0].x = (int32_t)(240 + inner_r * cosf(rad));
-        tick_pts[i][0].y = (int32_t)(240 + inner_r * sinf(rad));
-        tick_pts[i][1].x = (int32_t)(240 + outer_r * cosf(rad));
-        tick_pts[i][1].y = (int32_t)(240 + outer_r * sinf(rad));
+        tick_pts[i][0].x = (int32_t)(CLOCK_CX + inner_r * cosf(rad));
+        tick_pts[i][0].y = (int32_t)(CLOCK_CY + inner_r * sinf(rad));
+        tick_pts[i][1].x = (int32_t)(CLOCK_CX + outer_r * cosf(rad));
+        tick_pts[i][1].y = (int32_t)(CLOCK_CY + outer_r * sinf(rad));
 
         tick_lines[i] = lv_line_create(parent);
         lv_line_set_points(tick_lines[i], tick_pts[i], 2);
@@ -100,6 +147,7 @@ static void polar_to_xy(float angle_deg, float radius, int32_t *x_out,
 }
 
 void ui_Standby_screen_draw_sbb_clock(const struct tm *t) {
+    ui_Standby_Timer_Blink_Processor();
     int h = t->tm_hour % 12;
     int m = t->tm_min;
     int s = t->tm_sec;
@@ -117,8 +165,7 @@ void ui_Standby_screen_draw_sbb_clock(const struct tm *t) {
     sec_pts[0] = (lv_point_t){x1, y1};
     sec_pts[1] = (lv_point_t){x2, y2};
     lv_line_set_points(sec_hand, sec_pts, 2);
-    lv_obj_set_pos(sec_dot, x2 - 240,
-                   y2 - 240); // Offset by half-width (radius)
+    lv_obj_set_pos(sec_dot, x2 - CLOCK_CX, y2 - CLOCK_CY);
 
     // --- MIN HAND ---
     polar_to_xy(min_angle, 215, &x2, &y2);
@@ -145,10 +192,268 @@ void ui_event_StandbyScreen(lv_event_t *e) {
     }
 }
 
+static void update_edit_labels_display(void) {
+    char buf[8];
+    sprintf(buf, "%02d", edit_h);
+    lv_label_set_text(ui_lbl_h, buf);
+    sprintf(buf, "%02d", edit_m);
+    lv_label_set_text(ui_lbl_m, buf);
+    sprintf(buf, "%02d", edit_s);
+    lv_label_set_text(ui_lbl_s, buf);
+
+    // Highlight active element selection
+    lv_obj_set_style_text_color(ui_lbl_h, (current_edit_field == EDIT_FIELD_HOURS) ? lv_color_hex(0xE30613) : lv_color_white(), 0);
+    lv_obj_set_style_text_color(ui_lbl_m, (current_edit_field == EDIT_FIELD_MINUTES) ? lv_color_hex(0xE30613) : lv_color_white(), 0);
+    lv_obj_set_style_text_color(ui_lbl_s, (current_edit_field == EDIT_FIELD_SECONDS) ? lv_color_hex(0xE30613) : lv_color_white(), 0);
+}
+
+static void field_click_cb(lv_event_t * e) {
+    lv_obj_t * target = lv_event_get_target(e);
+    if(target == ui_lbl_h) current_edit_field = EDIT_FIELD_HOURS;
+    else if(target == ui_lbl_m) current_edit_field = EDIT_FIELD_MINUTES;
+    else if(target == ui_lbl_s) current_edit_field = EDIT_FIELD_SECONDS;
+    update_edit_labels_display();
+}
+
+static void arrow_click_cb(lv_event_t * e) {
+    lv_obj_t * target = lv_event_get_target(e);
+    int delta = (target == ui_btn_up) ? 1 : -1;
+
+    if(current_edit_field == EDIT_FIELD_HOURS) {
+        edit_h = (edit_h + delta + 24) % 24;
+    } else if(current_edit_field == EDIT_FIELD_MINUTES) {
+        edit_m = (edit_m + delta + 60) % 60;
+    } else if(current_edit_field == EDIT_FIELD_SECONDS) {
+        edit_s = (edit_s + delta + 60) % 60;
+    }
+    update_edit_labels_display();
+}
+
+static void set_click_cb(lv_event_t * e) {
+    total_duration_secs = (edit_h * 3600) + (edit_m * 60) + edit_s;
+    if(total_duration_secs <= 0) return; // Prevent zero second runs
+
+    remaining_secs = total_duration_secs;
+    current_state = TIMER_STATE_RUNNING;
+
+    // Transition elements visibility
+    lv_obj_add_flag(ui_btn_up, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_btn_down, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_btn_set, LV_OBJ_FLAG_HIDDEN);
+
+    // Clear dynamic styles to lock uniform run colors
+    lv_obj_set_style_text_color(ui_lbl_h, lv_color_white(), 0);
+    lv_obj_set_style_text_color(ui_lbl_m, lv_color_white(), 0);
+    lv_obj_set_style_text_color(ui_lbl_s, lv_color_white(), 0);
+
+    // Configure and reveal Dial Track Arc
+    lv_arc_set_value(ui_timer_arc, 360);
+    lv_obj_clear_flag(ui_timer_arc, LV_OBJ_FLAG_HIDDEN);
+
+    // Start running high-priority loop ticking
+    if(!timer_countdown_job) {
+        timer_countdown_job = lv_timer_create(timer_countdown_cb, 1000, NULL);
+    } else {
+        lv_timer_resume(timer_countdown_job);
+    }
+}
+
+// Global Touch Icon trigger target callback inside main code
+void ui_event_TouchIcon_Clicked(lv_event_t * e) {
+    if(current_state == TIMER_STATE_IDLE) {
+        current_state = TIMER_STATE_EDITING;
+        lv_obj_add_flag(ui_StandbyScreen_touchIcon, LV_OBJ_FLAG_HIDDEN);
+        
+        // Show editing structure components
+        lv_obj_clear_flag(ui_timer_container, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(ui_btn_up, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(ui_btn_down, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_clear_flag(ui_btn_set, LV_OBJ_FLAG_HIDDEN);
+        
+        current_edit_field = EDIT_FIELD_SECONDS; // Default focus target
+        update_edit_labels_display();
+    }
+}
+
+// Container click to handle clearing completed alert
+static void container_click_cb(lv_event_t * e) {
+    if(current_state == TIMER_STATE_FINISHED) {
+        current_state = TIMER_STATE_IDLE;
+        
+        // Clean layout resets
+        lv_obj_add_flag(ui_timer_container, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_set_style_opa(ui_timer_container, LV_OPA_COVER, 0); // Remove Blink visibility attributes
+        lv_obj_add_flag(ui_timer_arc, LV_OBJ_FLAG_HIDDEN);
+        
+        // Reset defaults variables 
+        edit_h = 0; edit_m = 0; edit_s = 0;
+
+        // Bring back standby Touch Icon target
+        lv_obj_clear_flag(ui_StandbyScreen_touchIcon, LV_OBJ_FLAG_HIDDEN);
+    }
+}
+
+// --------------------------------------------------------------------------
+// Core Runtime Processing Logic
+// --------------------------------------------------------------------------
+
+static void timer_countdown_cb(lv_timer_t * t) {
+    if(current_state != TIMER_STATE_RUNNING) return;
+
+    remaining_secs--;
+
+    if(remaining_secs <= 0) {
+        // Complete execution state
+        current_state = TIMER_STATE_FINISHED;
+        lv_arc_set_value(ui_timer_arc, 0);
+        lv_timer_pause(timer_countdown_job);
+        return;
+    }
+
+    // Refresh digits numbers
+    int32_t h = remaining_secs / 3600;
+    int32_t m = (remaining_secs % 3600) / 60;
+    int32_t s = remaining_secs % 60;
+
+    char buf[8];
+    sprintf(buf, "%02d", h); lv_label_set_text(ui_lbl_h, buf);
+    sprintf(buf, "%02d", m); lv_label_set_text(ui_lbl_m, buf);
+    sprintf(buf, "%02d", s); lv_label_set_text(ui_lbl_s, buf);
+
+    // Sync Red Visual Arc representation (360 -> 0 Degrees tracking layout)
+    int32_t arc_val = (remaining_secs * 360) / total_duration_secs;
+    lv_arc_set_value(ui_timer_arc, arc_val);
+}
+
+// Inject inside your system update tickers execution threads loop (e.g. 100ms / 500ms loop context)
+void ui_Standby_Timer_Blink_Processor(void) {
+    if(current_state == TIMER_STATE_FINISHED) {
+        // Handle alternating blinking visibility
+        static uint32_t last_toggle = 0;
+        if(lv_tick_elaps(last_toggle) > 500) {
+            last_toggle = lv_tick_get();
+            lv_opa_t current_opa = lv_obj_get_style_opa(ui_timer_container, 0);
+            lv_obj_set_style_opa(ui_timer_container, (current_opa == LV_OPA_TRANSP) ? LV_OPA_COVER : LV_OPA_TRANSP, 0);
+        }
+    }
+}
+
+// --------------------------------------------------------------------------
+// Layout Construction Instantiation
+// --------------------------------------------------------------------------
+
+void ui_Init_Timer_Addon(lv_obj_t *parent) {
+    // 1. Red Progress Ring Overlay (Layered right above SBB ticks)
+    ui_timer_arc = lv_arc_create(parent);
+    lv_obj_set_size(ui_timer_arc, 450, 450); // Covers ticks (outer_r = 220)
+    lv_obj_center(ui_timer_arc);
+    lv_arc_set_rotation(ui_timer_arc, 270); // Starts right at 12 o'clock top
+    lv_arc_set_bg_angles(ui_timer_arc, 0, 360);
+    lv_arc_set_range(ui_timer_arc, 0, 360);
+    lv_obj_add_flag(ui_timer_arc, LV_OBJ_FLAG_HIDDEN);
+    
+    // Clear back styling tracks out to show only custom running values
+    lv_obj_set_style_arc_width(ui_timer_arc, 0, LV_PART_MAIN); 
+    lv_obj_set_style_arc_width(ui_timer_arc, 3, LV_PART_INDICATOR);
+    lv_obj_set_style_arc_color(ui_timer_arc, lv_color_hex(0xE30613), LV_PART_INDICATOR);
+    lv_obj_remove_style(ui_timer_arc, NULL, LV_PART_KNOB); // Hide standard drag-knobs
+
+    // 2. Base Container for Countdown Elements (Where TouchIcon rests at Y: 120)
+    ui_timer_container = lv_obj_create(parent);
+    lv_obj_remove_style_all(ui_timer_container);
+    lv_obj_set_size(ui_timer_container, 200, 60);
+    lv_obj_set_pos(ui_timer_container, 0, 120);
+    lv_obj_set_align(ui_timer_container, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_timer_container, LV_OBJ_FLAG_HIDDEN);
+    lv_obj_add_flag(ui_timer_container, LV_OBJ_FLAG_CLICKABLE);
+    lv_obj_add_event_cb(ui_timer_container, container_click_cb, LV_EVENT_CLICKED, NULL);
+
+    // Flex items positioning layout for digits
+    lv_obj_set_flex_flow(ui_timer_container, LV_FLEX_FLOW_ROW);
+    lv_obj_set_flex_align(ui_timer_container, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+
+    // Init Label Digits
+    ui_lbl_h = lv_label_create(ui_timer_container);
+    ui_lbl_colon1 = lv_label_create(ui_timer_container);
+    ui_lbl_m = lv_label_create(ui_timer_container);
+    ui_lbl_colon2 = lv_label_create(ui_timer_container);
+    ui_lbl_s = lv_label_create(ui_timer_container);
+
+    lv_label_set_text(ui_lbl_colon1, ":");
+    lv_label_set_text(ui_lbl_colon2, ":");
+
+    lv_obj_t *labels[] = {ui_lbl_h, ui_lbl_colon1, ui_lbl_m, ui_lbl_colon2, ui_lbl_s};
+    for(int i = 0; i < 5; i++) {
+        lv_obj_set_style_text_font(labels[i], &lv_font_montserrat_24, 0);
+        lv_obj_set_style_text_color(labels[i], lv_color_white(), 0);
+        if(i % 2 == 0) { // Make editable fields interactive
+            lv_obj_add_flag(labels[i], LV_OBJ_FLAG_CLICKABLE);
+            lv_obj_add_event_cb(labels[i], field_click_cb, LV_EVENT_CLICKED, NULL);
+        }
+    }
+
+    // 3. Arrow Control Buttons (Offset right and left borders gracefully)
+    ui_btn_up = lv_btn_create(parent);
+    lv_obj_set_size(ui_btn_up, 45, 40);
+    lv_obj_set_pos(ui_btn_up, -110, 120);
+    lv_obj_set_align(ui_btn_up, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_btn_up, LV_OBJ_FLAG_HIDDEN);
+    ui_object_set_themeable_style_property(
+        ui_btn_up, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_COLOR,
+        _ui_theme_color_Dark
+    );
+    ui_object_set_themeable_style_property(
+        ui_btn_up, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_OPA,
+        _ui_theme_alpha_Dark
+    );
+    lv_obj_t *lbl_up = lv_label_create(ui_btn_up);
+    lv_label_set_text(lbl_up, LV_SYMBOL_UP);
+    lv_obj_center(lbl_up);
+    lv_obj_add_event_cb(ui_btn_up, arrow_click_cb, LV_EVENT_CLICKED, NULL);
+    ui_btn_down = lv_btn_create(parent);
+    lv_obj_set_size(ui_btn_down, 45, 40);
+    lv_obj_set_pos(ui_btn_down, 110, 120);
+    lv_obj_set_align(ui_btn_down, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_btn_down, LV_OBJ_FLAG_HIDDEN);
+    ui_object_set_themeable_style_property(
+        ui_btn_down, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_COLOR,
+        _ui_theme_color_Dark
+    );
+    ui_object_set_themeable_style_property(
+        ui_btn_down, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_OPA,
+        _ui_theme_alpha_Dark
+    );
+    lv_obj_t *lbl_down = lv_label_create(ui_btn_down);
+    lv_label_set_text(lbl_down, LV_SYMBOL_DOWN);
+    lv_obj_center(lbl_down);
+    lv_obj_add_event_cb(ui_btn_down, arrow_click_cb, LV_EVENT_CLICKED, NULL);
+
+    ui_btn_set = lv_btn_create(parent);
+    lv_obj_set_size(ui_btn_set, 55, 35);
+    lv_obj_set_pos(ui_btn_set, 0, 175); // Sits underneath layout values fields
+    lv_obj_set_align(ui_btn_set, LV_ALIGN_CENTER);
+    lv_obj_add_flag(ui_btn_set, LV_OBJ_FLAG_HIDDEN);
+    ui_object_set_themeable_style_property(
+        ui_btn_set, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_COLOR,
+        _ui_theme_color_Dark
+    );
+    ui_object_set_themeable_style_property(
+        ui_btn_set, LV_PART_MAIN | LV_STATE_DEFAULT, LV_STYLE_BG_OPA,
+        _ui_theme_alpha_Dark
+    );
+    lv_obj_t *lbl_set = lv_label_create(ui_btn_set);
+    lv_label_set_text(lbl_set, LV_SYMBOL_OK " SET");
+    lv_obj_center(lbl_set);
+    lv_obj_add_event_cb(ui_btn_set, set_click_cb, LV_EVENT_CLICKED, NULL);
+}
 // --------------------------------------------------------------------------
 // build functions
 // --------------------------------------------------------------------------
 void ui_StandbyScreen_screen_init(void) {
+    int32_t screen_w = lv_disp_get_hor_res(NULL);
+    int32_t screen_h = lv_disp_get_ver_res(NULL);
+    CLOCK_CX = screen_w / 2;
+    CLOCK_CY = screen_h / 2;
     ui_StandbyScreen = lv_obj_create(NULL);
     lv_obj_set_width(ui_StandbyScreen, LV_SIZE_CONTENT);
     lv_obj_set_height(ui_StandbyScreen, LV_SIZE_CONTENT);
@@ -290,15 +595,20 @@ void ui_StandbyScreen_screen_init(void) {
                     LV_OBJ_FLAG_HIDDEN | LV_OBJ_FLAG_ADV_HITTEST);
     lv_obj_clear_flag(ui_StandbyScreen_touchIcon, LV_OBJ_FLAG_SCROLLABLE);
     lv_img_set_zoom(ui_StandbyScreen_touchIcon, 210);
+// Bind event callback to the Touch icon
+lv_obj_add_flag(ui_StandbyScreen_touchIcon, LV_OBJ_FLAG_CLICKABLE);
+lv_obj_add_event_cb(ui_StandbyScreen_touchIcon, ui_event_TouchIcon_Clicked, LV_EVENT_CLICKED, NULL);
+
+// Instantiate components layout
+ui_Init_Timer_Addon(ui_StandbyScreen);
+    // main label
+
     ui_object_set_themeable_style_property(
         ui_StandbyScreen_touchIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
         LV_STYLE_IMG_RECOLOR, _ui_theme_color_NiceWhite);
     ui_object_set_themeable_style_property(
         ui_StandbyScreen_touchIcon, LV_PART_MAIN | LV_STATE_DEFAULT,
         LV_STYLE_IMG_RECOLOR_OPA, _ui_theme_alpha_NiceWhite);
-
-    // main label
-
     ui_StandbyScreen_logo = lv_img_create(ui_StandbyScreen);
     lv_img_set_src(ui_StandbyScreen_logo, &ui_img_logo_png);
     lv_obj_set_width(ui_StandbyScreen_logo, LV_SIZE_CONTENT);  /// 1
