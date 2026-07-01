@@ -70,8 +70,10 @@ class Settings {
     bool isDelayAdjust() const { return delayAdjust; }
     String getPid() const { return pid; }
     String getPumpModelCoeffs() const { return pumpModelCoeffs; }
+    String getPumpSlipCoeffs() const { return pumpSlipCoeffs; }
     String getWifiSsid() const { return wifiSsid; }
     String getWifiPassword() const { return wifiPassword; }
+    String getWifiApPassword() const { return wifiApPassword; }
     String getMdnsName() const { return mdnsName; }
     bool isHomekit() const { return homekit; }
     bool isVolumetricTarget() const { return volumetricTarget; }
@@ -162,8 +164,10 @@ class Settings {
     void setDelayAdjust(bool delay_adjust);
     void setPid(const String &pid);
     void setPumpModelCoeffs(const String &pumpModelCoeffs);
+    void setPumpSlipCoeffs(const String &pumpSlipCoeffs);
     void setWifiSsid(const String &wifiSsid);
     void setWifiPassword(const String &wifiPassword);
+    void setWifiApPassword(const String &wifiApPassword);
     void setMdnsName(const String &mdnsName);
     void setHomekit(bool homekit);
     void setVolumetricTarget(bool volumetric_target);
@@ -253,6 +257,7 @@ class Settings {
     String pid = DEFAULT_PID;
     String wifiSsid = "";
     String wifiPassword = "";
+    String wifiApPassword = ""; // empty until generated on first start
     String mdnsName = DEFAULT_MDNS_NAME;
     String savedScale = "";
     bool homekit = false;
@@ -308,6 +313,7 @@ class Settings {
 
     // Pump settings
     String pumpModelCoeffs = DEFAULT_PUMP_MODEL_COEFFS;
+    String pumpSlipCoeffs = DEFAULT_PUMP_SLIP_COEFFS;
     float commutationGain = DEFAULT_COMMUTATION_GAIN;
     float convergenceGain = DEFAULT_CONVERGENCE_GAIN;
     float integralGain = DEFAULT_INTEGRAL_GAIN;
@@ -315,7 +321,7 @@ class Settings {
 
     void doSave();
     xTaskHandle taskHandle;
-    static void loopTask(void *arg);
+    [[noreturn]] static void loopTask(void *arg);
 };
 
 #endif // SETTINGS_H

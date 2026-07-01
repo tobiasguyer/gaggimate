@@ -21,8 +21,10 @@ Settings::Settings() {
     pressureScaling = preferences.getFloat("ps", DEFAULT_PRESSURE_SCALING);
     pid = preferences.getString("pid", DEFAULT_PID);
     pumpModelCoeffs = preferences.getString("pmc", DEFAULT_PUMP_MODEL_COEFFS);
+    pumpSlipCoeffs = preferences.getString("psc", DEFAULT_PUMP_SLIP_COEFFS);
     wifiSsid = preferences.getString("ws", "");
     wifiPassword = preferences.getString("wp", "");
+    wifiApPassword = preferences.getString("wap", "");
     mdnsName = preferences.getString("mn", DEFAULT_MDNS_NAME);
     homekit = preferences.getBool("hk", false);
     volumetricTarget = preferences.getBool("vt", false);
@@ -224,6 +226,11 @@ void Settings::setPumpModelCoeffs(const String &pumpModelCoeffs) {
     save();
 }
 
+void Settings::setPumpSlipCoeffs(const String &pumpSlipCoeffs) {
+    this->pumpSlipCoeffs = pumpSlipCoeffs;
+    save();
+}
+
 void Settings::setWifiSsid(const String &wifiSsid) {
     this->wifiSsid = wifiSsid;
     save();
@@ -231,6 +238,11 @@ void Settings::setWifiSsid(const String &wifiSsid) {
 
 void Settings::setWifiPassword(const String &wifiPassword) {
     this->wifiPassword = wifiPassword;
+    save();
+}
+
+void Settings::setWifiApPassword(const String &wifiApPassword) {
+    this->wifiApPassword = wifiApPassword;
     save();
 }
 
@@ -556,8 +568,10 @@ void Settings::doSave() {
     preferences.putFloat("ps", pressureScaling);
     preferences.putString("pid", pid);
     preferences.putString("pmc", pumpModelCoeffs);
+    preferences.putString("psc", pumpSlipCoeffs);
     preferences.putString("ws", wifiSsid);
     preferences.putString("wp", wifiPassword);
+    preferences.putString("wap", wifiApPassword);
     preferences.putString("mn", mdnsName);
     preferences.putBool("hk", homekit);
     preferences.putBool("vt", volumetricTarget);
