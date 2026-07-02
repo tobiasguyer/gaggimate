@@ -131,6 +131,8 @@ class DefaultUI {
     BoilerValue boiler;
     UIFlagsValue uiFlags;
     BrewProcessValue brewProcess;
+    time_structValue time_container;
+    timer_structValue timer;
     Value currentWeight = FloatValue(0.0);
     Value steamReady = BooleanValue(false);
     Value grindWeightTarget = FloatValue(18.0);
@@ -145,8 +147,8 @@ class DefaultUI {
     int standbyThemeMode = -1;
 
     // Screen change
-    ScreensEnum targetScreen = ScreensEnum::SCREEN_ID_STANDBY_SCREEN;
-    ScreensEnum currentScreen = ScreensEnum::SCREEN_ID_STANDBY_SCREEN;
+    ScreensEnum targetScreen = ScreensEnum::SCREEN_ID_NEW_STANDBY_SCREEN;
+    ScreensEnum currentScreen = ScreensEnum::SCREEN_ID_NEW_STANDBY_SCREEN;
 
     // Standby brightness control
     unsigned long standbyEnterTime = 0;

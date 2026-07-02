@@ -135,7 +135,7 @@ void DefaultUI::init() {
         mode = event.getInt("value");
         switch (mode) {
         case MODE_STANDBY:
-            changeScreen(SCREEN_ID_STANDBY_SCREEN);
+            changeScreen(SCREEN_ID_NEW_STANDBY_SCREEN);
             break;
         case MODE_BREW:
             changeScreen(SCREEN_ID_BREW_SCREEN);
@@ -169,7 +169,7 @@ void DefaultUI::init() {
         initialized = true;
         // Stay on the standby screen when the controller is incompatible so the
         // mismatch message remains visible instead of jumping into brew.
-        if (eez_flow_get_current_screen() == SCREEN_ID_STANDBY_SCREEN && !controller->getSystemInfo().protocolMismatch) {
+        if (eez_flow_get_current_screen() == SCREEN_ID_NEW_STANDBY_SCREEN && !controller->getSystemInfo().protocolMismatch) {
             ::Settings &settings = controller->getSettings();
             if (settings.getStartupMode() == MODE_BREW) {
                 changeScreen(SCREEN_ID_BREW_SCREEN);
@@ -189,11 +189,11 @@ void DefaultUI::init() {
     });
     pluginManager->on("ota:update:start", [this](Event const &) {
         rerender = true;
-        changeScreen(SCREEN_ID_STANDBY_SCREEN);
+        changeScreen(SCREEN_ID_NEW_STANDBY_SCREEN);
     });
     pluginManager->on("ota:update:end", [this](Event const &) {
         rerender = true;
-        changeScreen(SCREEN_ID_STANDBY_SCREEN);
+        changeScreen(SCREEN_ID_NEW_STANDBY_SCREEN);
     });
     pluginManager->on("ota:update:status", [this](Event const &event) {
         rerender = true;
@@ -201,16 +201,16 @@ void DefaultUI::init() {
     });
     pluginManager->on("controller:error", [this](Event const &) {
         rerender = true;
-        changeScreen(SCREEN_ID_STANDBY_SCREEN);
+        changeScreen(SCREEN_ID_NEW_STANDBY_SCREEN);
     });
     pluginManager->on("controller:protocol:mismatch", [this](Event const &) {
         // Incompatible firmware on the other end: control is inhibited (OTA only),
         // so surface it on the standby screen like a runaway error.
         rerender = true;
-        changeScreen(SCREEN_ID_STANDBY_SCREEN);
+        changeScreen(SCREEN_ID_NEW_STANDBY_SCREEN);
     });
-    pluginManager->on("controller:autotune:start", [this](Event const &) { changeScreen(SCREEN_ID_STANDBY_SCREEN); });
-    pluginManager->on("controller:autotune:result", [this](Event const &) { changeScreen(SCREEN_ID_STANDBY_SCREEN); });
+    pluginManager->on("controller:autotune:start", [this](Event const &) { changeScreen(SCREEN_ID_NEW_STANDBY_SCREEN); });
+    pluginManager->on("controller:autotune:result", [this](Event const &) { changeScreen(SCREEN_ID_NEW_STANDBY_SCREEN); });
 
     pluginManager->on("profiles:profile:select", [this](Event const &event) {
         reloadProfiles();
@@ -248,7 +248,7 @@ void DefaultUI::loop() {
         lastRender = now;
         applyTheme();
         if (controller->isErrorState()) {
-            changeScreen(SCREEN_ID_STANDBY_SCREEN);
+            changeScreen(SCREEN_ID_NEW_STANDBY_SCREEN);
         }
         updateTempStableFlag();
 
@@ -272,7 +272,7 @@ void DefaultUI::loop() {
         currentScreen = static_cast<ScreensEnum>(eez_flow_get_current_screen());
         effect_mgr.evaluate_all();
 
-        if (currentScreen == SCREEN_ID_STANDBY_SCREEN) {
+        if (currentScreen == SCREEN_ID_NEW_STANDBY_SCREEN) {
             if (standbyEnterTime > 0) {
                 const Settings &settings = controller->getSettings();
                 const unsigned long now = millis();
@@ -371,7 +371,7 @@ void DefaultUI::setupPanel() {
     // Set initial brightness based on settings
     const ::Settings &settings = controller->getSettings();
     setBrightness(settings.getMainBrightness());
-    setupStandbyScreen(settings.getStandbyLogo(), settings.getStandbyStatus(), settings.getStandbyTouchIcon());
+    //setupStandbyScreen(settings.getStandbyLogo(), settings.getStandbyStatus(), settings.getStandbyTouchIcon());
 }
 
 void DefaultUI::setupState() {
@@ -385,7 +385,8 @@ void DefaultUI::setupState() {
     eez::flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_BOILER, boiler);
     eez::flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_UI_FLAGS, uiFlags);
     eez::flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_BREW_PROCESS_INFO, brewProcess);
-
+    eez::flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_TIME_CONTAINER, time_container);
+    eez::flow::setGlobalVariable(FLOW_GLOBAL_VARIABLE_TIMER, timer);
     updateState();
     updateSystemStatus();
     updateProfileInfo();
@@ -440,12 +441,12 @@ void DefaultUI::setupState() {
 
 void DefaultUI::handleScreenChange() {
     if (currentScreen != targetScreen) {
-        if (targetScreen == SCREEN_ID_STANDBY_SCREEN) {
+        if (targetScreen == SCREEN_ID_NEW_STANDBY_SCREEN) {
             standbyEnterTime = ::millis();
             if(standbyThemeMode != currentThemeMode) {
                 change_color_theme(standbyThemeMode);
             }
-        } else if (currentScreen == SCREEN_ID_STANDBY_SCREEN) {
+        } else if (currentScreen == SCREEN_ID_NEW_STANDBY_SCREEN) {
             const ::Settings &settings = controller->getSettings();
             setBrightness(settings.getMainBrightness());
             if(standbyThemeMode != currentThemeMode) {
@@ -557,11 +558,18 @@ void DefaultUI::updateSystemStatus() {
 
     char timeBuf[12] = "";
     struct tm timeinfo;
+    int hour, min, sec;
     if (getLocalTime(&timeinfo, 5)) {
         const ::Settings &settings = controller->getSettings();
         strftime(timeBuf, sizeof(timeBuf), settings.isClock24hFormat() ? "%H:%M" : "%I:%M %p", &timeinfo);
+        hour = timeinfo.tm_hour % 12;
+        min = timeinfo.tm_min;
+        sec = timeinfo.tm_sec;
     }
     systemStatus.time(timeBuf);
+    time_container.hour(hour);
+    time_container.min(min);
+    time_container.sec(sec);
 }
 
 static void populateProfileInfo(ProfileInfoValue &info, const Profile &profile, bool isCurrent) {

@@ -316,3 +316,22 @@ void action_on_screen_swipe(lv_event_t *e) {
 }
 
 void action_on_info_screen(lv_event_t *e) { controller.getUI()->changeScreen(SCREEN_ID_INFO_SCREEN); }
+static uint8_t timer_active = 0;
+void action_on_timer_up(lv_event_t * e){
+
+}
+void action_on_timer_down(lv_event_t * e){
+
+}
+void action_on_timer_set(lv_event_t * e){
+
+}
+void action_on_timer_set_min(lv_event_t * e){
+
+}
+void action_on_timer_set_sec(lv_event_t * e){
+
+}
+void action_on_timer_set_hour(lv_event_t * e){
+    
+}

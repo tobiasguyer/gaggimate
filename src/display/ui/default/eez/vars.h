@@ -1,8 +1,8 @@
 #ifndef EEZ_LVGL_UI_VARS_H
 #define EEZ_LVGL_UI_VARS_H
 
-#include <stdbool.h>
 #include <stdint.h>
+#include <stdbool.h>
 
 #ifdef __cplusplus
 extern "C" {
@@ -21,7 +21,9 @@ enum FlowGlobalVariables {
     FLOW_GLOBAL_VARIABLE_SELECTED_PROFILE = 5,
     FLOW_GLOBAL_VARIABLE_BOILER = 6,
     FLOW_GLOBAL_VARIABLE_UI_FLAGS = 7,
-    FLOW_GLOBAL_VARIABLE_BREW_PROCESS_INFO = 8
+    FLOW_GLOBAL_VARIABLE_BREW_PROCESS_INFO = 8,
+    FLOW_GLOBAL_VARIABLE_TIME_CONTAINER = 9,
+    FLOW_GLOBAL_VARIABLE_TIMER = 10
 };
 
 // Native global variables

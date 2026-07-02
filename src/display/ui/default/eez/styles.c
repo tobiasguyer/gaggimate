@@ -1,16 +1,16 @@
 #include "styles.h"
-#include "fonts.h"
 #include "images.h"
+#include "fonts.h"
 
-#include "screens.h"
 #include "ui.h"
+#include "screens.h"
 
 //
 // Style: Text-theme-color
 //
 
 void init_style_text_theme_color_MAIN_DEFAULT(lv_style_t *style) {
-    lv_style_set_text_color(style, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][0]));
+    lv_style_set_text_color(style, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][1]));
     lv_style_set_text_opa(style, 255);
 };
 
@@ -39,7 +39,7 @@ void remove_style_text_theme_color(lv_obj_t *obj) {
 //
 
 void init_style_images_theme_color_MAIN_DEFAULT(lv_style_t *style) {
-    lv_style_set_img_recolor(style, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][0]));
+    lv_style_set_img_recolor(style, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][1]));
     lv_style_set_img_recolor_opa(style, 255);
 };
 
@@ -68,7 +68,7 @@ void remove_style_images_theme_color(lv_obj_t *obj) {
 //
 
 void init_style_screen_theme_color_MAIN_DEFAULT(lv_style_t *style) {
-    lv_style_set_bg_color(style, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][1]));
+    lv_style_set_bg_color(style, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][0]));
     lv_style_set_bg_opa(style, 255);
 };
 

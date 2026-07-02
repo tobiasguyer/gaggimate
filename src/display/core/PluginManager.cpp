@@ -49,6 +49,7 @@ Event PluginManager::trigger(const String &eventId, const String &key, const int
     return event;
 }
 
+
 Event PluginManager::trigger(const String &eventId, const String &key, const float value) {
     Event event;
     event.id = eventId;
