@@ -40,10 +40,10 @@ typedef struct _objects_t {
     lv_obj_t *info_screen;
     lv_obj_t *new_profile_screen;
     lv_obj_t *obj0;
-    lv_obj_t *obj0__hours;
     lv_obj_t *obj0__min;
-    lv_obj_t *obj0__sec;
     lv_obj_t *obj0__obj0;
+    lv_obj_t *obj0__hours;
+    lv_obj_t *obj0__sec;
     lv_obj_t *obj0__obj1;
     lv_obj_t *brew_dials;
     lv_obj_t *brew_dials__temp_gauge;
@@ -173,7 +173,6 @@ typedef struct _objects_t {
     lv_obj_t *obj1__temp_text_full_2;
     lv_obj_t *obj2;
     lv_obj_t *touch_icon_1;
-    lv_obj_t *time_1;
     lv_obj_t *standby_icons_2;
     lv_obj_t *wifi_icon_2;
     lv_obj_t *bluetooth_icon_2;
@@ -357,11 +356,11 @@ extern objects_t objects;
 
 typedef struct {
     lv_meter_scale_t *scale;
-    lv_meter_indicator_t *indicator;
-    lv_meter_indicator_t *hour_hand;
-    lv_meter_scale_t *scale1;
     lv_meter_indicator_t *min_hand_1;
     lv_meter_indicator_t *min_hand_2;
+    lv_meter_scale_t *scale1;
+    lv_meter_indicator_t *indicator;
+    lv_meter_indicator_t *hour_hand;
     lv_meter_scale_t *scale2;
     lv_meter_indicator_t *sec_hand;
     lv_meter_indicator_t *sec_hand_2;

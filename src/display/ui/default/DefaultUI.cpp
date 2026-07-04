@@ -741,14 +741,28 @@ void DefaultUI::applyTheme() {
     int newThemeMode = settings.getThemeMode();
     int newStandbyThemeMode = settings.getStandbyThemeMode();
 #ifndef GAGGIMATE_SIM // Amoled-specific black theme override is device-only
-    if (newThemeMode == 0 && panelDriver == AmoledDisplayDriver::getInstance()) {
-        newThemeMode = THEME_ID_AMOLED_DARK;
+    if(panelDriver == AmoledDisplayDriver::getInstance()) {
+        if (newThemeMode == 0) {
+            newThemeMode = THEME_ID_AMOLED_DARK;
+        }
+        if (newStandbyThemeMode == 0) {
+            newStandbyThemeMode = THEME_ID_AMOLED_DARK;
+        }
     }
 #endif
+    bool changed = false;
 
     if (newThemeMode != currentThemeMode) {
         currentThemeMode = newThemeMode;
-        change_color_theme(currentThemeMode);
+        if(currentScreen != SCREEN_ID_NEW_STANDBY_SCREEN) {
+            change_color_theme(currentThemeMode);
+        }
+    }
+    if (newStandbyThemeMode != standbyThemeMode) {
+        standbyThemeMode = newStandbyThemeMode;
+        if(currentScreen == SCREEN_ID_NEW_STANDBY_SCREEN) {
+            change_color_theme(standbyThemeMode);
+        }
     }
 }
 
