@@ -41,8 +41,8 @@ typedef struct _objects_t {
     lv_obj_t *new_profile_screen;
     lv_obj_t *obj0;
     lv_obj_t *obj0__min;
-    lv_obj_t *obj0__obj0;
     lv_obj_t *obj0__hours;
+    lv_obj_t *obj0__obj0;
     lv_obj_t *obj0__sec;
     lv_obj_t *obj0__obj1;
     lv_obj_t *brew_dials;
@@ -420,6 +420,11 @@ typedef struct {
     user_widget_dials_state_t dials1_state;
 } screen_info_screen_state_t;
 
+typedef struct {
+    lv_meter_scale_t *scale;
+    lv_meter_indicator_t *indicator;
+} user_widget_timer_w_state_t;
+
 extern screen_new_standby_screen_state_t screen_new_standby_screen_state;
 extern screen_brew_screen_state_t screen_brew_screen_state;
 extern screen_status_screen_state_t screen_status_screen_state;
@@ -485,8 +490,8 @@ void tick_user_widget_dials(void *flowState, int startWidgetIndex, user_widget_d
 void create_user_widget_clock(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex, user_widget_clock_state_t *state);
 void tick_user_widget_clock(void *flowState, int startWidgetIndex, user_widget_clock_state_t *state);
 
-void create_user_widget_timer(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex);
-void tick_user_widget_timer(void *flowState, int startWidgetIndex);
+void create_user_widget_timer_w(lv_obj_t *parent_obj, void *flowState, int startWidgetIndex, user_widget_timer_w_state_t *state);
+void tick_user_widget_timer_w(void *flowState, int startWidgetIndex, user_widget_timer_w_state_t *state);
 
 void create_screen_by_id(enum ScreensEnum screenId);
 void delete_screen_by_id(enum ScreensEnum screenId);
@@ -501,6 +506,50 @@ enum Themes {
     THEME_ID_DARK,
     THEME_ID_LIGHT,
     THEME_ID_AMOLED_DARK,
+    THEME_ID_MC_INTOSH,
+    THEME_ID_ELECTRIC_CIRCUS,
+    THEME_ID_ARCADE_GLOW,
+    THEME_ID_NEON,
+    THEME_ID_SYNTHWAVE,
+    THEME_ID_DISCO,
+    THEME_ID_SUNSET,
+    THEME_ID_SUNRISE,
+    THEME_ID_COFFEE,
+    THEME_ID_ESPRESSO,
+    THEME_ID_MATCHA,
+    THEME_ID_FOREST,
+    THEME_ID_OCEAN,
+    THEME_ID_LAGOON,
+    THEME_ID_ARCTIC,
+    THEME_ID_ICE,
+    THEME_ID_CHERRY,
+    THEME_ID_ROSE,
+    THEME_ID_LAVENDER,
+    THEME_ID_CYBERPUNK,
+    THEME_ID_TERMINAL,
+    THEME_ID_MATRIX,
+    THEME_ID_NORD,
+    THEME_ID_DRACULA,
+    THEME_ID_GRUVBOX,
+    THEME_ID_SOLARIZED,
+    THEME_ID_DESERT,
+    THEME_ID_VOLCANO,
+    THEME_ID_CANDY,
+    THEME_ID_RETRO,
+    THEME_ID_AURORA,
+    THEME_ID_ROYAL,
+    THEME_ID_NEON_ALLEY_DARK,
+    THEME_ID_NEON_ALLEY_LIGHT,
+    THEME_ID_CAFE_STATIC_DARK,
+    THEME_ID_CAFE_STATIC_LIGHT,
+    THEME_ID_DISCO_MEMORY_DARK,
+    THEME_ID_DISCO_MEMORY_LIGHT,
+    THEME_ID_SOFT_HORIZON_LIGHT,
+    THEME_ID_OVERGROWN_DARK,
+    THEME_ID_OVERGROWN_LIGHT,
+    THEME_ID_GLITCH_ICE_DARK,
+    THEME_ID_DEEP_SPACE_DARK,
+    THEME_ID_DEEP_SPACE_LIGHT,
 };
 enum Colors {
     COLOR_ID_DARK,
@@ -513,7 +562,7 @@ enum Colors {
     COLOR_ID_PRESSURE,
 };
 void change_color_theme(uint32_t themeIndex);
-extern uint32_t theme_colors[3][8];
+extern uint32_t theme_colors[47][8];
 
 #ifdef __cplusplus
 }

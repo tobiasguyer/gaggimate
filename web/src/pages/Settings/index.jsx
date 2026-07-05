@@ -21,7 +21,55 @@ import { faEye } from '@fortawesome/free-solid-svg-icons/faEye';
 import { faEyeSlash } from '@fortawesome/free-solid-svg-icons/faEyeSlash';
 import { Tooltip } from '../../components/Tooltip.jsx';
 import { faCrosshairs } from '@fortawesome/free-solid-svg-icons/faCrosshairs';
+const THEMES = [
+  { id: 0, name: 'Dark Theme' },
+  { id: 1, name: 'Light Theme' },
+  { id: 3, name: 'McIntosh' },
+  { id: 4, name: 'Electric Circus' },
+  { id: 5, name: 'Arcade Glow' },
+  { id: 6, name: 'Neon' },
+  { id: 7, name: 'Synthwave' },
+  { id: 8, name: 'Disco' },
+  { id: 9, name: 'Sunset' },
+  { id: 10, name: 'Sunrise' },
+  { id: 11, name: 'Coffee' },
+  { id: 12, name: 'Espresso' },
+  { id: 13, name: 'Matcha' },
+  { id: 14, name: 'Forest' },
+  { id: 15, name: 'Ocean' },
+  { id: 16, name: 'Lagoon' },
+  { id: 17, name: 'Arctic' },
+  { id: 18, name: 'Ice' },
+  { id: 19, name: 'Cherry' },
+  { id: 20, name: 'Rose' },
+  { id: 21, name: 'Lavender' },
+  { id: 22, name: 'Cyberpunk' },
+  { id: 23, name: 'Terminal' },
+  { id: 24, name: 'Matrix' },
+  { id: 25, name: 'Nord' },
+  { id: 26, name: 'Dracula' },
+  { id: 27, name: 'Gruvbox' },
+  { id: 28, name: 'Solarized' },
+  { id: 29, name: 'Desert' },
+  { id: 30, name: 'Volcano' },
+  { id: 31, name: 'Candy' },
+  { id: 32, name: 'Retro' },
+  { id: 33, name: 'Aurora' },
+  { id: 34, name: 'Royal' },
 
+  { id: 35, name: 'Neon Alley Dark' },
+  { id: 36, name: 'Neon Alley Light' },
+  { id: 37, name: 'Cafe Static Dark' },
+  { id: 38, name: 'Cafe Static Light' },
+  { id: 39, name: 'Disco Memory Dark' },
+  { id: 40, name: 'Disco Memory Light' },
+  { id: 41, name: 'Soft Horizon Light' },
+  { id: 42, name: 'Overgrown Dark' },
+  { id: 43, name: 'Overgrown Light' },
+  { id: 44, name: 'Glitch Ice Dark' },
+  { id: 45, name: 'Deep Space Dark' },
+  { id: 46, name: 'Deep Space Light' }
+];
 const ledControl = computed(() => machine.value.capabilities.ledControl);
 const pressureAvailable = computed(() => machine.value.capabilities.pressure);
 const connected = computed(() => machine.value.connected);
@@ -198,7 +246,7 @@ export function Settings() {
         setFormData(newFormData);
         return;
       }
-      if(key === 'standbyStatus') {
+      if (key === 'standbyStatus') {
         value = !formData.standbyStatus;
       }
       if (key === 'standbyLogo') {
@@ -592,8 +640,11 @@ export function Settings() {
                 value={formData.themeMode}
                 onChange={onChange('themeMode')}
               >
-                <option value={0}>Dark Theme</option>
-                <option value={1}>Light Theme</option>
+                {THEMES.map(theme => (
+                  <option key={theme.id} value={theme.id}>
+                    {theme.name || ''}
+                  </option>
+                ))}
               </select>
             </SettingsFormField>
           </Card>
@@ -605,13 +656,16 @@ export function Settings() {
                 name='standbyThemeMode'
                 className='select select-bordered w-full'
                 value={formData.standbyThemeMode}
-                onChange={onChange('standbyThemeMode')}
+                onChange={onChange('themeMode')}
               >
-                <option value={0}>Dark Theme</option>
-                <option value={1}>Light Theme</option>
+                {THEMES.map(theme => (
+                  <option key={theme.id} value={theme.id}>
+                    {theme.name || ''}
+                  </option>
+                ))}
               </select>
             </SettingsFormField>
-            
+
             <div className='grid grid-cols-1 gap-4'>
               <ToggleField
                 label='Display Standby Logo'
@@ -892,10 +946,10 @@ export function Settings() {
               />
             </InputGroupField>
             <InputGroupField
-             label='Boiler Temperature Low Pass Filter (0...1)'
-             htmlFor='boilerTempLowPass'
-             unit=''
-             unitAriaLabel='dimensionless'
+              label='Boiler Temperature Low Pass Filter (0...1)'
+              htmlFor='boilerTempLowPass'
+              unit=''
+              unitAriaLabel='dimensionless'
             >
               <input
                 id='boilerTempLowPass'
@@ -909,7 +963,7 @@ export function Settings() {
               />
             </InputGroupField>
             <InputGroupField
-              label = 'Group Head Temperature Low Pass Filter (0...1)'
+              label='Group Head Temperature Low Pass Filter (0...1)'
               htmlFor='groupTempLowPass'
               unit=''
               unitAriaLabel='dimensionless'

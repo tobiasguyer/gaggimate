@@ -552,9 +552,14 @@ void DefaultUI::updateSystemStatus() {
     systemStatus.pressure_available(pressureAvailable);
     systemStatus.grind_available(grindAvailable);
     systemStatus.mode(mode);
+    systemStatus.standby_mode(settings.getStandbyThemeMode());
     systemStatus.ip(apActive ? "4.4.4.1" : WiFi.localIP().toString().c_str());
     systemStatus.network(apActive ? "GaggiMate" : systemStatus.wifi() ? settings.getWifiSsid().c_str() : "Disconnected");
     systemStatus.ap_active(apActive);
+    systemStatus.standby_logo(settings.getStandbyLogo());
+    systemStatus.standby_status(settings.getStandbyStatus());
+    systemStatus.standby_touch_icon(settings.getStandbyTouchIcon());
+
 
     char timeBuf[12] = "";
     struct tm timeinfo;
@@ -570,6 +575,10 @@ void DefaultUI::updateSystemStatus() {
     time_container.hour(hour);
     time_container.min(min);
     time_container.sec(sec);
+    if(timer.timer_count_to() > 0) {
+        int remaining = (int)(1.0 *(timer.timer_count_to() - (millis() / 1000 - timer.timer_set_at())) / timer.timer_count_to() * 3600);
+        timer.current(remaining > 0 ? remaining : 0);
+    }
 }
 
 static void populateProfileInfo(ProfileInfoValue &info, const Profile &profile, bool isCurrent) {

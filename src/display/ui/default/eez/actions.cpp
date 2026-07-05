@@ -317,21 +317,63 @@ void action_on_screen_swipe(lv_event_t *e) {
 
 void action_on_info_screen(lv_event_t *e) { controller.getUI()->changeScreen(SCREEN_ID_INFO_SCREEN); }
 static uint8_t timer_active = 0;
+static int raise_timer_value(int val){
+    if(val > 59){
+        val = 0;
+    } else val++;
+    return val;
+}
+static int lower_timer_value(int val){
+    if(val < 1){
+        val = 59;
+    } else val--;
+    return val;
+}
 void action_on_timer_up(lv_event_t * e){
-
+    switch (timer_active)
+    {
+    case 2:
+        controller.getUI()->getTimer()->hour(raise_timer_value(controller.getUI()->getTimer()->hour()));
+        break;
+    case 1:
+        controller.getUI()->getTimer()->min(raise_timer_value(controller.getUI()->getTimer()->min()));
+        break;
+    default:
+        controller.getUI()->getTimer()->sec(raise_timer_value(controller.getUI()->getTimer()->sec()));
+        timer_active = 0;
+        break;
+    }
 }
 void action_on_timer_down(lv_event_t * e){
-
+    switch (timer_active)
+    {
+    case 2:
+        controller.getUI()->getTimer()->hour(lower_timer_value(controller.getUI()->getTimer()->hour()));
+        break;
+    case 1:
+        controller.getUI()->getTimer()->min(lower_timer_value(controller.getUI()->getTimer()->min()));
+        break;
+    default:
+        controller.getUI()->getTimer()->sec(lower_timer_value(controller.getUI()->getTimer()->sec()));
+        timer_active = 0;
+        break;
+    }
 }
 void action_on_timer_set(lv_event_t * e){
-
+    int timer_count_to = controller.getUI()->getTimer()->hour() * 3600 + controller.getUI()->getTimer()->min() * 60 + controller.getUI()->getTimer()->sec();
+    controller.getUI()->getTimer()->timer_count_to(timer_count_to);
+    controller.getUI()->getTimer()->timer_set_at(millis() / 1000);
+    controller.getUI()->getTimer()->current(3600);
 }
 void action_on_timer_set_min(lv_event_t * e){
-
+    timer_active = 1;
 }
 void action_on_timer_set_sec(lv_event_t * e){
-
+    timer_active = 0;
 }
 void action_on_timer_set_hour(lv_event_t * e){
-    
+    timer_active = 2;
+}
+void action_on_display_timer(lv_event_t * e){
+    controller.getUI()->getTimer()->display_timer(true);
 }

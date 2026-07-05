@@ -194,7 +194,7 @@
         "objID": "22a5c69b-03d0-4c57-bb1f-cb95f7d84179",
         "name": "timer",
         "type": "struct:timer_struct",
-        "defaultValue": "{hour : 0, min : 0, sec : 0, current : 0, timer_set_at : 0, timer_count_to : 0, display_timer : false}",
+        "defaultValue": "{hour : 0, min : 0, sec : 0, current : 1, timer_set_at : 0, timer_count_to : 0, display_timer : false}",
         "persistent": false,
         "native": false
       }
@@ -1045,6 +1045,16 @@
       "userProperties": [],
       "name": "onTimerSetHour",
       "implementationType": "native"
+    },
+    {
+      "objID": "3518148f-20f0-4d63-d64a-cf27afd4e308",
+      "components": [],
+      "connectionLines": [],
+      "localVariables": [],
+      "componentGroups": [],
+      "userProperties": [],
+      "name": "onDisplayTimer",
+      "implementationType": "native"
     }
   ],
   "userPages": [
@@ -1451,7 +1461,15 @@
               "locked": false,
               "hiddenInEditor": false,
               "timeline": [],
-              "eventHandlers": [],
+              "eventHandlers": [
+                {
+                  "objID": "1c0c24eb-3bca-46d2-d58e-6ad9333d18b2",
+                  "eventName": "CLICKED",
+                  "handlerType": "action",
+                  "action": "onDisplayTimer",
+                  "userData": 0
+                }
+              ],
               "identifier": "status_1",
               "leftUnit": "px",
               "topUnit": "px",
@@ -1461,6 +1479,7 @@
               "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
               "hiddenFlag": "!system.error",
               "hiddenFlagType": "expression",
+              "clickableFlag": true,
               "clickableFlagType": "literal",
               "flagScrollbarMode": "",
               "flagScrollDirection": "",
@@ -1526,7 +1545,14 @@
               "disabledStateType": "literal",
               "states": "",
               "localStyles": {
-                "objID": "c8982715-eb2c-4b93-81d4-5287c5642402"
+                "objID": "c8982715-eb2c-4b93-81d4-5287c5642402",
+                "definition": {
+                  "MAIN": {
+                    "DEFAULT": {
+                      "align": "CENTER"
+                    }
+                  }
+                }
               },
               "group": "",
               "groupIndex": 0,
@@ -15087,7 +15113,7 @@
                   "identifier": "min_hand_1",
                   "type": "NEEDLE_LINE",
                   "width": 10,
-                  "color": "#FFFFFF",
+                  "color": "NiceWhite",
                   "radiusModifier": -290,
                   "value": "time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
@@ -15097,7 +15123,7 @@
                   "identifier": "min_hand_2",
                   "type": "NEEDLE_LINE",
                   "width": 10,
-                  "color": "#FFFFFF",
+                  "color": "NiceWhite",
                   "radiusModifier": -40,
                   "value": "time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
@@ -15119,94 +15145,6 @@
               "scaleRotation": 270
             }
           ]
-        },
-        {
-          "objID": "fab91ef8-d131-4eae-c257-97cf21c2e832",
-          "type": "LVGLArcWidget",
-          "left": 0,
-          "top": 0,
-          "width": 340,
-          "height": 340,
-          "customInputs": [],
-          "customOutputs": [],
-          "style": {
-            "objID": "31983e22-494b-4eaa-b5d3-e88366973987",
-            "useStyle": "default",
-            "conditionalStyles": [],
-            "childStyles": []
-          },
-          "hiddenInEditor": false,
-          "timeline": [],
-          "eventHandlers": [],
-          "leftUnit": "px",
-          "topUnit": "px",
-          "widthUnit": "px",
-          "heightUnit": "px",
-          "children": [],
-          "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
-          "hiddenFlagType": "literal",
-          "clickableFlag": false,
-          "clickableFlagType": "literal",
-          "flagScrollbarMode": "",
-          "flagScrollDirection": "",
-          "scrollSnapX": "",
-          "scrollSnapY": "",
-          "checkedStateType": "literal",
-          "disabledStateType": "literal",
-          "states": "",
-          "localStyles": {
-            "objID": "2a8fdeab-c46c-429b-b42e-2a4a7eb2e251",
-            "definition": {
-              "MAIN": {
-                "DEFAULT": {
-                  "align": "CENTER",
-                  "arc_opa": 0,
-                  "bg_opa": 0
-                }
-              },
-              "INDICATOR": {
-                "DEFAULT": {
-                  "arc_opa": 0,
-                  "text_opa": 0
-                }
-              },
-              "KNOB": {
-                "DEFAULT": {
-                  "bg_color": "#ff0000",
-                  "pad_top": 3,
-                  "pad_bottom": 2,
-                  "pad_left": 3,
-                  "pad_right": 2
-                }
-              }
-            }
-          },
-          "group": "",
-          "groupIndex": 0,
-          "useAngle": false,
-          "rangeMin": 0,
-          "rangeMinType": "literal",
-          "rangeMax": 60,
-          "rangeMaxType": "literal",
-          "value": "time_container.sec",
-          "valueType": "expression",
-          "previewValue": "0",
-          "mode": "NORMAL",
-          "startAngle": 135,
-          "startAngleType": "literal",
-          "previewStartAngle": "135",
-          "endAngle": 45,
-          "endAngleType": "literal",
-          "previewEndAngle": "45",
-          "bgStartAngle": 0,
-          "bgStartAngleType": "literal",
-          "previewBgStartAngle": "135",
-          "bgEndAngle": 360,
-          "bgEndAngleType": "literal",
-          "previewBgEndAngle": "45",
-          "rotation": 270,
-          "rotationType": "literal",
-          "previewRotation": "0"
         },
         {
           "objID": "22e18f82-cf84-487a-f2d4-9722213fa70e",
@@ -15269,7 +15207,7 @@
                   "objID": "d93d7cf4-da72-4aaa-a4b4-8d7e4f0562d6",
                   "type": "NEEDLE_LINE",
                   "width": 16,
-                  "color": "#ffffff",
+                  "color": "NiceWhite",
                   "radiusModifier": -260,
                   "value": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
@@ -15279,7 +15217,7 @@
                   "identifier": "hour_hand",
                   "type": "NEEDLE_LINE",
                   "width": 16,
-                  "color": "FFFFFF",
+                  "color": "NiceWhite",
                   "radiusModifier": -90,
                   "value": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
@@ -15301,6 +15239,93 @@
               "scaleRotation": 270
             }
           ]
+        },
+        {
+          "objID": "fab91ef8-d131-4eae-c257-97cf21c2e832",
+          "type": "LVGLArcWidget",
+          "left": 0,
+          "top": 0,
+          "width": 340,
+          "height": 340,
+          "customInputs": [],
+          "customOutputs": [],
+          "style": {
+            "objID": "31983e22-494b-4eaa-b5d3-e88366973987",
+            "useStyle": "default",
+            "conditionalStyles": [],
+            "childStyles": []
+          },
+          "hiddenInEditor": false,
+          "timeline": [],
+          "eventHandlers": [],
+          "leftUnit": "px",
+          "topUnit": "px",
+          "widthUnit": "px",
+          "heightUnit": "px",
+          "children": [],
+          "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+          "hiddenFlagType": "literal",
+          "clickableFlag": false,
+          "clickableFlagType": "literal",
+          "flagScrollbarMode": "",
+          "flagScrollDirection": "",
+          "scrollSnapX": "",
+          "scrollSnapY": "",
+          "checkedStateType": "literal",
+          "disabledStateType": "literal",
+          "states": "",
+          "localStyles": {
+            "objID": "2a8fdeab-c46c-429b-b42e-2a4a7eb2e251",
+            "definition": {
+              "MAIN": {
+                "DEFAULT": {
+                  "align": "CENTER",
+                  "arc_opa": 0
+                }
+              },
+              "INDICATOR": {
+                "DEFAULT": {
+                  "arc_opa": 0,
+                  "text_opa": 0
+                }
+              },
+              "KNOB": {
+                "DEFAULT": {
+                  "bg_color": "Temperature",
+                  "pad_top": 3,
+                  "pad_bottom": 2,
+                  "pad_left": 3,
+                  "pad_right": 2
+                }
+              }
+            }
+          },
+          "group": "",
+          "groupIndex": 0,
+          "useAngle": false,
+          "rangeMin": 0,
+          "rangeMinType": "literal",
+          "rangeMax": 60,
+          "rangeMaxType": "literal",
+          "value": "time_container.sec",
+          "valueType": "expression",
+          "previewValue": "0",
+          "mode": "NORMAL",
+          "startAngle": 135,
+          "startAngleType": "literal",
+          "previewStartAngle": "135",
+          "endAngle": 45,
+          "endAngleType": "literal",
+          "previewEndAngle": "45",
+          "bgStartAngle": 0,
+          "bgStartAngleType": "literal",
+          "previewBgStartAngle": "135",
+          "bgEndAngle": 360,
+          "bgEndAngleType": "literal",
+          "previewBgEndAngle": "45",
+          "rotation": 270,
+          "rotationType": "literal",
+          "previewRotation": "0"
         },
         {
           "objID": "a2cb3f93-97dc-4aaf-9c59-6197b3118741",
@@ -15351,6 +15376,11 @@
                 "DEFAULT": {
                   "opa": 0
                 }
+              },
+              "TICKS": {
+                "DEFAULT": {
+                  "bg_opa": 0
+                }
               }
             }
           },
@@ -15364,7 +15394,7 @@
                   "identifier": "sec_hand",
                   "type": "NEEDLE_LINE",
                   "width": 4,
-                  "color": "#FF0000",
+                  "color": "Temperature",
                   "radiusModifier": -275,
                   "value": "time_container.sec",
                   "valueType": "expression"
@@ -15374,7 +15404,7 @@
                   "identifier": "sec_hand_2",
                   "type": "NEEDLE_LINE",
                   "width": 4,
-                  "color": "#FF0000",
+                  "color": "Temperature",
                   "radiusModifier": -65,
                   "value": "time_container.sec",
                   "valueType": "expression"
@@ -15438,7 +15468,7 @@
                 "DEFAULT": {
                   "radius": 360,
                   "opa": 255,
-                  "bg_color": "#ff0000",
+                  "bg_color": "Temperature",
                   "bg_opa": 255,
                   "align": "CENTER"
                 }
@@ -15465,88 +15495,6 @@
     {
       "objID": "ab104c65-6104-42ff-9f47-9ebe26ac8f5e",
       "components": [
-        {
-          "objID": "a54ce437-112c-40ad-cc06-6199df4b46c0",
-          "type": "LVGLArcWidget",
-          "left": 0,
-          "top": 0,
-          "width": 480,
-          "height": 480,
-          "customInputs": [],
-          "customOutputs": [],
-          "style": {
-            "objID": "9b083945-9c02-469e-864b-36a070f127b9",
-            "useStyle": "default",
-            "conditionalStyles": [],
-            "childStyles": []
-          },
-          "hiddenInEditor": false,
-          "timeline": [],
-          "eventHandlers": [],
-          "identifier": "Timer",
-          "leftUnit": "px",
-          "topUnit": "px",
-          "widthUnit": "px",
-          "heightUnit": "px",
-          "children": [],
-          "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
-          "hiddenFlagType": "literal",
-          "clickableFlag": true,
-          "clickableFlagType": "literal",
-          "flagScrollbarMode": "",
-          "flagScrollDirection": "",
-          "scrollSnapX": "",
-          "scrollSnapY": "",
-          "checkedStateType": "literal",
-          "disabledStateType": "literal",
-          "states": "",
-          "localStyles": {
-            "objID": "86e3dcff-ba91-4573-e89b-ce352999a5a2",
-            "definition": {
-              "KNOB": {
-                "DEFAULT": {
-                  "opa": 0
-                }
-              },
-              "MAIN": {
-                "DEFAULT": {
-                  "arc_opa": 0
-                }
-              },
-              "INDICATOR": {
-                "DEFAULT": {
-                  "arc_color": "Temperature"
-                }
-              }
-            }
-          },
-          "group": "",
-          "groupIndex": 0,
-          "useAngle": false,
-          "rangeMin": 0,
-          "rangeMinType": "literal",
-          "rangeMax": "timer.timer_count_to",
-          "rangeMaxType": "expression",
-          "value": "timer.current",
-          "valueType": "expression",
-          "previewValue": "0",
-          "mode": "NORMAL",
-          "startAngle": 135,
-          "startAngleType": "literal",
-          "previewStartAngle": "135",
-          "endAngle": 45,
-          "endAngleType": "literal",
-          "previewEndAngle": "45",
-          "bgStartAngle": 270,
-          "bgStartAngleType": "literal",
-          "previewBgStartAngle": "135",
-          "bgEndAngle": 269,
-          "bgEndAngleType": "literal",
-          "previewBgEndAngle": "45",
-          "rotation": 0,
-          "rotationType": "literal",
-          "previewRotation": "0"
-        },
         {
           "objID": "8c325158-26df-4730-9c26-5b25d310210d",
           "type": "LVGLContainerWidget",
@@ -15927,7 +15875,7 @@
           },
           "group": "",
           "groupIndex": 0,
-          "image": "angle-down-40x40",
+          "image": "minus-small-40x40",
           "setPivot": false,
           "pivotX": 0,
           "pivotY": 0,
@@ -15992,7 +15940,7 @@
           },
           "group": "",
           "groupIndex": 0,
-          "image": "angle-up-40x40",
+          "image": "plus-small-40x40",
           "setPivot": false,
           "pivotX": 0,
           "pivotY": 0,
@@ -16068,13 +16016,99 @@
           "value": 0,
           "valueType": "literal",
           "previewValue": 0
+        },
+        {
+          "objID": "82489cf4-e844-41c0-a978-c3021112026c",
+          "type": "LVGLMeterWidget",
+          "left": 0,
+          "top": 0,
+          "width": 480,
+          "height": 480,
+          "customInputs": [],
+          "customOutputs": [],
+          "style": {
+            "objID": "3106fff3-b754-4c5a-9b9a-b493f088d548",
+            "useStyle": "default",
+            "conditionalStyles": [],
+            "childStyles": []
+          },
+          "hiddenInEditor": false,
+          "timeline": [],
+          "eventHandlers": [],
+          "identifier": "timer_arc",
+          "leftUnit": "px",
+          "topUnit": "px",
+          "widthUnit": "px",
+          "heightUnit": "px",
+          "children": [],
+          "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+          "hiddenFlag": false,
+          "hiddenFlagType": "literal",
+          "clickableFlag": false,
+          "clickableFlagType": "literal",
+          "flagScrollbarMode": "off",
+          "flagScrollDirection": "none",
+          "scrollSnapX": "",
+          "scrollSnapY": "",
+          "checkedStateType": "literal",
+          "disabledStateType": "literal",
+          "states": "",
+          "localStyles": {
+            "objID": "fb8f0966-d4c1-4ee8-c24d-055e3320e226",
+            "definition": {
+              "MAIN": {
+                "DEFAULT": {
+                  "align": "CENTER",
+                  "bg_opa": 0
+                }
+              },
+              "INDICATOR": {
+                "DEFAULT": {
+                  "opa": 0
+                }
+              }
+            }
+          },
+          "group": "",
+          "groupIndex": 0,
+          "scales": [
+            {
+              "indicators": [
+                {
+                  "objID": "1830ee6a-033f-4d17-f1a5-a6721a623bbe",
+                  "type": "ARC",
+                  "width": 10,
+                  "color": "Temperature",
+                  "radiusModifier": 0,
+                  "startValue": 0,
+                  "startValueType": "literal",
+                  "endValue": "timer.current",
+                  "endValueType": "expression"
+                }
+              ],
+              "objID": "c4de0b48-2a4c-4f40-9423-e43b282da8bc",
+              "minorTickCount": 0,
+              "minorTickLineWidth": 0,
+              "minorTickLength": 0,
+              "minorTickColor": "#a0a0a0",
+              "nthMajor": 0,
+              "majorTickWidth": 3,
+              "majorTickLength": 10,
+              "majorTickColor": "#000000",
+              "labelGap": 10,
+              "scaleMin": 0,
+              "scaleMax": 3600,
+              "scaleAngleRange": 360,
+              "scaleRotation": 270
+            }
+          ]
         }
       ],
       "connectionLines": [],
       "localVariables": [],
       "componentGroups": [],
       "userProperties": [],
-      "name": "timer",
+      "name": "timer_w",
       "left": 0,
       "top": 0,
       "width": 480,
@@ -16547,6 +16581,622 @@
         "#ebebeb",
         "#f62c2c",
         "#2ca4f6"
+      ]
+    },
+    {
+      "objID": "becab0eb-a63b-4bde-dd66-97ff53de79bf",
+      "name": "McIntosh",
+      "colors": [
+        "#000000",
+        "#00ff2e",
+        "#00ff00",
+        "#0a7850",
+        "#0a6478",
+        "#1b1b1b",
+        "#ff42f4",
+        "#42e0ff"
+      ]
+    },
+    {
+      "objID": "c0026fd1-5356-4be6-994a-194e0239a68b",
+      "name": "Electric_circus",
+      "colors": [
+        "#fff200",
+        "#2c1e94",
+        "#39ff14",
+        "#413c01",
+        "#007d78",
+        "#7d7802",
+        "#ff5c00",
+        "#00ffdf"
+      ]
+    },
+    {
+      "objID": "4ed1793c-b3fe-4b1d-ebba-43ad7d02738f",
+      "name": "Arcade_glow",
+      "colors": [
+        "#141414",
+        "#fff200",
+        "#7b2cff",
+        "#413c00",
+        "#00786e",
+        "#7d7800",
+        "#ff6a00",
+        "#00ffd5"
+      ]
+    },
+    {
+      "objID": "7054de6d-b12d-d293-7d48-8f5c9c74f191",
+      "name": "Neon",
+      "colors": [
+        "#09090b",
+        "#f8fafc",
+        "#ff00ff",
+        "#5b5b6a",
+        "#00f5ff",
+        "#17171d",
+        "#ff2d55",
+        "#39ff14"
+      ]
+    },
+    {
+      "objID": "2b8bc99e-8429-1476-bbc0-3daa017a497f",
+      "name": "Synthwave",
+      "colors": [
+        "#1a1033",
+        "#ffe8ff",
+        "#ff4fd8",
+        "#6b5c86",
+        "#6d5cff",
+        "#241848",
+        "#ff5c7a",
+        "#00d9ff"
+      ]
+    },
+    {
+      "objID": "d4cf4808-93ee-5ae1-0f51-26b47374f2e9",
+      "name": "Disco",
+      "colors": [
+        "#281044",
+        "#fff7e8",
+        "#ffde59",
+        "#786090",
+        "#ff4ec9",
+        "#3b2058",
+        "#ff5f5f",
+        "#41f2ff"
+      ]
+    },
+    {
+      "objID": "61309291-d76d-e2ce-5f87-b4ced1620088",
+      "name": "Sunset",
+      "colors": [
+        "#2b1b28",
+        "#fff3e0",
+        "#ff9966",
+        "#8c6f74",
+        "#ff5e57",
+        "#432633",
+        "#ff2d2d",
+        "#ffcc66"
+      ]
+    },
+    {
+      "objID": "c65758bd-69ea-e3aa-341c-0d059cec2f25",
+      "name": "Sunrise",
+      "colors": [
+        "#fff6ec",
+        "#322b2a",
+        "#ffb347",
+        "#b3a39b",
+        "#ff7b54",
+        "#f7e8da",
+        "#d72638",
+        "#4ca5ff"
+      ]
+    },
+    {
+      "objID": "cd6e4318-95a1-7b03-2f62-adff26753ee3",
+      "name": "Coffee",
+      "colors": [
+        "#2b2118",
+        "#f6ecdf",
+        "#c68b59",
+        "#8d7767",
+        "#6f4e37",
+        "#3b2d23",
+        "#b03a2e",
+        "#7cb7d9"
+      ]
+    },
+    {
+      "objID": "9585168d-121c-990f-c5b1-362f314eacca",
+      "name": "Espresso",
+      "colors": [
+        "#18110d",
+        "#efe5d5",
+        "#8b5e3c",
+        "#6f635b",
+        "#4b2e1f",
+        "#2b1f18",
+        "#a94442",
+        "#5aa9e6"
+      ]
+    },
+    {
+      "objID": "4a582075-6196-7122-14a5-750a27793898",
+      "name": "Matcha",
+      "colors": [
+        "#eef7eb",
+        "#21321d",
+        "#7fbf5f",
+        "#8d9c88",
+        "#4d8b31",
+        "#dce9d8",
+        "#d14b4b",
+        "#4ea8de"
+      ]
+    },
+    {
+      "objID": "b0ac4eb5-2ef8-06a2-233f-05a642b51bba",
+      "name": "Forest",
+      "colors": [
+        "#18231a",
+        "#edf8ef",
+        "#59c173",
+        "#748276",
+        "#2f6b45",
+        "#223026",
+        "#d9534f",
+        "#4fc3f7"
+      ]
+    },
+    {
+      "objID": "fdcd4a54-8805-98b5-cf4f-d396f894aa3f",
+      "name": "Ocean",
+      "colors": [
+        "#091b2c",
+        "#eef9ff",
+        "#38bdf8",
+        "#70889b",
+        "#0077b6",
+        "#10283d",
+        "#ef5350",
+        "#7dd3fc"
+      ]
+    },
+    {
+      "objID": "63f7fcb1-7c53-ae31-baf0-bf7e98cc9f88",
+      "name": "Lagoon",
+      "colors": [
+        "#0d2d2b",
+        "#eafffb",
+        "#2dd4bf",
+        "#6f8f8d",
+        "#0f766e",
+        "#153b39",
+        "#ef4444",
+        "#60a5fa"
+      ]
+    },
+    {
+      "objID": "281f3c28-a8d1-fa23-175f-d5224ae21f92",
+      "name": "Arctic",
+      "colors": [
+        "#edf7ff",
+        "#142030",
+        "#7dd3fc",
+        "#9aa9b7",
+        "#3b82f6",
+        "#dcecf7",
+        "#ef4444",
+        "#38bdf8"
+      ]
+    },
+    {
+      "objID": "87181349-7db0-2de4-06df-0d6f868820e7",
+      "name": "Ice",
+      "colors": [
+        "#f7fcff",
+        "#0f172a",
+        "#93c5fd",
+        "#b6c3cf",
+        "#60a5fa",
+        "#e8f3fa",
+        "#dc2626",
+        "#22d3ee"
+      ]
+    },
+    {
+      "objID": "f3d7a8bd-d4d1-3f86-5564-1a60522c4555",
+      "name": "Cherry",
+      "colors": [
+        "#2d1117",
+        "#ffeef1",
+        "#ff4d6d",
+        "#7f5c66",
+        "#c9184a",
+        "#3d1720",
+        "#ff1744",
+        "#4fc3f7"
+      ]
+    },
+    {
+      "objID": "af74afe8-698d-a7cb-13fb-7d9c9939ef9e",
+      "name": "Rose",
+      "colors": [
+        "#fff5f7",
+        "#381f2b",
+        "#ff5d8f",
+        "#b69aa5",
+        "#e11d48",
+        "#f8e8ee",
+        "#dc2626",
+        "#60a5fa"
+      ]
+    },
+    {
+      "objID": "706b5240-7e92-0781-34cf-df2cba8d980c",
+      "name": "Lavender",
+      "colors": [
+        "#f8f5ff",
+        "#2d2143",
+        "#b388ff",
+        "#a79db9",
+        "#7c4dff",
+        "#eee8fb",
+        "#ef4444",
+        "#60a5fa"
+      ]
+    },
+    {
+      "objID": "c3fdf6c5-9368-97d8-50a2-40180ded1306",
+      "name": "Cyberpunk",
+      "colors": [
+        "#0d0221",
+        "#f7f7ff",
+        "#ff00c8",
+        "#645a7f",
+        "#00f7ff",
+        "#1a0938",
+        "#ff3131",
+        "#39ff14"
+      ]
+    },
+    {
+      "objID": "a23fb544-72e3-c6f1-3ed1-6c570434b521",
+      "name": "Terminal",
+      "colors": [
+        "#08110b",
+        "#7cff7c",
+        "#00ff66",
+        "#3b5d47",
+        "#22c55e",
+        "#0d1b11",
+        "#ff4d4d",
+        "#4fc3f7"
+      ]
+    },
+    {
+      "objID": "71f109ff-6172-490a-3196-21320139f621",
+      "name": "Matrix",
+      "colors": [
+        "#000000",
+        "#99ff99",
+        "#00ff00",
+        "#2b5b2b",
+        "#00c853",
+        "#111111",
+        "#ff4444",
+        "#33ccff"
+      ]
+    },
+    {
+      "objID": "790eb8e3-f7f7-eaca-cb3d-14e07a10169e",
+      "name": "Nord",
+      "colors": [
+        "#2e3440",
+        "#eceff4",
+        "#88c0d0",
+        "#7b8797",
+        "#5e81ac",
+        "#3b4252",
+        "#bf616a",
+        "#81a1c1"
+      ]
+    },
+    {
+      "objID": "2c318844-f216-bbe0-9eab-2f03f4bb0730",
+      "name": "Dracula",
+      "colors": [
+        "#282a36",
+        "#f8f8f2",
+        "#50fa7b",
+        "#6272a4",
+        "#bd93f9",
+        "#44475a",
+        "#ff5555",
+        "#8be9fd"
+      ]
+    },
+    {
+      "objID": "92b0d65a-54fc-8e58-4db2-466a16f28b39",
+      "name": "Gruvbox",
+      "colors": [
+        "#282828",
+        "#ebdbb2",
+        "#b8bb26",
+        "#928374",
+        "#458588",
+        "#3c3836",
+        "#fb4934",
+        "#83a598"
+      ]
+    },
+    {
+      "objID": "c46d34ad-3f08-95fb-bb1d-1b5dc22e84d9",
+      "name": "Solarized",
+      "colors": [
+        "#002b36",
+        "#eee8d5",
+        "#2aa198",
+        "#586e75",
+        "#268bd2",
+        "#073642",
+        "#dc322f",
+        "#6c71c4"
+      ]
+    },
+    {
+      "objID": "8e687e05-004a-809f-e6db-5805079157b4",
+      "name": "Desert",
+      "colors": [
+        "#3d2f1f",
+        "#f7ead2",
+        "#d4a373",
+        "#8c7b68",
+        "#bc6c25",
+        "#4c3928",
+        "#d62828",
+        "#5fa8d3"
+      ]
+    },
+    {
+      "objID": "14488993-aae9-7e55-1c37-15ad95f049d7",
+      "name": "Volcano",
+      "colors": [
+        "#1b0d0a",
+        "#fff2ec",
+        "#ff6b35",
+        "#755b53",
+        "#c44536",
+        "#2a1512",
+        "#ff1f1f",
+        "#ffb703"
+      ]
+    },
+    {
+      "objID": "06c45034-4d57-66c0-4e99-ea1fb982aaf3",
+      "name": "Candy",
+      "colors": [
+        "#fff4fb",
+        "#3d2945",
+        "#ff66c4",
+        "#c2adc8",
+        "#8b5cf6",
+        "#f8e6f4",
+        "#ff4d6d",
+        "#6ecbff"
+      ]
+    },
+    {
+      "objID": "d602c108-6344-1213-31e9-4a33121f167a",
+      "name": "Retro",
+      "colors": [
+        "#f6ecd8",
+        "#35281d",
+        "#ff9f1c",
+        "#9b8b78",
+        "#2ec4b6",
+        "#eadcc1",
+        "#e63946",
+        "#457b9d"
+      ]
+    },
+    {
+      "objID": "06b00093-2a68-12cf-33dd-02fa2399bebc",
+      "name": "Aurora",
+      "colors": [
+        "#08121d",
+        "#f5fcff",
+        "#6ef3d6",
+        "#637587",
+        "#4f8cff",
+        "#122031",
+        "#ff5d73",
+        "#7c5cff"
+      ]
+    },
+    {
+      "objID": "1b94c78f-8336-bb9d-4671-a9f2af5a8e19",
+      "name": "Royal",
+      "colors": [
+        "#1d1b4d",
+        "#fff8ea",
+        "#ffd166",
+        "#6e6b91",
+        "#4f46e5",
+        "#2d2a63",
+        "#ef4444",
+        "#60a5fa"
+      ]
+    },
+    {
+      "objID": "4c9ef096-5577-ff73-d646-f47548ece5a3",
+      "name": "Neon Alley Dark",
+      "colors": [
+        "#0b0b10",
+        "#f2f2f2",
+        "#ff2bd6",
+        "#2a2a3a",
+        "#00f5ff",
+        "#151521",
+        "#ff3b3b",
+        "#39ff88"
+      ]
+    },
+    {
+      "objID": "deacf66b-c275-4b81-963c-465f4ff6ff2f",
+      "name": "Neon Alley Light",
+      "colors": [
+        "#f6f3ff",
+        "#16161d",
+        "#d100a9",
+        "#d8d8e6",
+        "#007c85",
+        "#ffffff",
+        "#d62828",
+        "#1fbf6b"
+      ]
+    },
+    {
+      "objID": "e82cfe7c-874f-7fc9-0608-5709223cf967",
+      "name": "Cafe Static Dark",
+      "colors": [
+        "#1b1410",
+        "#f3e7d3",
+        "#b77a4a",
+        "#3a2c25",
+        "#6f4e37",
+        "#241a15",
+        "#c1443c",
+        "#7ab6d6"
+      ]
+    },
+    {
+      "objID": "326c7b36-0063-0802-d847-cbd23dad77e9",
+      "name": "Cafe Static Light",
+      "colors": [
+        "#fbf4ea",
+        "#2a211c",
+        "#a45d2a",
+        "#e2d6c6",
+        "#6f4e37",
+        "#ffffff",
+        "#d64545",
+        "#4f9bc1"
+      ]
+    },
+    {
+      "objID": "ffbd3ae8-ac10-41ea-607d-4f99ccc8f2e6",
+      "name": "Disco Memory Dark",
+      "colors": [
+        "#120a1f",
+        "#f7f3ff",
+        "#ff4fd8",
+        "#3a2b4a",
+        "#00e5ff",
+        "#1e1430",
+        "#ff3b3b",
+        "#b7ff3c"
+      ]
+    },
+    {
+      "objID": "8c379075-dff0-3221-97e6-cd499d8c1288",
+      "name": "Disco Memory Light",
+      "colors": [
+        "#fff7fb",
+        "#1a1a1f",
+        "#c800a8",
+        "#e6e0f2",
+        "#007caa",
+        "#ffffff",
+        "#e53935",
+        "#7ed321"
+      ]
+    },
+    {
+      "objID": "32fc6f0c-43f7-07b7-a14e-1a1119751853",
+      "name": "Soft Horizon Light",
+      "colors": [
+        "#fff6f0",
+        "#2a2230",
+        "#ff7a45",
+        "#e7dbe8",
+        "#b084f5",
+        "#ffffff",
+        "#e63946",
+        "#f4b860"
+      ]
+    },
+    {
+      "objID": "2348506d-f4cd-6323-507f-d1212b536009",
+      "name": "Overgrown Dark",
+      "colors": [
+        "#0b1410",
+        "#e8f5e9",
+        "#2ecc71",
+        "#2a3a31",
+        "#1e6f4e",
+        "#15221b",
+        "#e74c3c",
+        "#4fc3f7"
+      ]
+    },
+    {
+      "objID": "752f905a-8b9f-e313-5744-5fcf57aec277",
+      "name": "Overgrown Light",
+      "colors": [
+        "#f1fbf3",
+        "#1c2a22",
+        "#27ae60",
+        "#dcefe2",
+        "#2ecc71",
+        "#ffffff",
+        "#d64545",
+        "#3498db"
+      ]
+    },
+    {
+      "objID": "4f101f86-01e3-a0a6-5d40-a8385245e354",
+      "name": "Glitch Ice Dark",
+      "colors": [
+        "#070a12",
+        "#e6f7ff",
+        "#7dd3fc",
+        "#2a3b4f",
+        "#6366f1",
+        "#111827",
+        "#ef4444",
+        "#22d3ee"
+      ]
+    },
+    {
+      "objID": "b58f4276-5bcd-0aff-8d6c-ddb6f715f09b",
+      "name": "Deep Space Dark",
+      "colors": [
+        "#05060a",
+        "#eaeaff",
+        "#7c83ff",
+        "#1a1b2e",
+        "#b388ff",
+        "#0f1020",
+        "#ff4d6d",
+        "#ffd166"
+      ]
+    },
+    {
+      "objID": "66e3301c-535e-f5b5-45af-76c4f289a374",
+      "name": "Deep Space Light",
+      "colors": [
+        "#f8f9ff",
+        "#12121a",
+        "#5b6cff",
+        "#e2e4ff",
+        "#7c4dff",
+        "#ffffff",
+        "#e63946",
+        "#f4a261"
       ]
     }
   ]

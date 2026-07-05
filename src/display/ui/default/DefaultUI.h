@@ -57,6 +57,7 @@ class DefaultUI {
     bool isTaskHealthy() const {
         return is_task_healthy(eTaskGetState(taskHandle)) && is_task_healthy(eTaskGetState(profileTaskHandle));
     }
+    timer_structValue* getTimer() { return &timer; }
 
   private:
     void setupPanel();

@@ -50,6 +50,7 @@ extern void action_on_timer_set(lv_event_t * e);
 extern void action_on_timer_set_min(lv_event_t * e);
 extern void action_on_timer_set_sec(lv_event_t * e);
 extern void action_on_timer_set_hour(lv_event_t * e);
+extern void action_on_display_timer(lv_event_t * e);
 
 #ifdef __cplusplus
 }
