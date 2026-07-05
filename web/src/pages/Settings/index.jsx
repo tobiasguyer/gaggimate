@@ -650,13 +650,13 @@ export function Settings() {
           </Card>
           {/* Standby Display Settings */}
           <Card sm={10} lg={5} title='Standby Display Settings'>
-            <SettingsFormField label='Standby Theme' htmlFor='themeMode' noMargin>
+            <SettingsFormField label='Standby Theme' htmlFor='standbyThemeMode' noMargin>
               <select
                 id='standbyThemeMode'
                 name='standbyThemeMode'
                 className='select select-bordered w-full'
                 value={formData.standbyThemeMode}
-                onChange={onChange('themeMode')}
+                onChange={onChange('standbyThemeMode')}
               >
                 {THEMES.map(theme => (
                   <option key={theme.id} value={theme.id}>

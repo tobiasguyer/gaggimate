@@ -41,10 +41,10 @@ typedef struct _objects_t {
     lv_obj_t *new_profile_screen;
     lv_obj_t *obj0;
     lv_obj_t *obj0__min;
-    lv_obj_t *obj0__hours;
     lv_obj_t *obj0__obj0;
-    lv_obj_t *obj0__sec;
+    lv_obj_t *obj0__hours;
     lv_obj_t *obj0__obj1;
+    lv_obj_t *obj0__sec;
     lv_obj_t *brew_dials;
     lv_obj_t *brew_dials__temp_gauge;
     lv_obj_t *brew_dials__temp_gauge_full;
