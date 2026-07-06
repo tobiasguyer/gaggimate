@@ -567,12 +567,12 @@ void DefaultUI::updateSystemStatus() {
     systemStatus.standby_binary_clock(settings.getStandbyBinaryClock());
 
 
-    char timeBuf[12] = "";
+    //char timeBuf[12] = "";
     struct tm timeinfo;
     int hour, min, sec;
     if (getLocalTime(&timeinfo, 5)) {
-        const ::Settings &settings = controller->getSettings();
-        strftime(timeBuf, sizeof(timeBuf), settings.isClock24hFormat() ? "%H:%M" : "%I:%M %p", &timeinfo);
+        //const ::Settings &settings = controller->getSettings();
+        //strftime(timeBuf, sizeof(timeBuf), settings.isClock24hFormat() ? "%H:%M" : "%I:%M %p", &timeinfo);
         hour = timeinfo.tm_hour % 12;
         min = timeinfo.tm_min;
         sec = timeinfo.tm_sec;
@@ -580,10 +580,7 @@ void DefaultUI::updateSystemStatus() {
     time_container.hour(hour);
     time_container.min(min);
     time_container.sec(sec);
-    if(timer.timer_count_to() > 0) {
-        int remaining = (int)(1.0 *(timer.timer_count_to() - (millis() / 1000 - timer.timer_set_at())) / timer.timer_count_to() * 3600);
-        timer.current(remaining > 0 ? remaining : 0);
-    }
+    time_container.time_in_minutes(hour * 60 + min);
 }
 
 static void populateProfileInfo(ProfileInfoValue &info, const Profile &profile, bool isCurrent) {

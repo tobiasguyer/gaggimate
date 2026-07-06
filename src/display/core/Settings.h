@@ -110,7 +110,7 @@ class Settings {
     bool getStandbyStatus() const { return standbyStatus; }
     bool getStandbyTouchIcon() const { return standbyTouchIcon; }
     int getStandbyAnalogClock() const { return standbyAnalogClock; }
-    bool getStandbyDigitalClock() const { return standbyDigitalClock; }
+    int getStandbyDigitalClock() const { return standbyDigitalClock; }
     bool getStandbyBinaryClock() const { return standbyBinaryClock; }
     int getHistoryIndex() const { return historyIndex; }
 
@@ -209,7 +209,7 @@ class Settings {
     void setStandbyStatus(bool standby_status);
     void setStandbyTouchIcon(bool standby_touchicon);
     void setStandbyAnalogClock(int standby_analog_clock);
-    void setStandbyDigitalClock(bool standby_digital_clock);
+    void setStandbyDigitalClock(int standby_digital_clock);
     void setStandbyBinaryClock(bool standby_binary_clock);
     void setHistoryIndex(int history_index);
     [[deprecated]]
@@ -302,7 +302,7 @@ class Settings {
     bool standbyStatus = true;
     bool standbyTouchIcon = true;
     int standbyAnalogClock = 1;
-    bool standbyDigitalClock = false;
+    int standbyDigitalClock = 1;
     bool standbyBinaryClock = false;
     // Sunrise settings
     int sunriseR = 0;

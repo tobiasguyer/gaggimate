@@ -106,7 +106,7 @@ Settings::Settings() {
     standbyStatus = preferences.getBool("sstatus", false);
     standbyTouchIcon = preferences.getBool("stouch", false);
     standbyAnalogClock = preferences.getInt("sanalog", 1);
-    standbyDigitalClock = preferences.getBool("sdigital", false);
+    standbyDigitalClock = preferences.getInt("sdigital", 1);
     standbyBinaryClock = preferences.getBool("sbinary", false);
 
     // Sunrise settings
@@ -449,7 +449,7 @@ void Settings::setStandbyAnalogClock(int standby_analog_clock) {
     save();
 }
 
-void Settings::setStandbyDigitalClock(bool standby_digital_clock) {
+void Settings::setStandbyDigitalClock(int standby_digital_clock) {
     standbyDigitalClock = standby_digital_clock;
     save();
 }

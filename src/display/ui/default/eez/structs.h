@@ -124,7 +124,8 @@ enum time_structFlowStructureFields {
     FLOW_STRUCTURE_TIME_STRUCT_FIELD_SEC = 0,
     FLOW_STRUCTURE_TIME_STRUCT_FIELD_MIN = 1,
     FLOW_STRUCTURE_TIME_STRUCT_FIELD_HOUR = 2,
-    FLOW_STRUCTURE_TIME_STRUCT_FIELD_ANALOG_NUMERALS = 3,
+    FLOW_STRUCTURE_TIME_STRUCT_FIELD_TIME_IN_MINUTES = 3,
+    FLOW_STRUCTURE_TIME_STRUCT_FIELD_ANALOG_NUMERALS = 4,
     FLOW_STRUCTURE_TIME_STRUCT_NUM_FIELDS
 };
 
@@ -285,11 +286,11 @@ struct SystemStatusValue {
         value.getArray()->values[FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_STANDBY_BINARY_CLOCK] = BooleanValue(standby_binary_clock);
     }
     
-    bool standby_digital_clock() {
-        return value.getArray()->values[FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_STANDBY_DIGITAL_CLOCK].getBoolean();
+    int standby_digital_clock() {
+        return value.getArray()->values[FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_STANDBY_DIGITAL_CLOCK].getInt();
     }
-    void standby_digital_clock(bool standby_digital_clock) {
-        value.getArray()->values[FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_STANDBY_DIGITAL_CLOCK] = BooleanValue(standby_digital_clock);
+    void standby_digital_clock(int standby_digital_clock) {
+        value.getArray()->values[FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_STANDBY_DIGITAL_CLOCK] = IntegerValue(standby_digital_clock);
     }
     
     const char *qrcodeContent() {
@@ -701,6 +702,13 @@ struct time_structValue {
     }
     void hour(int hour) {
         value.getArray()->values[FLOW_STRUCTURE_TIME_STRUCT_FIELD_HOUR] = IntegerValue(hour);
+    }
+    
+    int time_in_minutes() {
+        return value.getArray()->values[FLOW_STRUCTURE_TIME_STRUCT_FIELD_TIME_IN_MINUTES].getInt();
+    }
+    void time_in_minutes(int time_in_minutes) {
+        value.getArray()->values[FLOW_STRUCTURE_TIME_STRUCT_FIELD_TIME_IN_MINUTES] = IntegerValue(time_in_minutes);
     }
     
     bool analog_numerals() {

@@ -1,16 +1,16 @@
 {
   "navigation": {
     "selectedUserPageObject": "[gaggimate.eez-project]:/userPages/0",
-    "selectedUserWidgetObject": "[gaggimate.eez-project]:/userWidgets/3",
+    "selectedUserWidgetObject": "[gaggimate.eez-project]:/userWidgets/7",
     "selectedActionObject": "[gaggimate.eez-project]:/actions/41",
     "selectedGlobalVariableObject": "[gaggimate.eez-project]:/variables/globalVariables/3",
-    "selectedStructureObject": "[gaggimate.eez-project]:/variables/structures/6",
-    "selectedThemeObject": "[gaggimate.eez-project]:/themes/1",
-    "selectedThemeColorObject": "[gaggimate.eez-project]:/colors/3",
+    "selectedStructureObject": "[gaggimate.eez-project]:/variables/structures/0",
+    "selectedThemeObject": "[gaggimate.eez-project]:/themes/32",
+    "selectedThemeColorObject": "[gaggimate.eez-project]:/colors/4",
     "selectedFontObject": "[gaggimate.eez-project]:/fonts/0",
     "selectedBitmapObject": "[gaggimate.eez-project]:/bitmaps/11",
     "subnavigationSelectedItems": {
-      "variables-tab/sub-navigation/selected-item": "Structs"
+      "variables-tab/sub-navigation/selected-item": "Global"
     }
   },
   "layoutModel": {
@@ -204,11 +204,11 @@
               "children": [
                 {
                   "type": "tab",
-                  "id": "#c7f3ced0-bdd7-4689-a16e-b7a43159043d",
-                  "name": "binary_clock",
+                  "id": "#5e050bf7-afbb-4b07-9783-e0a675b95e19",
+                  "name": "binary_clock_1",
                   "component": "editor",
                   "config": {
-                    "objectPath": "[gaggimate.eez-project]:/userWidgets/3",
+                    "objectPath": "[gaggimate.eez-project]:/userWidgets/7",
                     "permanent": false
                   },
                   "icon": "svg:user_widget"
@@ -609,6 +609,7 @@
               "type": "tabset",
               "id": "RUNTIME-EDITORS",
               "weight": 0.6235714285714286,
+              "selected": 1,
               "enableDeleteWhenEmpty": false,
               "enableClose": false,
               "children": [
@@ -626,10 +627,10 @@
                 {
                   "type": "tab",
                   "id": "#beeffec2-8ef2-4270-b23f-a8c264937543",
-                  "name": "clock",
+                  "name": "clock_3",
                   "component": "editor",
                   "config": {
-                    "objectPath": "[gaggimate.eez-project]:/userWidgets/1",
+                    "objectPath": "[gaggimate.eez-project]:/userWidgets/6",
                     "permanent": false
                   },
                   "icon": "svg:user_widget"
@@ -1092,8 +1093,7 @@
                       "component": "themes",
                       "enableClose": false
                     }
-                  ],
-                  "active": true
+                  ]
                 },
                 {
                   "type": "tabset",
@@ -1109,7 +1109,8 @@
                       "component": "colors",
                       "enableClose": false
                     }
-                  ]
+                  ],
+                  "active": true
                 }
               ]
             }
@@ -1268,7 +1269,7 @@
             "$selected": true
           },
           "2": {},
-          "3": {}
+          "9": {}
         }
       }
     },
@@ -1299,9 +1300,7 @@
         "0": {
           "0": {},
           "1": {},
-          "2": {
-            "$selected": true
-          },
+          "2": {},
           "3": {
             "0": {}
           }
@@ -1334,7 +1333,9 @@
       "selectionFront": {},
       "selectionBack": {
         "0": {
-          "0": {},
+          "0": {
+            "$selected": true
+          },
           "1": {
             "0": {},
             "2": {}
@@ -2312,17 +2313,18 @@
     "[gaggimate.eez-project]:/userWidgets/1[flow-state]": {
       "selectionFront": {},
       "selectionBack": {
-        "0": {},
-        "2": {},
-        "3": {},
-        "4": {
+        "1": {},
+        "2": {
           "$selected": true
-        }
+        },
+        "3": {},
+        "4": {},
+        "5": {}
       },
       "transform": {
         "translate": {
           "x": -240,
-          "y": -140
+          "y": -240
         },
         "scale": 1
       },
@@ -2422,18 +2424,100 @@
       "selectionFront": {},
       "selectionBack": {
         "0": {
-          "0": {},
-          "1": {},
-          "2": {
+          "0": {
             "$selected": true
-          },
-          "12": {}
+          }
         }
       },
       "transform": {
         "translate": {
           "x": -723.4631313826702,
-          "y": -106.48658004684353
+          "y": -206.48658004684353
+        },
+        "scale": 1
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[gaggimate.eez-project]:/userWidgets/4[flow-state]": {
+      "selectionFront": {},
+      "selectionBack": {},
+      "transform": {
+        "translate": {
+          "x": -240,
+          "y": -40
+        },
+        "scale": 1
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[gaggimate.eez-project]:/userWidgets/5[flow-state]": {
+      "selectionFront": {},
+      "selectionBack": {
+        "0": {},
+        "1": {},
+        "2": {},
+        "3": {},
+        "4": {},
+        "5": {},
+        "6": {},
+        "7": {}
+      },
+      "transform": {
+        "translate": {
+          "x": -240,
+          "y": -140
+        },
+        "scale": 1
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[gaggimate.eez-project]:/userWidgets/6[flow-state]": {
+      "selectionFront": {},
+      "selectionBack": {
+        "2": {
+          "$selected": true
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -240,
+          "y": -140
+        },
+        "scale": 1
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[gaggimate.eez-project]:/userWidgets/7[flow-state]": {
+      "selectionFront": {},
+      "selectionBack": {
+        "0": {
+          "$selected": true
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -240,
+          "y": -40
         },
         "scale": 1
       },
@@ -2451,7 +2535,7 @@
   "searchMatchWholeWord": false,
   "replaceEnabled": false,
   "replaceText": "",
-  "pageRuntimeFrontFace": true,
+  "pageRuntimeFrontFace": false,
   "breakpoints": {},
   "watchExpressions": [],
   "showComponentDescriptions": true,
@@ -2462,14 +2546,17 @@
   "lvglExpandedPropertiesGroup": [
     "IMAGE",
     "SHADOW",
-    "OUTLINE",
     "TEXT",
     "ARC",
     "LINE",
     "POSITION AND SIZE",
     "LAYOUT",
     "PADDING",
-    "BACKGROUND"
+    "BACKGROUND",
+    "MISCELLANEOUS",
+    "OUTLINE",
+    "BORDER",
+    "MARGIN"
   ],
   "showInactiveFlowsInDebugger": true,
   "globalFlowZoom": true,

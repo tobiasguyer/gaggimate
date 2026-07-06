@@ -703,14 +703,28 @@ export function Settings() {
                 <option value={1}>SBB like</option>
                 <option value={2}>Numerical clock</option>
                 <option value={3}>Engelberg like</option>
+                <option value={4}>Engelberg like v2</option>
+                <option value={5}>minimal_hand</option>
+                <option value={6}>minimal_arc</option>
+                <option value={7}>minimal_point</option>
               </select>
             </SettingsFormField>
-              <ToggleField
-              label='Display Digital Clock'
-              htmlFor='standbyDigitalClock'
-              checked={!!formData.standbyDigitalClock}
-              onChange={onChange('standbyDigitalClock')}
-              />
+
+            <SettingsFormField label='Display Digital Clock' htmlFor='standbyDigitalClock' noMargin>
+              <select
+                id='standbyDigitalClock'
+                name='standbyDigitalClock'
+                className='select select-bordered w-full'
+                value={formData.standbyDigitalClock}
+                onChange={onChange('standbyDigitalClock')}
+              >
+                <option value={0}>hidden</option>
+                <option value={1}>7 Segment</option>
+                <option value={2}>Numerical clock</option>
+                <option value={3}>Montserrat</option>
+                <option value={4}>Colored</option>
+              </select>
+            </SettingsFormField>
               <ToggleField
               label='Display Binary Clock'
               htmlFor='standbyBinaryClock'
