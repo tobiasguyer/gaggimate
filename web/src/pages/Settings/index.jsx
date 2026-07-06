@@ -704,6 +704,8 @@ export function Settings() {
                 <option value={5}>minimal_hand</option>
                 <option value={6}>minimal_arc</option>
                 <option value={7}>minimal_point</option>
+                <option value={8}>minimal_hand_v2</option>
+                <option value={9}>minimal_android</option>
               </select>
             </SettingsFormField>
 
