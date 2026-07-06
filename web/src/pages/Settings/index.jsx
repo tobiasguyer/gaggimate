@@ -258,6 +258,9 @@ export function Settings() {
       if (key === 'standbyBinaryClock') {
         value = !formData.standbyBinaryClock;
       }
+      if(key === 'displayDate') {
+        value = !formData.displayDate;
+      }
       if (key === 'dashboardLayout') {
         setDashboardLayout(value);
       }
@@ -706,6 +709,8 @@ export function Settings() {
                 <option value={7}>minimal_point</option>
                 <option value={8}>minimal_hand_v2</option>
                 <option value={9}>minimal_android</option>
+                <option value={10}>minimal_arc_v2</option>
+                <option value={11}>minimal_arc_v3</option>
               </select>
             </SettingsFormField>
 
@@ -729,6 +734,12 @@ export function Settings() {
               htmlFor='standbyBinaryClock'
               checked={!!formData.standbyBinaryClock}
               onChange={onChange('standbyBinaryClock')}
+              />
+              <ToggleField
+              label='Display Date on Standby'
+              htmlFor='displayDate'
+              checked={!!formData.displayDate}
+              onChange={onChange('displayDate')}
               />
 
               

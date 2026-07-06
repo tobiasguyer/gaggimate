@@ -108,6 +108,7 @@ Settings::Settings() {
     standbyAnalogClock = preferences.getInt("sanalog", 1);
     standbyDigitalClock = preferences.getInt("sdigital", 1);
     standbyBinaryClock = preferences.getBool("sbinary", false);
+    displayDate = preferences.getBool("sdate", false);
 
     // Sunrise settings
     sunriseR = preferences.getInt("sr_r", 0);
@@ -459,6 +460,12 @@ void Settings::setStandbyBinaryClock(bool standby_binary_clock) {
     save();
 }
 
+
+void Settings::setDisplayDate(bool display_date){
+    displayDate = display_date;
+    save();
+}
+
 void Settings::setHistoryIndex(int history_index) {
     historyIndex = history_index;
     save();
@@ -648,6 +655,7 @@ void Settings::doSave() {
     preferences.putInt("sanalog", standbyAnalogClock);
     preferences.putBool("sdigital", standbyDigitalClock);
     preferences.putBool("sbinary", standbyBinaryClock);
+    preferences.putInt("sdate", displayDate);
 
     // Sunrise Settings
     preferences.putString("sr_i", sunriseIdle);

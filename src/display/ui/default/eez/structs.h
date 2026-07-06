@@ -126,6 +126,7 @@ enum time_structFlowStructureFields {
     FLOW_STRUCTURE_TIME_STRUCT_FIELD_HOUR = 2,
     FLOW_STRUCTURE_TIME_STRUCT_FIELD_TIME_IN_MINUTES = 3,
     FLOW_STRUCTURE_TIME_STRUCT_FIELD_ANALOG_NUMERALS = 4,
+    FLOW_STRUCTURE_TIME_STRUCT_FIELD_DATE = 5,
     FLOW_STRUCTURE_TIME_STRUCT_NUM_FIELDS
 };
 
@@ -716,6 +717,13 @@ struct time_structValue {
     }
     void analog_numerals(bool analog_numerals) {
         value.getArray()->values[FLOW_STRUCTURE_TIME_STRUCT_FIELD_ANALOG_NUMERALS] = BooleanValue(analog_numerals);
+    }
+    
+    const char *date() {
+        return value.getArray()->values[FLOW_STRUCTURE_TIME_STRUCT_FIELD_DATE].getString();
+    }
+    void date(const char *date) {
+        value.getArray()->values[FLOW_STRUCTURE_TIME_STRUCT_FIELD_DATE] = StringValue(date);
     }
 };
 

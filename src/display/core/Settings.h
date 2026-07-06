@@ -94,6 +94,7 @@ class Settings {
     bool isMomentaryButtons() const { return momentaryButtons; }
     String getTimezone() const { return timezone; }
     bool isClock24hFormat() const { return clock24hFormat; }
+    bool getDisplayDate() const { return displayDate; }
     String getSelectedProfile() const { return selectedProfile; }
     String getStartupProfile() const { return startupProfile; }
     const std::vector<String> &getFavoritedProfiles() const { return favoritedProfiles; }
@@ -211,6 +212,7 @@ class Settings {
     void setStandbyAnalogClock(int standby_analog_clock);
     void setStandbyDigitalClock(int standby_digital_clock);
     void setStandbyBinaryClock(bool standby_binary_clock);
+    void setDisplayDate(bool display_date);
     void setHistoryIndex(int history_index);
     [[deprecated]]
     void setSunriseR(int sunrise_r);
@@ -304,6 +306,7 @@ class Settings {
     int standbyAnalogClock = 1;
     int standbyDigitalClock = 1;
     bool standbyBinaryClock = false;
+    bool displayDate = true;
     // Sunrise settings
     int sunriseR = 0;
     int sunriseG = 0;

@@ -689,6 +689,7 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
             settings->setStandbyLogo(request->hasArg("standbyLogo"));
             settings->setStandbyStatus(request->hasArg("standbyStatus"));
             settings->setStandbyTouchIcon(request->hasArg("standbyTouchIcon"));
+            settings->setDisplayDate(request->hasArg("displayDate"));
             if(request->hasArg("standbyDigitalClock"))
                 settings->setStandbyDigitalClock(request->arg("standbyDigitalClock").toInt());
             if(request->hasArg("standbyAnalogClock"))
@@ -824,6 +825,7 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
     doc["standbyDigitalClock"] = settings.getStandbyDigitalClock();
     doc["standbyAnalogClock"] = settings.getStandbyAnalogClock();
     doc["standbyBinaryClock"] = settings.getStandbyBinaryClock();
+    doc["displayDate"] = settings.getDisplayDate();
     doc["sunriseIdle"] = settings.getSunriseIdle();
     doc["sunriseActive"] = settings.getSunriseActive();
     doc["sunriseFinished"] = settings.getSunriseFinished();
