@@ -1,7 +1,7 @@
 on:
   push:
     branches:
-      - "master"
+      - "all_features"
 
 permissions:
   contents: write
