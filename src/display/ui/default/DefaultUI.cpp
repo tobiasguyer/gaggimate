@@ -461,6 +461,9 @@ void DefaultUI::handleScreenChange() {
 
 // Collect every lv_meter under obj (the dial gauges) so their tick length can be animated together.
 void DefaultUI::collectMeters(lv_obj_t *obj) {
+    if (obj == objects.new_standby_screen) {
+        return; 
+    }
     const uint32_t n = lv_obj_get_child_cnt(obj);
     for (uint32_t i = 0; i < n; i++) {
         lv_obj_t *child = lv_obj_get_child(obj, i);
