@@ -251,7 +251,9 @@ static void suppressMeterTicks(lv_obj_t *obj) {
 }
 
 void action_on_screen_load(lv_event_t *e) {
-    suppressMeterTicks(lv_event_get_target(e));
+    lv_obj_t *obj = lv_event_get_target(e);
+    if(obj != objects.new_standby_screen)
+        suppressMeterTicks(lv_event_get_target(e));
     applyClickArea(objects.select_profile, 30);
     applyClickArea(objects.previous_profile, 30);
     applyClickArea(objects.next_profile, 30);
