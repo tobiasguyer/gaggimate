@@ -1029,6 +1029,7 @@ void create_screen_new_standby_screen() {
             lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             create_user_widget_binary_clock(obj, getFlowState(flowState, 9), 20);
+            lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICKABLE);
         }
         {
             lv_obj_t *obj = lv_obj_create(parent_obj);
@@ -1042,6 +1043,7 @@ void create_screen_new_standby_screen() {
             lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             create_user_widget_clock_1(obj, getFlowState(flowState, 10), 57, &state->clock_11_state);
+            lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICKABLE);
         }
         {
             lv_obj_t *obj = lv_obj_create(parent_obj);
@@ -1055,6 +1057,7 @@ void create_screen_new_standby_screen() {
             lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             create_user_widget_clock_2(obj, getFlowState(flowState, 11), 63, &state->clock_21_state);
+            lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICKABLE);
         }
         {
             // status_1
