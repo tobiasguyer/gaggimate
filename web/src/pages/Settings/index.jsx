@@ -255,9 +255,6 @@ export function Settings() {
       if (key === 'standbyTouchIcon') {
         value = !formData.standbyTouchIcon;
       }
-      if (key === 'standbyDigitalClock') {
-        value = !formData.standbyDigitalClock;
-      }
       if (key === 'standbyBinaryClock') {
         value = !formData.standbyBinaryClock;
       }
