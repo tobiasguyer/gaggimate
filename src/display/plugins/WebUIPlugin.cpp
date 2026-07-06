@@ -686,12 +686,12 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
                 settings->setThemeMode(request->arg("themeMode").toInt());
             if (request->hasArg("standbyThemeMode"))
                 settings->setStandbyThemeMode(request->arg("standbyThemeMode").toInt());
-            settings->setStandbyLogo(request->hasArg("standbyLogo") && request->arg("standbyLogo") == "true");
-            settings->setStandbyStatus(request->hasArg("standbyStatus") && request->arg("standbyStatus") == "true");
-            settings->setStandbyTouchIcon(request->hasArg("standbyTouchIcon") && request->arg("standbyTouchIcon") == "true");
-            settings->setStandbyDigitalClock(request->hasArg("standbyDigitalClock") && request->arg("standbyDigitalClock") == "true");
-            settings->setStandbyAnalogClock(request->hasArg("standbyAnalogClock") && request->arg("standbyAnalogClock") == "true");
-            settings->setStandbyBinaryClock(request->hasArg("standbyBinaryClock") && request->arg("standbyBinaryClock") == "true");    
+            settings->setStandbyLogo(request->hasArg("standbyLogo"));
+            settings->setStandbyStatus(request->hasArg("standbyStatus"));
+            settings->setStandbyTouchIcon(request->hasArg("standbyTouchIcon"));
+            settings->setStandbyDigitalClock(request->hasArg("standbyDigitalClock"));
+            settings->setStandbyAnalogClock(request->hasArg("standbyAnalogClock"));
+            settings->setStandbyBinaryClock(request->hasArg("standbyBinaryClock"));
             if (request->hasArg("sunriseIdle"))
                 settings->setSunriseIdle(request->arg("sunriseIdle"));
             if (request->hasArg("sunriseActive"))
