@@ -559,6 +559,9 @@ void DefaultUI::updateSystemStatus() {
     systemStatus.standby_logo(settings.getStandbyLogo());
     systemStatus.standby_status(settings.getStandbyStatus());
     systemStatus.standby_touch_icon(settings.getStandbyTouchIcon());
+    systemStatus.standby_analog_clock(settings.getStandbyAnalogClock());
+    systemStatus.standby_digital_clock(settings.getStandbyDigitalClock());
+    systemStatus.standby_binary_clock(settings.getStandbyBinaryClock());
 
 
     char timeBuf[12] = "";
@@ -570,7 +573,7 @@ void DefaultUI::updateSystemStatus() {
         hour = timeinfo.tm_hour % 12;
         min = timeinfo.tm_min;
         sec = timeinfo.tm_sec;
-    }
+    } 
     systemStatus.time(timeBuf);
     time_container.hour(hour);
     time_container.min(min);

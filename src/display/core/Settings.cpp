@@ -105,6 +105,9 @@ Settings::Settings() {
     standbyLogo = preferences.getBool("slogo", false);
     standbyStatus = preferences.getBool("sstatus", false);
     standbyTouchIcon = preferences.getBool("stouch", false);
+    standbyAnalogClock = preferences.getBool("sanalog", true);
+    standbyDigitalClock = preferences.getBool("sdigital", false);
+    standbyBinaryClock = preferences.getBool("sbinary", false);
 
     // Sunrise settings
     sunriseR = preferences.getInt("sr_r", 0);
@@ -441,6 +444,21 @@ void Settings::setStandbyTouchIcon(bool standby_touch_icon) {
     save();
 }
 
+void Settings::setStandbyAnalogClock(bool standby_analog_clock) {
+    standbyAnalogClock = standby_analog_clock;
+    save();
+}
+
+void Settings::setStandbyDigitalClock(bool standby_digital_clock) {
+    standbyDigitalClock = standby_digital_clock;
+    save();
+}
+
+void Settings::setStandbyBinaryClock(bool standby_binary_clock) {
+    standbyBinaryClock = standby_binary_clock;
+    save();
+}
+
 void Settings::setHistoryIndex(int history_index) {
     historyIndex = history_index;
     save();
@@ -627,6 +645,9 @@ void Settings::doSave() {
     preferences.putBool("slogo", standbyLogo);
     preferences.putBool("sstatus", standbyStatus);
     preferences.putBool("stouch", standbyTouchIcon);
+    preferences.putBool("sanalog", standbyAnalogClock);
+    preferences.putBool("sdigital", standbyDigitalClock);
+    preferences.putBool("sbinary", standbyBinaryClock);
 
     // Sunrise Settings
     preferences.putString("sr_i", sunriseIdle);

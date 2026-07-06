@@ -685,6 +685,26 @@ export function Settings() {
                 checked={!!formData.standbyTouchIcon}
                 onChange={onChange('standbyTouchIcon')}
               />
+              <ToggleField
+              label='Display Analog Clock'
+              htmlFor='standbyAnalogClock'
+              checked={!!formData.standbyAnalogClock}
+              onChange={onChange('standbyAnalogClock')}
+              />
+              <ToggleField
+              label='Display Digital Clock'
+              htmlFor='standbyDigitalClock'
+              checked={!!formData.standbyDigitalClock}
+              onChange={onChange('standbyDigitalClock')}
+              />
+              <ToggleField
+              label='Display Binary Clock'
+              htmlFor='standbyBinaryClock'
+              checked={!!formData.standbyBinaryClock}
+              onChange={onChange('standbyBinaryClock')}
+              />
+
+              
             </div>
           </Card>
 

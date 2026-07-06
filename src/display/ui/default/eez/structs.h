@@ -55,10 +55,12 @@ enum SystemStatusFlowStructureFields {
     FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_STANDBY_STATUS = 16,
     FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_STANDBY_TOUCH_ICON = 17,
     FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_STANDBY_ANALOG_CLOCK = 18,
-    FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_QRCODE_CONTENT = 19,
-    FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_NETWORK = 20,
-    FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_IP = 21,
-    FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_AP_ACTIVE = 22,
+    FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_STANDBY_BINARY_CLOCK = 19,
+    FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_STANDBY_DIGITAL_CLOCK = 20,
+    FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_QRCODE_CONTENT = 21,
+    FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_NETWORK = 22,
+    FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_IP = 23,
+    FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_AP_ACTIVE = 24,
     FLOW_STRUCTURE_SYSTEM_STATUS_NUM_FIELDS
 };
 
@@ -281,6 +283,20 @@ struct SystemStatusValue {
     }
     void standby_analog_clock(bool standby_analog_clock) {
         value.getArray()->values[FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_STANDBY_ANALOG_CLOCK] = BooleanValue(standby_analog_clock);
+    }
+    
+    bool standby_binary_clock() {
+        return value.getArray()->values[FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_STANDBY_BINARY_CLOCK].getBoolean();
+    }
+    void standby_binary_clock(bool standby_binary_clock) {
+        value.getArray()->values[FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_STANDBY_BINARY_CLOCK] = BooleanValue(standby_binary_clock);
+    }
+    
+    bool standby_digital_clock() {
+        return value.getArray()->values[FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_STANDBY_DIGITAL_CLOCK].getBoolean();
+    }
+    void standby_digital_clock(bool standby_digital_clock) {
+        value.getArray()->values[FLOW_STRUCTURE_SYSTEM_STATUS_FIELD_STANDBY_DIGITAL_CLOCK] = BooleanValue(standby_digital_clock);
     }
     
     const char *qrcodeContent() {
