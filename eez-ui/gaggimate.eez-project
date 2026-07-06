@@ -1409,7 +1409,14 @@
               "disabledStateType": "literal",
               "states": "",
               "localStyles": {
-                "objID": "43d89db8-dc6c-49a9-f7d6-2a4371a9bddf"
+                "objID": "43d89db8-dc6c-49a9-f7d6-2a4371a9bddf",
+                "definition": {
+                  "MAIN": {
+                    "DEFAULT": {
+                      "align": "CENTER"
+                    }
+                  }
+                }
               },
               "group": "",
               "groupIndex": 0,
@@ -1456,7 +1463,14 @@
               "disabledStateType": "literal",
               "states": "",
               "localStyles": {
-                "objID": "aa45ec80-85a4-4e9a-f09a-cf465a5a4064"
+                "objID": "aa45ec80-85a4-4e9a-f09a-cf465a5a4064",
+                "definition": {
+                  "MAIN": {
+                    "DEFAULT": {
+                      "align": "CENTER"
+                    }
+                  }
+                }
               },
               "group": "",
               "groupIndex": 0,
@@ -1502,7 +1516,14 @@
               "disabledStateType": "literal",
               "states": "",
               "localStyles": {
-                "objID": "d3f46be2-ebe6-4741-ff9e-3e9ef21a0562"
+                "objID": "d3f46be2-ebe6-4741-ff9e-3e9ef21a0562",
+                "definition": {
+                  "MAIN": {
+                    "DEFAULT": {
+                      "align": "CENTER"
+                    }
+                  }
+                }
               },
               "group": "",
               "groupIndex": 0,
@@ -1548,7 +1569,14 @@
               "disabledStateType": "literal",
               "states": "",
               "localStyles": {
-                "objID": "5faefc3d-9ec6-442b-9759-955e2cce6085"
+                "objID": "5faefc3d-9ec6-442b-9759-955e2cce6085",
+                "definition": {
+                  "MAIN": {
+                    "DEFAULT": {
+                      "align": "CENTER"
+                    }
+                  }
+                }
               },
               "group": "",
               "groupIndex": 0,
@@ -1594,7 +1622,14 @@
               "disabledStateType": "literal",
               "states": "",
               "localStyles": {
-                "objID": "005d1e1b-de7c-44a6-f7ef-8fd3c59e2aee"
+                "objID": "005d1e1b-de7c-44a6-f7ef-8fd3c59e2aee",
+                "definition": {
+                  "MAIN": {
+                    "DEFAULT": {
+                      "align": "CENTER"
+                    }
+                  }
+                }
               },
               "group": "",
               "groupIndex": 0,
