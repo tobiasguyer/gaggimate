@@ -1476,7 +1476,7 @@
               "widthUnit": "px",
               "heightUnit": "px",
               "children": [],
-              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+              "widgetFlags": "",
               "hiddenFlag": "!system.wifi || (system.standby_analog_clock != 1)",
               "hiddenFlagType": "expression",
               "clickableFlag": false,
@@ -1633,7 +1633,7 @@
               "widthUnit": "px",
               "heightUnit": "px",
               "children": [],
-              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+              "widgetFlags": "",
               "hiddenFlag": "!system.wifi || (system.standby_analog_clock != 2)",
               "hiddenFlagType": "expression",
               "clickableFlag": false,
@@ -1646,7 +1646,14 @@
               "disabledStateType": "literal",
               "states": "",
               "localStyles": {
-                "objID": "05eee27c-548e-41ca-9b77-760153e8ad15"
+                "objID": "05eee27c-548e-41ca-9b77-760153e8ad15",
+                "definition": {
+                  "MAIN": {
+                    "DEFAULT": {
+                      "align": "CENTER"
+                    }
+                  }
+                }
               },
               "group": "",
               "groupIndex": 0,
@@ -1678,7 +1685,7 @@
               "widthUnit": "px",
               "heightUnit": "px",
               "children": [],
-              "widgetFlags": "CLICK_FOCUSABLE|GESTURE_BUBBLE|PRESS_LOCK|SCROLLABLE|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_WITH_ARROW|SNAPPABLE",
+              "widgetFlags": "",
               "hiddenFlag": "!system.wifi || (system.standby_analog_clock != 3)",
               "hiddenFlagType": "expression",
               "clickableFlag": false,
@@ -1691,7 +1698,14 @@
               "disabledStateType": "literal",
               "states": "",
               "localStyles": {
-                "objID": "9e1fe99b-fbac-4d85-90c3-c3c81e7ba21f"
+                "objID": "9e1fe99b-fbac-4d85-90c3-c3c81e7ba21f",
+                "definition": {
+                  "MAIN": {
+                    "DEFAULT": {
+                      "align": "CENTER"
+                    }
+                  }
+                }
               },
               "group": "",
               "groupIndex": 0,
