@@ -255,6 +255,15 @@ export function Settings() {
       if (key === 'standbyTouchIcon') {
         value = !formData.standbyTouchIcon;
       }
+      if (key === 'standbyAnalogClock') {
+        value = !formData.standbyAnalogClock;
+      }
+      if (key === 'standbyDigitalClock') {
+        value = !formData.standbyDigitalClock;
+      }
+      if (key === 'standbyBinaryClock') {
+        value = !formData.standbyBinaryClock;
+      }
       if (key === 'dashboardLayout') {
         setDashboardLayout(value);
       }
