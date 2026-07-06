@@ -255,9 +255,6 @@ export function Settings() {
       if (key === 'standbyTouchIcon') {
         value = !formData.standbyTouchIcon;
       }
-      if (key === 'standbyAnalogClock') {
-        value = !formData.standbyAnalogClock;
-      }
       if (key === 'standbyDigitalClock') {
         value = !formData.standbyDigitalClock;
       }
@@ -694,12 +691,20 @@ export function Settings() {
                 checked={!!formData.standbyTouchIcon}
                 onChange={onChange('standbyTouchIcon')}
               />
-              <ToggleField
-              label='Display Analog Clock'
-              htmlFor='standbyAnalogClock'
-              checked={!!formData.standbyAnalogClock}
-              onChange={onChange('standbyAnalogClock')}
-              />
+            <SettingsFormField label='Display Analog Clock' htmlFor='standbyAnalogClock' noMargin>
+              <select
+                id='standbyAnalogClock'
+                name='standbyAnalogClock'
+                className='select select-bordered w-full'
+                value={formData.standbyAnalogClock}
+                onChange={onChange('standbyAnalogClock')}
+              >
+                <option value={0}>hidden</option>
+                <option value={1}>SBB like</option>
+                <option value={2}>Numerical clock</option>
+                <option value={3}>Engelberg like</option>
+              </select>
+            </SettingsFormField>
               <ToggleField
               label='Display Digital Clock'
               htmlFor='standbyDigitalClock'

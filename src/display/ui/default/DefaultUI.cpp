@@ -577,7 +577,6 @@ void DefaultUI::updateSystemStatus() {
         min = timeinfo.tm_min;
         sec = timeinfo.tm_sec;
     } 
-    systemStatus.time(timeBuf);
     time_container.hour(hour);
     time_container.min(min);
     time_container.sec(sec);

@@ -690,7 +690,8 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
             settings->setStandbyStatus(request->hasArg("standbyStatus"));
             settings->setStandbyTouchIcon(request->hasArg("standbyTouchIcon"));
             settings->setStandbyDigitalClock(request->hasArg("standbyDigitalClock"));
-            settings->setStandbyAnalogClock(request->hasArg("standbyAnalogClock"));
+            if(request->hasArg("standbyAnalogClock"))
+                settings->setStandbyAnalogClock(request->arg("standbyAnalogClock").toInt());
             settings->setStandbyBinaryClock(request->hasArg("standbyBinaryClock"));
             if (request->hasArg("sunriseIdle"))
                 settings->setSunriseIdle(request->arg("sunriseIdle"));

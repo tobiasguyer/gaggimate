@@ -105,7 +105,7 @@ Settings::Settings() {
     standbyLogo = preferences.getBool("slogo", false);
     standbyStatus = preferences.getBool("sstatus", false);
     standbyTouchIcon = preferences.getBool("stouch", false);
-    standbyAnalogClock = preferences.getBool("sanalog", true);
+    standbyAnalogClock = preferences.getInt("sanalog", 1);
     standbyDigitalClock = preferences.getBool("sdigital", false);
     standbyBinaryClock = preferences.getBool("sbinary", false);
 
@@ -444,7 +444,7 @@ void Settings::setStandbyTouchIcon(bool standby_touch_icon) {
     save();
 }
 
-void Settings::setStandbyAnalogClock(bool standby_analog_clock) {
+void Settings::setStandbyAnalogClock(int standby_analog_clock) {
     standbyAnalogClock = standby_analog_clock;
     save();
 }
@@ -645,7 +645,7 @@ void Settings::doSave() {
     preferences.putBool("slogo", standbyLogo);
     preferences.putBool("sstatus", standbyStatus);
     preferences.putBool("stouch", standbyTouchIcon);
-    preferences.putBool("sanalog", standbyAnalogClock);
+    preferences.putInt("sanalog", standbyAnalogClock);
     preferences.putBool("sdigital", standbyDigitalClock);
     preferences.putBool("sbinary", standbyBinaryClock);
 
