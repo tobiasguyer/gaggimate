@@ -137,7 +137,7 @@
         "objID": "9aa0827d-621a-4d16-c9c6-b9647d15bfab",
         "name": "system",
         "type": "struct:SystemStatus",
-        "defaultValue": "{ bluetooth: true,  update_available: true, wifi: true, error: false, error_label: \"Mammamia\", volumetric_available: true, pressure_available: true, mode: 1, standby_analog_clock : 11, standby_digital_clock : 0, standby_binary_clock : false, standby_logo: true, standby_status : true, standby_mode : 0, standby_touch_icon : true}",
+        "defaultValue": "{ bluetooth: true,  update_available: true, wifi: true, error: false, error_label: \"Mammamia\", volumetric_available: true, pressure_available: true, mode: 1, standby_analog_clock : 11, standby_digital_clock : 0, standby_binary_clock : false, standby_logo: true, standby_status : true, standby_mode : 0, standby_touch_icon : false}",
         "persistent": false,
         "native": false
       },
@@ -1729,7 +1729,7 @@
               "heightUnit": "content",
               "children": [],
               "widgetFlags": "",
-              "hiddenFlag": "system.error && !system.standby_touch_icon",
+              "hiddenFlag": "system.error || !system.standby_touch_icon",
               "hiddenFlagType": "expression",
               "clickableFlag": false,
               "clickableFlagType": "literal",

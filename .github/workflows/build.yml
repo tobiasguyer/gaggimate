@@ -30,6 +30,12 @@ jobs:
           node-version: 22
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
+      - name: Debug mkspiffs
+        run: |
+          pio pkg list
+          find ~/.platformio/packages -name "*mkspiffs*"
+          ls -R ~/.platformio/packages/tool-mkspiffs || true
+          file ~/.platformio/packages/tool-mkspiffs/* || true
       - name: Add version
         run: |
           mkdir -p out
