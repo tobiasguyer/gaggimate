@@ -53,6 +53,16 @@ jobs:
           cp .pio/build/controller/firmware.bin upload/controller/firmware.bin
           cp .pio/build/controller/partitions.bin upload/controller/partitions.bin
           cp .pio/build/controller/bootloader.bin upload/controller/bootloader.bin
+      - name: Debug mkspiffs
+        run: |
+          echo "=== Packages ==="
+          ls -la ~/.platformio/packages
+          echo "=== tool-mkspiffs ==="
+          ls -laR ~/.platformio/packages/tool-mkspiffs || true
+          echo "=== Executables ==="
+          find ~/.platformio/packages/tool-mkspiffs -type f -executable || true
+          echo "=== PATH ==="
+          echo $PATH
       - name: Build display FS
         run: |
           pio run -t buildfs -e display

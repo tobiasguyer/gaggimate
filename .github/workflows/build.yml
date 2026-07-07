@@ -30,12 +30,6 @@ jobs:
           node-version: 22
           cache: 'npm'
           cache-dependency-path: web/package-lock.json
-      - name: Debug mkspiffs
-        run: |
-          pio pkg list
-          find ~/.platformio/packages -name "*mkspiffs*"
-          ls -R ~/.platformio/packages/tool-mkspiffs || true
-          file ~/.platformio/packages/tool-mkspiffs/* || true
       - name: Add version
         run: |
           mkdir -p out
@@ -65,6 +59,16 @@ jobs:
           channel: 'stable'
           target: 'controller'
           firmware_dir: 'upload/controller'
+      - name: Debug mkspiffs
+        run: |
+          echo "=== Packages ==="
+          ls -la ~/.platformio/packages
+          echo "=== tool-mkspiffs ==="
+          ls -laR ~/.platformio/packages/tool-mkspiffs || true
+          echo "=== Executables ==="
+          find ~/.platformio/packages/tool-mkspiffs -type f -executable || true
+          echo "=== PATH ==="
+          echo $PATH
       - name: Build display FS
         run: |
           pio run -t buildfs -e display
