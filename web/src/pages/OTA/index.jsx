@@ -29,6 +29,8 @@ export function OTA() {
   const [isLoading, setIsLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [formData, setFormData] = useState({});
+  const [setUrl, setSetUrl] = useState('');
+  const [urlChanged, setUrlChanged] = useState(false);
   const [phase, setPhase] = useState(0);
   const [progress, setProgress] = useState(0);
   const rssi = machine.value.status.rssi;
@@ -53,6 +55,8 @@ export function OTA() {
   useEffect(() => {
     const listenerId = apiService.on('res:ota-settings', msg => {
       setFormData(msg);
+      setSetUrl(msg.url?.value || '');
+      setUrlChanged(false);
       setIsLoading(false);
       setSubmitting(false);
     });
@@ -95,13 +99,37 @@ export function OTA() {
 
   const formRef = useRef();
 
+  const onUrlChange = useCallback(
+    e => {
+      const value = e.target.value;
+
+      setSetUrl(value);
+      setUrlChanged(true);
+
+      setFormData(prev => ({
+        ...prev,
+        url: {
+          value,
+        },
+      }));
+    },
+    [setFormData],
+  );
+
   const onSubmit = useCallback(
     async e => {
       e.preventDefault();
       setSubmitting(true);
       const form = formRef.current;
       const formData = new FormData(form);
-      apiService.send({ tp: 'req:ota-settings', update: true, channel: formData.get('channel') });
+      apiService.send({
+        tp: 'req:ota-settings',
+        update: true,
+        channel: formData.get('channel'),
+        url: {
+          value: setUrl,
+        },
+      });
       setSubmitting(true);
     },
     [setFormData, formRef],
@@ -110,6 +138,7 @@ export function OTA() {
   const onUpdate = useCallback(
     component => {
       apiService.send({ tp: 'req:ota-start', cp: component });
+      setUrlChanged(false);
     },
     [apiService],
   );
@@ -176,6 +205,22 @@ export function OTA() {
                   Nightly
                 </option>
               </select>
+            </div>
+
+            <div className='flex flex-col space-y-4'>
+              <label htmlFor='setUrl' className='mb-2 block text-sm font-medium'>
+                Update URL
+              </label>
+
+              <input
+                id='setUrl'
+                name='setUrl'
+                type='text'
+                className='input input-bordered w-full'
+                value={setUrl}
+                onInput={onUrlChange}
+                placeholder='https://...'
+              />
             </div>
 
             <div className='flex flex-col space-y-4'>
@@ -297,7 +342,10 @@ export function OTA() {
               type='submit'
               name='update'
               className='btn btn-secondary'
-              disabled={!formData.displayUpdateAvailable || submitting}
+              disabled={
+                (!formData.displayUpdateAvailable && !urlChanged) ||
+                submitting
+              }
               onClick={() => onUpdate('display')}
             >
               Update Display
@@ -306,8 +354,10 @@ export function OTA() {
               type='submit'
               name='update'
               className='btn btn-secondary'
-              disabled={!formData.controllerUpdateAvailable || submitting}
-              onClick={() => onUpdate('controller')}
+              disabled={
+                (!formData.controllerUpdateAvailable && !urlChanged) ||
+                submitting
+              } onClick={() => onUpdate('controller')}
             >
               Update Controller
             </button>
@@ -343,16 +393,15 @@ export function OTA() {
             <div className='mt-3'>
               <div className='text-base-content/70 mb-1 text-sm'>
                 {rebuildProgress.status === 'starting' ||
-                rebuildProgress.status === 'scanning' ||
-                rebuildProgress.total === 0
+                  rebuildProgress.status === 'scanning' ||
+                  rebuildProgress.total === 0
                   ? 'Scanning shot history files...'
                   : `Processing shot history files (${rebuildProgress.current}/${rebuildProgress.total})`}
               </div>
               <div className='bg-base-300 h-2 w-full overflow-hidden rounded'>
                 <div
-                  className={`h-full transition-all duration-300 ${
-                    rebuildProgress.total === 0 ? 'bg-primary animate-pulse' : 'bg-primary'
-                  }`}
+                  className={`h-full transition-all duration-300 ${rebuildProgress.total === 0 ? 'bg-primary animate-pulse' : 'bg-primary'
+                    }`}
                   style={{
                     width:
                       rebuildProgress.total > 0

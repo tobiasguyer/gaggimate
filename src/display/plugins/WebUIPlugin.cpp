@@ -498,6 +498,10 @@ void WebUIPlugin::handleOTASettings(uint32_t clientId, JsonDocument &request) {
             lastUpdateCheck = 0;
         }
     }
+    if(request.containsKey("url") && request["url"].is<const char *>() && strlen(request["url"].as<const char *>()) > 0) {
+        ota->setReleaseUrl(request["url"].as<const char *>());
+        lastUpdateCheck = 0;
+    }
     updateOTAStatus("Checking...");
 }
 
