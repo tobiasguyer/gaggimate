@@ -36,6 +36,13 @@ GitHubOTA::GitHubOTA(const String &display_version, const String &controller_ver
     Updater.setFollowRedirects(HTTPC_FORCE_FOLLOW_REDIRECTS);
 }
 
+WiFiClient &GitHubOTA::clientForUrl(const String &url) {
+    if (url.startsWith("http://")) {
+        return _plain_client;
+    }
+    return _wifi_client;
+}
+
 void GitHubOTA::init(NimBLEClient *client) {
     _controller_ota.init(client, [this](int progress) { _progress_callback(PHASE_CONTROLLER_FW, progress); });
 }
@@ -43,7 +50,7 @@ void GitHubOTA::init(NimBLEClient *client) {
 void GitHubOTA::checkForUpdates() {
     const char *TAG = "checkForUpdates";
 
-    _latest_url = get_updated_base_url_via_redirect(_wifi_client, _release_url);
+    _latest_url = get_updated_base_url_via_redirect(clientForUrl(_release_url), _release_url);
     if (_latest_url != "") {
         ESP_LOGI(TAG, "base_url %s\n", _latest_url.c_str());
 
@@ -62,7 +69,7 @@ void GitHubOTA::checkForUpdates() {
     } else {
         _latest_url = _release_url + "/";
         _latest_url.replace("tag", "download");
-        String version = get_updated_version_via_txt_file(_wifi_client, _latest_url);
+        String version = get_updated_version_via_txt_file(clientForUrl(_latest_url), _latest_url);
 
         if (version.length() == 0) {
             ESP_LOGW(TAG, "version.txt did not return a valid version string");
@@ -94,7 +101,7 @@ void GitHubOTA::update(bool controller, bool display) {
         ESP_LOGI(TAG, "Controller update is required, running firmware update.");
         this->phase = PHASE_CONTROLLER_FW;
         this->_phase_callback(PHASE_CONTROLLER_FW);
-        _controller_ota.update(_wifi_client, _latest_url + _controller_firmware_name);
+        _controller_ota.update(clientForUrl(_latest_url), _latest_url + _controller_firmware_name);
         ESP_LOGI(TAG, "Controller update successful. Restarting...\n");
         updateExecuted = true;
     }
@@ -135,7 +142,7 @@ HTTPUpdateResult GitHubOTA::update_firmware(const String &url) {
     const char *TAG = "update_firmware";
     ESP_LOGI(TAG, "Download URL: %s\n", url.c_str());
 
-    auto result = Updater.update(_wifi_client, url);
+    auto result = Updater.update(clientForUrl(url), url);
 
     print_update_result(Updater, result, TAG);
     return result;
@@ -144,4 +151,9 @@ HTTPUpdateResult GitHubOTA::update_firmware(const String &url) {
 void GitHubOTA::setControllerVersion(const String &controller_version) {
     semver_free(&_controller_version);
     _controller_version = from_string(controller_version.substring(1).c_str());
+}
+
+void GitHubOTA::setDisplayVersion(const String &display_version) {
+    semver_free(&_version);
+    _version = from_string(display_version.substring(1).c_str());
 }

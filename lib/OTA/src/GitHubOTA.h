@@ -3,6 +3,7 @@
 
 #include "ControllerOTA.h"
 #include <HTTPUpdate.h>
+#include <WiFiClient.h>
 #include <WiFiClientSecure.h>
 
 #include "semver.h"
@@ -32,11 +33,14 @@ class GitHubOTA {
     void update(bool controller = true, bool display = true);
     void setReleaseUrl(const String &release_url);
     void setControllerVersion(const String &controller_version);
+    void setDisplayVersion(const String &display_version);
 
   private:
     HTTPUpdate Updater;
 
     HTTPUpdateResult update_firmware(const String &url);
+
+    WiFiClient &clientForUrl(const String &url);
 
     uint8_t phase = PHASE_IDLE;
     semver_t _version;
@@ -49,6 +53,7 @@ class GitHubOTA {
     String _filesystem_name;
     String _controller_firmware_name;
     WiFiClientSecure _wifi_client;
+    WiFiClient _plain_client; // used for http:// release URLs; see clientForUrl()
     ControllerOTA _controller_ota;
     phase_callback_t _phase_callback = nullptr;
     progress_callback_t _progress_callback = nullptr;

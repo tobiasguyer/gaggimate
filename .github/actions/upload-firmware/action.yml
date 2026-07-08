@@ -8,6 +8,7 @@ inputs:
     options:
       - stable
       - nightly
+      - personal
   version:
     description: Release version (e.g. 1.2.3)
     required: false

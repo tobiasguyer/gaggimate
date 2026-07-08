@@ -16,7 +16,7 @@ mkdir -p "$ROOT/data/p"
 
 # Build the web application.
 cd "$ROOT/web"
-npm ci
+npm install
 npm run build
 
 # Gzip the compressible assets in place (served with Content-Encoding: gzip).

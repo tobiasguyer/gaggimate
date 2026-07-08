@@ -106,6 +106,13 @@ void WebUIPlugin::setup(Controller *_controller, PluginManager *_pluginManager) 
 }
 
 void WebUIPlugin::loop() {
+    if (serverRunning && !controller->isActive() &&
+        (lastUpdateCheck == 0 || millis() - lastUpdateCheck > UPDATE_CHECK_INTERVAL)) {
+        ota->checkForUpdates();
+        pluginManager->trigger("ota:update:status", "value", ota->isUpdateAvailable());
+        lastUpdateCheck = millis();
+        updateOTAStatus(ota->getCurrentVersion());
+    }
     if (updating) {
         // Pass which component is being flashed: a controller update streams the
         // firmware over BLE (wants a low-latency link), a display update is over
@@ -123,12 +130,7 @@ void WebUIPlugin::loop() {
     // must not have the control loop stalled for the duration of the handshake, nor compete
     // with it for memory. isActive() is the reliable "a process is running" signal. Subtraction
     // (not now > last + interval) keeps the interval check millis()-rollover-safe.
-    if (!controller->isActive() && (lastUpdateCheck == 0 || now - lastUpdateCheck > UPDATE_CHECK_INTERVAL)) {
-        ota->checkForUpdates();
-        pluginManager->trigger("ota:update:status", "value", ota->isUpdateAvailable());
-        lastUpdateCheck = now;
-        updateOTAStatus(ota->getCurrentVersion());
-    }
+
     if (now > lastStatus + STATUS_PERIOD && !ws.getClients().empty()) {
         lastStatus = now;
         statusDoc.clear();
@@ -491,16 +493,20 @@ void WebUIPlugin::handleWebSocketData(AsyncWebSocket *server, AsyncWebSocketClie
 }
 
 void WebUIPlugin::handleOTASettings(uint32_t clientId, JsonDocument &request) {
-    if (request["update"].as<bool>()) {
-        if (!request["channel"].isNull()) {
-            controller->getSettings().setOTAChannel(request["channel"].as<String>() == "latest" ? "latest" : "nightly");
-            ota->setReleaseUrl(RELEASE_URL + (controller->getSettings().getOTAChannel() == "latest" ? "latest" : "tag/nightly"));
-            lastUpdateCheck = 0;
-        }
-    }
+    
     if(request.containsKey("url") && request["url"].is<const char *>() && strlen(request["url"].as<const char *>()) > 0) {
+        ota->setDisplayVersion("v1.0.0");
+        
         ota->setReleaseUrl(request["url"].as<const char *>());
         lastUpdateCheck = 0;
+    } else{
+        if (request["update"].as<bool>()) {
+            if (!request["channel"].isNull()) {
+                controller->getSettings().setOTAChannel(request["channel"].as<String>() == "latest" ? "latest" : "nightly");
+                ota->setReleaseUrl(RELEASE_URL + (controller->getSettings().getOTAChannel() == "latest" ? "latest" : "tag/nightly"));
+                lastUpdateCheck = 0;
+            }
+        }
     }
     updateOTAStatus("Checking...");
 }
@@ -930,7 +936,7 @@ void WebUIPlugin::handleBLEScaleInfo(AsyncWebServerRequest *request) {
     request->send(response);
 }
 
-void WebUIPlugin::updateOTAStatus(const String &version) {
+void WebUIPlugin::updateOTAStatus(const String &version, bool force) {
     if (ws.getClients().empty()) {
         return;
     }
@@ -938,8 +944,8 @@ void WebUIPlugin::updateOTAStatus(const String &version) {
     JsonDocument doc(&psramAllocator);
     doc["latestVersion"] = ota->getCurrentVersion();
     doc["tp"] = "res:ota-settings";
-    doc["displayUpdateAvailable"] = ota->isUpdateAvailable(false);
-    doc["controllerUpdateAvailable"] = ota->isUpdateAvailable(true);
+    doc["displayUpdateAvailable"] = force || ota->isUpdateAvailable(false);
+    doc["controllerUpdateAvailable"] = force || ota->isUpdateAvailable(true);
     doc["displayVersion"] = BUILD_GIT_VERSION;
     doc["controllerVersion"] = controller->getSystemInfo().version;
     doc["hardware"] = controller->getSystemInfo().hardware;

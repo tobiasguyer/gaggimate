@@ -1,12 +1,11 @@
 on:
   push:
     tags:
-      - "nightly"
-      - "db"
+      - "personal"
 
 permissions:
   contents: write
-name: Build Nightly
+name: Build Personal
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -39,14 +38,15 @@ jobs:
           mkdir -p upload/display
           mkdir -p upload/headless
           mkdir -p upload/controller
-          git tag -d nightly
-          git tag -d db
+          git tag -d nightly || true
+          git tag -d db || true
+          git tag -d personal || true
           git describe --tags --dirty > out/version.txt
       - name: Build Web
         run: ./scripts/build_webui.sh
       - name: Build controller
         run: |
-          export PLATFORMIO_BUILD_FLAGS="'-DNIGHTLY_BUILD'"
+          export PLATFORMIO_BUILD_FLAGS="'-DPERSONAL_BUILD'"
           pio run -e controller
           cp .pio/build/controller/firmware.bin out/board-firmware.bin
           cp .pio/build/controller/partitions.bin out/board-partitions.bin
@@ -54,16 +54,25 @@ jobs:
           cp .pio/build/controller/firmware.bin upload/controller/firmware.bin
           cp .pio/build/controller/partitions.bin upload/controller/partitions.bin
           cp .pio/build/controller/bootloader.bin upload/controller/bootloader.bin
+      - uses: ./.github/actions/upload-firmware
+        continue-on-error: true
+        env:
+          UPDATE_SERVER_HOST: ${{ secrets.UPDATE_SERVER_HOST }}
+          UPDATE_SERVER_API_KEY: ${{ secrets.UPDATE_SERVER_API_KEY }}
+        with:
+          channel: 'personal'
+          target: 'controller'
+          firmware_dir: 'upload/controller'
       - name: Build display FS
         run: |
           pio run -t buildfs -e display
-          cp .pio/build/display/littlefs.bin upload/display/filesystem.bin
-          cp .pio/build/display/littlefs.bin upload/headless/filesystem.bin
           cp .pio/build/display/littlefs.bin out/display-filesystem.bin
           cp .pio/build/display/littlefs.bin out/display-headless-filesystem.bin
+          cp .pio/build/display/littlefs.bin upload/display/filesystem.bin
+          cp .pio/build/display/littlefs.bin upload/headless/filesystem.bin
       - name: Build display
         run: |
-          export PLATFORMIO_BUILD_FLAGS="'-DNIGHTLY_BUILD'"
+          export PLATFORMIO_BUILD_FLAGS="'-DPERSONAL_BUILD'"
           pio run -e display
           cp .pio/build/display/firmware.bin out/display-firmware.bin
           cp .pio/build/display/partitions.bin out/display-partitions.bin
@@ -71,9 +80,19 @@ jobs:
           cp .pio/build/display/firmware.bin upload/display/firmware.bin
           cp .pio/build/display/partitions.bin upload/display/partitions.bin
           cp .pio/build/display/bootloader.bin upload/display/bootloader.bin
+      - uses: ./.github/actions/upload-firmware
+        continue-on-error: true
+        env:
+          UPDATE_SERVER_HOST: ${{ secrets.UPDATE_SERVER_HOST }}
+          UPDATE_SERVER_API_KEY: ${{ secrets.UPDATE_SERVER_API_KEY }}
+        with:
+          channel: 'personal'
+          target: 'display'
+          firmware_dir: 'upload/display'
+          firmware_files: 'bootloader.bin,partitions.bin,firmware.bin,filesystem.bin'
       - name: Build headless
         run: |
-          export PLATFORMIO_BUILD_FLAGS="'-DNIGHTLY_BUILD'"
+          export PLATFORMIO_BUILD_FLAGS="'-DPERSONAL_BUILD'"
           pio run -e display-headless
           cp .pio/build/display-headless/firmware.bin out/display-headless-firmware.bin
           cp .pio/build/display-headless/partitions.bin out/display-headless-partitions.bin
@@ -81,37 +100,40 @@ jobs:
           cp .pio/build/display-headless/firmware.bin upload/headless/firmware.bin
           cp .pio/build/display-headless/partitions.bin upload/headless/partitions.bin
           cp .pio/build/display-headless/bootloader.bin upload/headless/bootloader.bin
+      - uses: ./.github/actions/upload-firmware
+        continue-on-error: true
+        env:
+          UPDATE_SERVER_HOST: ${{ secrets.UPDATE_SERVER_HOST }}
+          UPDATE_SERVER_API_KEY: ${{ secrets.UPDATE_SERVER_API_KEY }}
+        with:
+          channel: 'personal'
+          target: 'headless'
+          firmware_dir: 'upload/headless'
+          firmware_files: 'bootloader.bin,partitions.bin,firmware.bin,filesystem.bin'
       - name: Archive Firmware Files
         uses: https://gitea.com/actions/upload-artifact@v3
         with:
           name: gaggimate-firmware
           path: "out/*"
-  release-nightly:
+
+  release-personal:
     needs: build
     runs-on: ubuntu-latest
     permissions:
       contents: write
-      pages: write
-      pull-requests: write
     steps:
       - name: Download Firmware Files
         uses: https://gitea.com/actions/download-artifact@v3
         with:
           name: gaggimate-firmware
           path: release
-      - name: Update Nightly Release
+      - name: Release Firmware
         uses: https://gitea.com/actions/gitea-release-action@main
         with:
-          tag_name: nightly
-          name: 'Nightly Release'
+          tag_name: personal
+          name: 'Personal Build'
           prerelease: true
-          body: 'Latest nightly release, use the nightly channel in the UI to download this firmware.'
-          files: release/*
+          body: 'Personal build, use the personal channel in the UI to download this firmware.'
+          files: |-
+            release/*.bin
           token: ${{ secrets.GITHUB_TOKEN }}
-      - name: Deploy to GitHub Pages subdirectory
-        uses: peaceiris/actions-gh-pages@4f9cc6602d3f66b9c108549d475ec49e8ef4d45e
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: ./release
-          destination_dir: nightly
-          publish_branch: gh-pages

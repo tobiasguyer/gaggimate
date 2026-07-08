@@ -108,12 +108,10 @@ export function OTA() {
 
       setFormData(prev => ({
         ...prev,
-        url: {
-          value,
-        },
+        url: value
       }));
     },
-    [setFormData],
+    [setFormData, setSetUrl],
   );
 
   const onSubmit = useCallback(
@@ -122,17 +120,16 @@ export function OTA() {
       setSubmitting(true);
       const form = formRef.current;
       const formData = new FormData(form);
+      
       apiService.send({
         tp: 'req:ota-settings',
         update: true,
         channel: formData.get('channel'),
-        url: {
-          value: setUrl,
-        },
+        url: setUrl,
       });
       setSubmitting(true);
     },
-    [setFormData, formRef],
+    [setFormData, formRef, setUrl],
   );
 
   const onUpdate = useCallback(
