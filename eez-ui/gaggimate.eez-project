@@ -16462,7 +16462,7 @@
                   "width": 16,
                   "color": "NiceWhite",
                   "radiusModifier": -260,
-                  "value": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "value": "(time_container.hour%12) * 3600 + time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
                 },
                 {
@@ -16472,7 +16472,7 @@
                   "width": 16,
                   "color": "NiceWhite",
                   "radiusModifier": -90,
-                  "value": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "value": "(time_container.hour%12) *3600 + time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
                 }
               ],
@@ -19451,7 +19451,7 @@
                   "width": 8,
                   "color": "NiceWhite",
                   "radiusModifier": -260,
-                  "value": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "value": "(time_container.hour % 12) *3600 + time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
                 },
                 {
@@ -19461,7 +19461,7 @@
                   "width": 8,
                   "color": "NiceWhite",
                   "radiusModifier": -90,
-                  "value": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "value": "(time_container.hour % 12) *3600 + time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
                 }
               ],
@@ -20200,7 +20200,7 @@
                   "width": 4,
                   "color": "NiceWhite",
                   "radiusModifier": -22,
-                  "value": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "value": "(time_container.hour % 12) *3600 + time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
                 },
                 {
@@ -20210,7 +20210,7 @@
                   "width": 4,
                   "color": "NiceWhite",
                   "radiusModifier": -100,
-                  "value": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "value": "(time_container.hour % 12) *3600 + time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
                 }
               ],
@@ -20790,7 +20790,7 @@
                   "width": 4,
                   "color": "NiceWhite",
                   "radiusModifier": -22,
-                  "value": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "value": "(time_container.hour % 12)*3600 + time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
                 },
                 {
@@ -20800,7 +20800,7 @@
                   "width": 4,
                   "color": "NiceWhite",
                   "radiusModifier": -100,
-                  "value": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "value": "(time_container.hour % 12) *3600 + time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
                 }
               ],
@@ -22906,7 +22906,7 @@
                   "width": 10,
                   "color": "NiceWhite",
                   "radiusModifier": -90,
-                  "value": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "value": "(time_container.hour % 12) *3600 + time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
                 }
               ],
@@ -23235,7 +23235,7 @@
                   "radiusModifier": -40,
                   "startValue": 0,
                   "startValueType": "literal",
-                  "endValue": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "endValue": "(time_container.hour % 12) + time_container.min * 60 + time_container.sec",
                   "endValueType": "expression"
                 }
               ],
@@ -23911,7 +23911,7 @@
                   "width": 4,
                   "color": "SemiDark",
                   "radiusModifier": -120,
-                  "value": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "value": "(time_container.hour % 12) *3600 + time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
                 }
               ],
@@ -24076,7 +24076,7 @@
                   "width": 10,
                   "color": "NiceWhite",
                   "radiusModifier": -90,
-                  "value": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "value": "(time_container.hour % 12) *3600 + time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
                 }
               ],
@@ -24270,7 +24270,7 @@
                   "radiusModifier": -40,
                   "startValue": 0,
                   "startValueType": "literal",
-                  "endValue": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "endValue": "(time_container.hour % 12) *3600 + time_container.min * 60 + time_container.sec",
                   "endValueType": "expression"
                 },
                 {
@@ -24279,7 +24279,7 @@
                   "width": 2,
                   "color": "lighten(Heating, 85%)",
                   "radiusModifier": -40,
-                  "value": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "value": "(time_container.hour % 12) *3600 + time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
                 }
               ],
@@ -24573,7 +24573,7 @@
                   "radiusModifier": -4,
                   "startValue": 0,
                   "startValueType": "literal",
-                  "endValue": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "endValue": "(time_container.hour % 12) *3600 + time_container.min * 60 + time_container.sec",
                   "endValueType": "expression"
                 },
                 {
@@ -24582,7 +24582,7 @@
                   "width": 2,
                   "color": "Heating",
                   "radiusModifier": -80,
-                  "value": "time_container.hour *3600 + time_container.min * 60 + time_container.sec",
+                  "value": "(time_container.hour % 12)*3600 + time_container.min * 60 + time_container.sec",
                   "valueType": "expression"
                 }
               ],

@@ -106,13 +106,6 @@ void WebUIPlugin::setup(Controller *_controller, PluginManager *_pluginManager) 
 }
 
 void WebUIPlugin::loop() {
-    if (serverRunning && !controller->isActive() &&
-        (lastUpdateCheck == 0 || millis() - lastUpdateCheck > UPDATE_CHECK_INTERVAL)) {
-        ota->checkForUpdates();
-        pluginManager->trigger("ota:update:status", "value", ota->isUpdateAvailable());
-        lastUpdateCheck = millis();
-        updateOTAStatus(ota->getCurrentVersion());
-    }
     if (updating) {
         // Pass which component is being flashed: a controller update streams the
         // firmware over BLE (wants a low-latency link), a display update is over
@@ -130,7 +123,12 @@ void WebUIPlugin::loop() {
     // must not have the control loop stalled for the duration of the handshake, nor compete
     // with it for memory. isActive() is the reliable "a process is running" signal. Subtraction
     // (not now > last + interval) keeps the interval check millis()-rollover-safe.
-
+    if (!controller->isActive() && (lastUpdateCheck == 0 || now - lastUpdateCheck > UPDATE_CHECK_INTERVAL)) {
+        ota->checkForUpdates();
+        pluginManager->trigger("ota:update:status", "value", ota->isUpdateAvailable());
+        lastUpdateCheck = now;
+        updateOTAStatus(ota->getCurrentVersion());
+    }
     if (now > lastStatus + STATUS_PERIOD && !ws.getClients().empty()) {
         lastStatus = now;
         statusDoc.clear();
@@ -493,19 +491,11 @@ void WebUIPlugin::handleWebSocketData(AsyncWebSocket *server, AsyncWebSocketClie
 }
 
 void WebUIPlugin::handleOTASettings(uint32_t clientId, JsonDocument &request) {
-    
-    if(request.containsKey("url") && request["url"].is<const char *>() && strlen(request["url"].as<const char *>()) > 0) {
-        ota->setDisplayVersion("v1.0.0");
-        
-        ota->setReleaseUrl(request["url"].as<const char *>());
-        lastUpdateCheck = 0;
-    } else{
-        if (request["update"].as<bool>()) {
-            if (!request["channel"].isNull()) {
-                controller->getSettings().setOTAChannel(request["channel"].as<String>() == "latest" ? "latest" : "nightly");
-                ota->setReleaseUrl(RELEASE_URL + (controller->getSettings().getOTAChannel() == "latest" ? "latest" : "tag/nightly"));
-                lastUpdateCheck = 0;
-            }
+    if (request["update"].as<bool>()) {
+        if (!request["channel"].isNull()) {
+            controller->getSettings().setOTAChannel(request["channel"].as<String>() == "latest" ? "latest" : "nightly");
+            ota->setReleaseUrl(RELEASE_URL + (controller->getSettings().getOTAChannel() == "latest" ? "latest" : "tag/nightly"));
+            lastUpdateCheck = 0;
         }
     }
     updateOTAStatus("Checking...");
@@ -696,6 +686,22 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
                 settings->setThemeMode(request->arg("themeMode").toInt());
             if (request->hasArg("standbyThemeMode"))
                 settings->setStandbyThemeMode(request->arg("standbyThemeMode").toInt());
+            if (request->hasArg("customThemeNiceWhite"))
+                settings->setCustomThemeNiceWhite(request->arg("customThemeNiceWhite"));
+            if (request->hasArg("customThemeDark"))
+                settings->setCustomThemeDark(request->arg("customThemeDark"));
+            if (request->hasArg("customThemeProgress"))
+                settings->setCustomThemeProgress(request->arg("customThemeProgress"));
+            if (request->hasArg("customThemeSemiDark"))
+                settings->setCustomThemeSemiDark(request->arg("customThemeSemiDark"));
+            if (request->hasArg("customThemeHeating"))
+                settings->setCustomThemeHeating(request->arg("customThemeHeating"));
+            if (request->hasArg("customThemeTicks"))
+                settings->setCustomThemeTicks(request->arg("customThemeTicks"));
+            if (request->hasArg("customThemeTemperature"))
+                settings->setCustomThemeTemperature(request->arg("customThemeTemperature"));
+            if (request->hasArg("customThemePressure"))
+                settings->setCustomThemePressure(request->arg("customThemePressure"));
             settings->setStandbyLogo(request->hasArg("standbyLogo"));
             settings->setStandbyStatus(request->hasArg("standbyStatus"));
             settings->setStandbyTouchIcon(request->hasArg("standbyTouchIcon"));
@@ -829,6 +835,14 @@ void WebUIPlugin::handleSettings(AsyncWebServerRequest *request) const {
     doc["steamPumpCutoff"] = settings.getSteamPumpCutoff();
     doc["themeMode"] = settings.getThemeMode();
     doc["standbyThemeMode"] = settings.getStandbyThemeMode();
+    doc["customThemeNiceWhite"] = settings.getCustomThemeNiceWhite();
+    doc["customThemeDark"] = settings.getCustomThemeDark();
+    doc["customThemeProgress"] = settings.getCustomThemeProgress();
+    doc["customThemeSemiDark"] = settings.getCustomThemeSemiDark();
+    doc["customThemeHeating"] = settings.getCustomThemeHeating();
+    doc["customThemeTicks"] = settings.getCustomThemeTicks();
+    doc["customThemeTemperature"] = settings.getCustomThemeTemperature();
+    doc["customThemePressure"] = settings.getCustomThemePressure();
     doc["standbyLogo"] = settings.getStandbyLogo();
     doc["standbyStatus"] = settings.getStandbyStatus();
     doc["standbyTouchIcon"] = settings.getStandbyTouchIcon();
@@ -936,7 +950,7 @@ void WebUIPlugin::handleBLEScaleInfo(AsyncWebServerRequest *request) {
     request->send(response);
 }
 
-void WebUIPlugin::updateOTAStatus(const String &version, bool force) {
+void WebUIPlugin::updateOTAStatus(const String &version) {
     if (ws.getClients().empty()) {
         return;
     }
@@ -944,8 +958,8 @@ void WebUIPlugin::updateOTAStatus(const String &version, bool force) {
     JsonDocument doc(&psramAllocator);
     doc["latestVersion"] = ota->getCurrentVersion();
     doc["tp"] = "res:ota-settings";
-    doc["displayUpdateAvailable"] = force || ota->isUpdateAvailable(false);
-    doc["controllerUpdateAvailable"] = force || ota->isUpdateAvailable(true);
+    doc["displayUpdateAvailable"] = ota->isUpdateAvailable(false);
+    doc["controllerUpdateAvailable"] = ota->isUpdateAvailable(true);
     doc["displayVersion"] = BUILD_GIT_VERSION;
     doc["controllerVersion"] = controller->getSystemInfo().version;
     doc["hardware"] = controller->getSystemInfo().hardware;

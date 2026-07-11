@@ -68,7 +68,19 @@ const THEMES = [
   { id: 43, name: 'Overgrown Light' },
   { id: 44, name: 'Glitch Ice Dark' },
   { id: 45, name: 'Deep Space Dark' },
-  { id: 46, name: 'Deep Space Light' }
+  { id: 46, name: 'Custom' } // theme_colors[46] — colors editable below
+];
+
+// Field names line up 1:1 with theme_colors[46][0..7] on the firmware side.
+const CUSTOM_THEME_FIELDS = [
+  { key: 'customThemeNiceWhite', label: 'Nice White' },
+  { key: 'customThemeDark', label: 'Dark' },
+  { key: 'customThemeProgress', label: 'Progress' },
+  { key: 'customThemeSemiDark', label: 'Semi Dark' },
+  { key: 'customThemeHeating', label: 'Heating' },
+  { key: 'customThemeTicks', label: 'Ticks' },
+  { key: 'customThemeTemperature', label: 'Temperature' },
+  { key: 'customThemePressure', label: 'Pressure' },
 ];
 const ledControl = computed(() => machine.value.capabilities.ledControl);
 const pressureAvailable = computed(() => machine.value.capabilities.pressure);
@@ -745,6 +757,36 @@ export function Settings() {
               
             </div>
           </Card>
+
+          {/* Custom Theme Colors - only relevant once "Custom" is picked as the Theme or Standby Theme */}
+          {(Number(formData.themeMode) === 46 || Number(formData.standbyThemeMode) === 46) && (
+            <Card sm={10} lg={5} title='Custom Theme Colors'>
+              <div className='grid grid-cols-2 gap-4'>
+                {CUSTOM_THEME_FIELDS.map(({ key, label }) => (
+                  <SettingsFormField key={key} label={label} htmlFor={key}>
+                    <label
+                      className='input input-bordered w-full cursor-pointer p-1'
+                      htmlFor={key}
+                    >
+                      <div
+                        className='h-full w-full rounded-sm'
+                        style={{ backgroundColor: formData[key] || '#000000' }}
+                      >
+                        <input
+                          id={key}
+                          name={key}
+                          type='color'
+                          className='input input-bordered invisible w-full'
+                          value={formData[key] || '#000000'}
+                          onChange={onChange(key)}
+                        />
+                      </div>
+                    </label>
+                  </SettingsFormField>
+                ))}
+              </div>
+            </Card>
+          )}
 
           {/* User Preferences */}
           <Card sm={10} lg={5} title='User Preferences'>

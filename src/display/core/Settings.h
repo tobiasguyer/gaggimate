@@ -107,6 +107,15 @@ class Settings {
     float getSteamPumpCutoff() const { return steamPumpCutoff; }
     int getThemeMode() const { return themeMode; }
     int getStandbyThemeMode() const { return standbyThemeMode; }
+    // Custom theme (theme_colors[46]) — hex colors, edited on the Settings page.
+    String getCustomThemeNiceWhite() const { return customThemeNiceWhite; }
+    String getCustomThemeDark() const { return customThemeDark; }
+    String getCustomThemeProgress() const { return customThemeProgress; }
+    String getCustomThemeSemiDark() const { return customThemeSemiDark; }
+    String getCustomThemeHeating() const { return customThemeHeating; }
+    String getCustomThemeTicks() const { return customThemeTicks; }
+    String getCustomThemeTemperature() const { return customThemeTemperature; }
+    String getCustomThemePressure() const { return customThemePressure; }
     bool getStandbyLogo() const { return standbyLogo; }
     bool getStandbyStatus() const { return standbyStatus; }
     bool getStandbyTouchIcon() const { return standbyTouchIcon; }
@@ -206,6 +215,14 @@ class Settings {
     void setSteamPumpCutoff(float steam_pump_cutoff);
     void setThemeMode(int theme_mode);
     void setStandbyThemeMode(int standby_theme_mode);
+    void setCustomThemeNiceWhite(const String &color);
+    void setCustomThemeDark(const String &color);
+    void setCustomThemeProgress(const String &color);
+    void setCustomThemeSemiDark(const String &color);
+    void setCustomThemeHeating(const String &color);
+    void setCustomThemeTicks(const String &color);
+    void setCustomThemeTemperature(const String &color);
+    void setCustomThemePressure(const String &color);
     void setStandbyLogo(bool standby_logo);
     void setStandbyStatus(bool standby_status);
     void setStandbyTouchIcon(bool standby_touchicon);
@@ -300,6 +317,15 @@ class Settings {
     int wifiApTimeout = DEFAULT_WIFI_AP_TIMEOUT_MS;
     int themeMode = 0;
     int standbyThemeMode = 0;
+    // Custom theme (theme_colors[46]) defaults — a neutral dark theme.
+    String customThemeNiceWhite = "#F5F5F5";
+    String customThemeDark = "#121212";
+    String customThemeProgress = "#00BCD4";
+    String customThemeSemiDark = "#2A2A2A";
+    String customThemeHeating = "#FF5252";
+    String customThemeTicks = "#AAAAAA";
+    String customThemeTemperature = "#FFA726";
+    String customThemePressure = "#42A5F5";
     bool standbyLogo = true;
     bool standbyStatus = true;
     bool standbyTouchIcon = true;

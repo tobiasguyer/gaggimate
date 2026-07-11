@@ -42,6 +42,21 @@ static void formatDuration(unsigned long ms, char *buf, size_t len) {
 
 static float clampPercentage(float pct) { return pct < 0.0f ? 0.0f : (pct > 100.0f ? 100.0f : pct); }
 
+// Parses a "#RRGGBB" (or "RRGGBB") string into a 24-bit color value. Returns
+// black for empty/malformed input rather than failing, since a bad Custom
+// theme color shouldn't crash rendering.
+static uint32_t parseHexColor(const String &hex) {
+    String h = hex;
+    h.trim();
+    if (h.startsWith("#")) {
+        h.remove(0, 1);
+    }
+    if (h.isEmpty()) {
+        return 0x000000;
+    }
+    return static_cast<uint32_t>(strtoul(h.c_str(), nullptr, 16));
+}
+
 int16_t calculate_angle(int set_temp, int range, int offset) {
     const double percentage = static_cast<double>(set_temp) / static_cast<double>(MAX_TEMP);
     return (percentage * ((double)range)) - range / 2 - offset;
@@ -153,6 +168,9 @@ void DefaultUI::init() {
             break;
         };
     });
+    // Web UI Settings save (incl. Custom theme color pickers) — reload the
+    // Custom theme slot so edits appear live without waiting for a mode/screen change.
+    pluginManager->on("settings:changed", [this](Event const &) { applyCustomTheme(); });
     pluginManager->on("controller:brew:start", [this](Event const &event) { changeScreen(SCREEN_ID_STATUS_SCREEN); });
     pluginManager->on("controller:brew:clear", [this](Event const &event) {
         if (eez_flow_get_current_screen() == SCREEN_ID_STATUS_SCREEN) {
@@ -353,6 +371,7 @@ void DefaultUI::onVolumetricDelete() {
 void DefaultUI::setupPanel() {
     ui_init();
     setupState();
+    applyCustomTheme();
     applyTheme();
     ui_tick();
 
@@ -575,14 +594,14 @@ void DefaultUI::updateSystemStatus() {
         if(settings.getDisplayDate())
             strftime(timeBuf, sizeof(timeBuf), "%A %d.%m.%Y", &timeinfo);
 
-        hour = timeinfo.tm_hour % 12;
+        hour = timeinfo.tm_hour;
         min = timeinfo.tm_min;
         sec = timeinfo.tm_sec;
     } 
     time_container.hour(hour);
     time_container.min(min);
     time_container.sec(sec);
-    time_container.time_in_minutes(hour * 60 + min);
+    time_container.time_in_minutes((hour % 12) * 60 + min);
     time_container.date(timeBuf);
 }
 
@@ -748,6 +767,28 @@ String DefaultUI::getErrorMessage() {
         return "Waiting for controller...";
     }
     return initialized ? "" : "Starting...";
+}
+
+// Mirrors the persisted Custom theme (Settings, edited on the Settings page)
+// into theme_colors[THEME_ID_CUSTOM]. Called at boot and whenever settings
+// are saved, so edits take effect without a reboot if Custom is the active
+// brew or standby theme.
+void DefaultUI::applyCustomTheme() {
+    const ::Settings &settings = controller->getSettings();
+    theme_colors[THEME_ID_CUSTOM][0] = parseHexColor(settings.getCustomThemeNiceWhite());
+    theme_colors[THEME_ID_CUSTOM][1] = parseHexColor(settings.getCustomThemeDark());
+    theme_colors[THEME_ID_CUSTOM][2] = parseHexColor(settings.getCustomThemeProgress());
+    theme_colors[THEME_ID_CUSTOM][3] = parseHexColor(settings.getCustomThemeSemiDark());
+    theme_colors[THEME_ID_CUSTOM][4] = parseHexColor(settings.getCustomThemeHeating());
+    theme_colors[THEME_ID_CUSTOM][5] = parseHexColor(settings.getCustomThemeTicks());
+    theme_colors[THEME_ID_CUSTOM][6] = parseHexColor(settings.getCustomThemeTemperature());
+    theme_colors[THEME_ID_CUSTOM][7] = parseHexColor(settings.getCustomThemePressure());
+
+    // Re-apply immediately if Custom is currently on screen, so edits show
+    // up live instead of only after the next screen/mode change.
+    if (currentThemeMode == THEME_ID_CUSTOM || standbyThemeMode == THEME_ID_CUSTOM) {
+        change_color_theme(currentScreen == SCREEN_ID_NEW_STANDBY_SCREEN ? standbyThemeMode : currentThemeMode);
+    }
 }
 
 void DefaultUI::applyTheme() {

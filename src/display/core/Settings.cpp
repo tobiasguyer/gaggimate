@@ -102,6 +102,14 @@ Settings::Settings() {
     wifiApTimeout = preferences.getInt("wifi_apt", DEFAULT_WIFI_AP_TIMEOUT_MS);
     themeMode = preferences.getInt("mtheme", 0);
     standbyThemeMode = preferences.getInt("stheme", 0);
+    customThemeNiceWhite = preferences.getString("ct_white", customThemeNiceWhite);
+    customThemeDark = preferences.getString("ct_dark", customThemeDark);
+    customThemeProgress = preferences.getString("ct_prog", customThemeProgress);
+    customThemeSemiDark = preferences.getString("ct_semi", customThemeSemiDark);
+    customThemeHeating = preferences.getString("ct_heat", customThemeHeating);
+    customThemeTicks = preferences.getString("ct_ticks", customThemeTicks);
+    customThemeTemperature = preferences.getString("ct_temp", customThemeTemperature);
+    customThemePressure = preferences.getString("ct_press", customThemePressure);
     standbyLogo = preferences.getBool("slogo", false);
     standbyStatus = preferences.getBool("sstatus", false);
     standbyTouchIcon = preferences.getBool("stouch", false);
@@ -430,6 +438,39 @@ void Settings::setStandbyThemeMode(int standby_theme_mode) {
     save();
 }
 
+void Settings::setCustomThemeNiceWhite(const String &color) {
+    customThemeNiceWhite = color;
+    save();
+}
+void Settings::setCustomThemeDark(const String &color) {
+    customThemeDark = color;
+    save();
+}
+void Settings::setCustomThemeProgress(const String &color) {
+    customThemeProgress = color;
+    save();
+}
+void Settings::setCustomThemeSemiDark(const String &color) {
+    customThemeSemiDark = color;
+    save();
+}
+void Settings::setCustomThemeHeating(const String &color) {
+    customThemeHeating = color;
+    save();
+}
+void Settings::setCustomThemeTicks(const String &color) {
+    customThemeTicks = color;
+    save();
+}
+void Settings::setCustomThemeTemperature(const String &color) {
+    customThemeTemperature = color;
+    save();
+}
+void Settings::setCustomThemePressure(const String &color) {
+    customThemePressure = color;
+    save();
+}
+
 void Settings::setStandbyLogo(bool standby_logo) {
     standbyLogo = standby_logo;
     save();
@@ -649,6 +690,14 @@ void Settings::doSave() {
     preferences.putInt("wifi_apt", wifiApTimeout);
     preferences.putInt("mtheme", themeMode);
     preferences.putInt("stheme", standbyThemeMode);
+    preferences.putString("ct_white", customThemeNiceWhite);
+    preferences.putString("ct_dark", customThemeDark);
+    preferences.putString("ct_prog", customThemeProgress);
+    preferences.putString("ct_semi", customThemeSemiDark);
+    preferences.putString("ct_heat", customThemeHeating);
+    preferences.putString("ct_ticks", customThemeTicks);
+    preferences.putString("ct_temp", customThemeTemperature);
+    preferences.putString("ct_press", customThemePressure);
     preferences.putBool("slogo", standbyLogo);
     preferences.putBool("sstatus", standbyStatus);
     preferences.putBool("stouch", standbyTouchIcon);

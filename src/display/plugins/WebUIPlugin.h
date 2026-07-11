@@ -50,7 +50,7 @@ class WebUIPlugin : public Plugin {
     void handleBLEScaleScan(AsyncWebServerRequest *request);
     void handleBLEScaleConnect(AsyncWebServerRequest *request);
     void handleBLEScaleInfo(AsyncWebServerRequest *request);
-    void updateOTAStatus(const String &version, bool force = false);
+    void updateOTAStatus(const String &version);
     void updateOTAProgress(uint8_t phase, int progress);
     void sendAutotuneResult();
     void sendAutotuneFailed();

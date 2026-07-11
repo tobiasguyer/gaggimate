@@ -7,7 +7,7 @@
 #include "semver_extensions.h"
 #include <ArduinoJson.h>
 
-String get_updated_base_url_via_redirect(WiFiClient &wifi_client, String &release_url) {
+String get_updated_base_url_via_redirect(WiFiClientSecure &wifi_client, String &release_url) {
     const char *TAG = "get_updated_base_url_via_redirect";
 
     String location = get_redirect_location(wifi_client, release_url);
@@ -26,7 +26,7 @@ String get_updated_base_url_via_redirect(WiFiClient &wifi_client, String &releas
     return base_url;
 }
 
-String get_redirect_location(WiFiClient &wifi_client, String &initial_url) {
+String get_redirect_location(WiFiClientSecure &wifi_client, String &initial_url) {
     const char *TAG = "get_redirect_location";
     ESP_LOGV(TAG, "initial_url: %s\n", initial_url.c_str());
 
@@ -40,10 +40,10 @@ String get_redirect_location(WiFiClient &wifi_client, String &initial_url) {
 
     int httpCode = https.GET();
     if (httpCode != HTTP_CODE_FOUND) {
-        // lastError() is WiFiClientSecure-specific and unavailable on the plain-WiFiClient path
-        // used for http:// URLs, so log via HTTPClient's own (client-agnostic) error string instead.
         ESP_LOGE(TAG, "[HTTPS] GET... failed, No redirect\n");
-        ESP_LOGV(TAG, "httpCode: %d, error: %s\n", httpCode, https.errorToString(httpCode).c_str());
+        char errorText[128];
+        int errCode = wifi_client.lastError(errorText, sizeof(errorText));
+        ESP_LOGV(TAG, "httpCode: %d, errorCode %d: %s\n", httpCode, errCode, errorText);
     }
 
     String redirect_url = https.getLocation();
@@ -53,7 +53,7 @@ String get_redirect_location(WiFiClient &wifi_client, String &initial_url) {
     return redirect_url;
 }
 
-String get_updated_version_via_txt_file(WiFiClient &wifi_client, String &_release_url) {
+String get_updated_version_via_txt_file(WiFiClientSecure &wifi_client, String &_release_url) {
     const char *TAG = "get_updated_version_via_txt_file";
     HTTPClient https;
     https.setFollowRedirects(HTTPC_STRICT_FOLLOW_REDIRECTS);
@@ -67,9 +67,10 @@ String get_updated_version_via_txt_file(WiFiClient &wifi_client, String &_releas
 
     int httpCode = https.GET();
     if (httpCode != HTTP_CODE_OK) {
-        // See get_redirect_location() above: lastError() isn't available on the plain-client path.
         ESP_LOGE(TAG, "[HTTPS] GET... failed\n");
-        ESP_LOGV(TAG, "httpCode: %d, error: %s\n", httpCode, https.errorToString(httpCode).c_str());
+        char errorText[128];
+        int errCode = wifi_client.lastError(errorText, sizeof(errorText));
+        ESP_LOGV(TAG, "httpCode: %d, errorCode %d: %s\n", httpCode, errCode, errorText);
         https.end();
         return "";
     }

@@ -1,7 +1,7 @@
 {
   "navigation": {
     "selectedUserPageObject": "[gaggimate.eez-project]:/userPages/0",
-    "selectedUserWidgetObject": "[gaggimate.eez-project]:/userWidgets/7",
+    "selectedUserWidgetObject": "[gaggimate.eez-project]:/userWidgets/14",
     "selectedActionObject": "[gaggimate.eez-project]:/actions/41",
     "selectedGlobalVariableObject": "[gaggimate.eez-project]:/variables/globalVariables/3",
     "selectedStructureObject": "[gaggimate.eez-project]:/variables/structures/0",
@@ -79,7 +79,7 @@
           },
           {
             "type": "border",
-            "selected": 0,
+            "selected": 1,
             "size": 154.5,
             "location": "bottom",
             "children": [
@@ -205,10 +205,10 @@
                 {
                   "type": "tab",
                   "id": "#5e050bf7-afbb-4b07-9783-e0a675b95e19",
-                  "name": "binary_clock_1",
+                  "name": "clock_minimal_arc_2",
                   "component": "editor",
                   "config": {
-                    "objectPath": "[gaggimate.eez-project]:/userWidgets/7",
+                    "objectPath": "[gaggimate.eez-project]:/userWidgets/14",
                     "permanent": false
                   },
                   "icon": "svg:user_widget"
@@ -360,7 +360,8 @@
                   },
                   "icon": "svg:page"
                 }
-              ]
+              ],
+              "active": true
             },
             {
               "type": "row",
@@ -380,8 +381,7 @@
                       "enableClose": false,
                       "icon": "svg:properties"
                     }
-                  ],
-                  "active": true
+                  ]
                 },
                 {
                   "type": "tabset",
@@ -2445,7 +2445,11 @@
     },
     "[gaggimate.eez-project]:/userWidgets/4[flow-state]": {
       "selectionFront": {},
-      "selectionBack": {},
+      "selectionBack": {
+        "2": {
+          "$selected": true
+        }
+      },
       "transform": {
         "translate": {
           "x": -240,
@@ -2470,7 +2474,10 @@
         "4": {},
         "5": {},
         "6": {},
-        "7": {}
+        "7": {},
+        "8": {
+          "$selected": true
+        }
       },
       "transform": {
         "translate": {
@@ -2489,7 +2496,8 @@
     "[gaggimate.eez-project]:/userWidgets/6[flow-state]": {
       "selectionFront": {},
       "selectionBack": {
-        "2": {
+        "2": {},
+        "8": {
           "$selected": true
         }
       },
@@ -2518,6 +2526,149 @@
         "translate": {
           "x": -240,
           "y": -40
+        },
+        "scale": 1
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[gaggimate.eez-project]:/userWidgets/8[flow-state]": {
+      "selectionFront": {},
+      "selectionBack": {
+        "0": {
+          "$selected": true
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -240,
+          "y": -240
+        },
+        "scale": 1
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[gaggimate.eez-project]:/userWidgets/9[flow-state]": {
+      "selectionFront": {},
+      "selectionBack": {
+        "0": {
+          "$selected": true
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -240,
+          "y": -240
+        },
+        "scale": 1
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[gaggimate.eez-project]:/userWidgets/10[flow-state]": {
+      "selectionFront": {},
+      "selectionBack": {
+        "1": {
+          "$selected": true
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -240,
+          "y": -240
+        },
+        "scale": 1
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[gaggimate.eez-project]:/userWidgets/11[flow-state]": {
+      "selectionFront": {},
+      "selectionBack": {
+        "2": {
+          "$selected": true
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -240,
+          "y": -440
+        },
+        "scale": 1
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[gaggimate.eez-project]:/userWidgets/12[flow-state]": {
+      "selectionFront": {},
+      "selectionBack": {
+        "0": {
+          "$selected": true
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -240,
+          "y": -240
+        },
+        "scale": 1
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[gaggimate.eez-project]:/userWidgets/13[flow-state]": {
+      "selectionFront": {},
+      "selectionBack": {
+        "0": {
+          "$selected": true
+        }
+      },
+      "transform": {
+        "translate": {
+          "x": -240,
+          "y": -240
+        },
+        "scale": 1
+      },
+      "timeline": {
+        "isEditorActive": false,
+        "position": 0,
+        "secondToPx": 200,
+        "scrollLeft": 0
+      }
+    },
+    "[gaggimate.eez-project]:/userWidgets/14[flow-state]": {
+      "selectionFront": {},
+      "selectionBack": {},
+      "transform": {
+        "translate": {
+          "x": -240,
+          "y": -240
         },
         "scale": 1
       },

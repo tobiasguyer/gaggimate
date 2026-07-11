@@ -14,6 +14,11 @@ class Controller;
 constexpr int RERENDER_INTERVAL_IDLE = 2500;
 constexpr int RERENDER_INTERVAL_ACTIVE = 100;
 
+// theme_colors[47][8] reserves the last row (index 46) as the user-editable
+// "Custom" theme, populated at runtime from Settings and edited via the
+// Settings page in index.jsx (see WebUIPlugin::handleSettings).
+constexpr int THEME_ID_CUSTOM = 46;
+
 constexpr int TEMP_HISTORY_INTERVAL = 250;
 constexpr int TEMP_HISTORY_LENGTH = 20 * 1000 / TEMP_HISTORY_INTERVAL;
 
@@ -51,6 +56,10 @@ class DefaultUI {
     void markProfileClean() { profileDirty = false; }
 
     void applyTheme();
+    // Loads the persisted Custom theme colors (Settings) into
+    // theme_colors[THEME_ID_CUSTOM] and re-applies it live if it's the
+    // currently active brew/standby theme.
+    void applyCustomTheme();
 
     void setupStandbyScreen(bool logo, bool status, bool touchicon);
 

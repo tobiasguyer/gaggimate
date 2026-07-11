@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <NimBLEDevice.h>
-#include <WiFiClient.h>
+#include <WiFiClientSecure.h>
 
 constexpr char SERVICE_OTA_BLE_UUID[] = "fe590001-54ae-4a28-9f74-dfccb248601d";
 constexpr char CHARACTERISTIC_OTA_BL_UUID_RX[] = "fe590002-54ae-4a28-9f74-dfccb248601d";
@@ -20,13 +20,10 @@ class ControllerOTA {
     ~ControllerOTA() = default;
     void init(NimBLEClient *client, const ctr_progress_callback_t &progress_callback);
 
-    // Takes the base WiFiClient type so the caller (GitHubOTA::clientForUrl) can pass either a
-    // plain WiFiClient (http:// release URLs) or a WiFiClientSecure (https://) through the same
-    // path — see the note on GitHubOTA::clientForUrl for why the scheme has to pick the client.
-    void update(WiFiClient &wifi_client, const String &release_url);
+    void update(WiFiClientSecure &wifi_client, const String &release_url);
 
   private:
-    bool downloadFile(WiFiClient &wifi_client, const String &release_url);
+    bool downloadFile(WiFiClientSecure &wifi_client, const String &release_url);
     void runUpdate(Stream &in, uint32_t size);
     void sendPart(Stream &in, uint32_t totalSize) const;
     void sendData(uint8_t *data, uint16_t len) const;
