@@ -1,14 +1,10 @@
+import { useEffect, useRef, useState } from 'preact/hooks';
 import { Chart } from 'chart.js';
 import { ChartComponent } from './Chart';
 
-// ─── Constants ───────────────────────────────────────────────────────────────
-
 const POINT_INTERVAL = 0.1; // s
 
-// ─── Helpers ─────────────────────────────────────────────────────────────────
-
 const skipped = (ctx, value) => (!ctx.p0.raw.target ? value : undefined);
-
 const pressureDatasetDefaults = {
   label: 'Pressure',
   borderColor: 'rgb(75, 192, 192)',
@@ -34,27 +30,36 @@ const flowDatasetDefaults = {
   yAxisID: 'y1',
 };
 
-// ─── Easing ──────────────────────────────────────────────────────────────────
-
-function easeLinear(t) { return t; }
-function easeIn(t) { return t * t; }
-function easeOut(t) { return 1.0 - (1.0 - t) * (1.0 - t); }
-function easeInOut(t) { return t < 0.5 ? 2.0 * t * t : 1.0 - 2.0 * (1.0 - t) * (1.0 - t); }
+function easeLinear(t) {
+  return t;
+}
+function easeIn(t) {
+  return t * t;
+}
+function easeOut(t) {
+  return 1.0 - (1.0 - t) * (1.0 - t);
+}
+function easeInOut(t) {
+  return t < 0.5 ? 2.0 * t * t : 1.0 - 2.0 * (1.0 - t) * (1.0 - t);
+}
 
 function applyEasing(t, type) {
   if (t <= 0.0) return 0.0;
   if (t >= 1.0) return 1.0;
   switch (type) {
-    case 'linear': return easeLinear(t);
-    case 'ease-in': return easeIn(t);
-    case 'ease-out': return easeOut(t);
-    case 'ease-in-out': return easeInOut(t);
+    case 'linear':
+      return easeLinear(t);
+    case 'ease-in':
+      return easeIn(t);
+    case 'ease-out':
+      return easeOut(t);
+    case 'ease-in-out':
+      return easeInOut(t);
     case 'instant':
-    default: return 1.0;
+    default:
+      return 1.0;
   }
 }
-
-// ─── Data preparation (identical to ExtendedProfileChart) ────────────────────
 
 function prepareData(phases, target) {
   if (!Array.isArray(phases) || phases.length === 0) {
@@ -100,25 +105,16 @@ function prepareData(phases, target) {
       if (phaseIndex < phases.length) {
         phaseStartFlow = currentFlow;
         phaseStartPressure = currentPressure;
-        const nextPhase = phases[phaseIndex];
+        let nextPhase = phases[phaseIndex];
         effectiveFlow = nextPhase.pump?.flow === -1 ? currentFlow : nextPhase.pump?.flow || 0;
-        effectivePressure = nextPhase.pump?.pressure === -1 ? currentPressure : nextPhase.pump?.pressure || 0;
+        effectivePressure =
+          nextPhase.pump?.pressure === -1 ? currentPressure : nextPhase.pump?.pressure || 0;
       }
     }
   } while (phaseIndex < phases.length);
 
   return data;
 }
-
-function makeChartData(
-  data,
-  selectedPhase,
-  phaseRanges,
-  onPhaseClick,
-  isDarkMode = false,
-  showPhaseLabels = true,
-) {
-// ─── Resolve phase from a point's x-time ─────────────────────────────────────
 
 function resolvePhaseFromTime(phases, xTime, field) {
   let cursor = 0;
@@ -172,7 +168,9 @@ function makeChartData(data, selectedPhase, phaseRanges, isDarkMode = false, sho
       fill: false,
       responsive: true,
       maintainAspectRatio: false,
-      interaction: { intersect: false },
+      interaction: {
+        intersect: false,
+      },
       plugins: {
         // ── dragData ──────────────────────────────────────────────────────────
         // Only included in options when at least one callback is present.
@@ -234,27 +232,35 @@ function makeChartData(data, selectedPhase, phaseRanges, isDarkMode = false, sho
             pointStyle: 'line',
             pointStyleWidth: 20,
             padding: 8,
-            font: { size: window.innerWidth < 640 ? 10 : 12 },
-            generateLabels(chart) {
+            font: {
+              size: window.innerWidth < 640 ? 10 : 12,
+            },
+            generateLabels: function (chart) {
               const original = Chart.defaults.plugins.legend.labels.generateLabels;
               const labels = original.call(this, chart);
-              labels.forEach((label, i) => {
-                const dataset = chart.data.datasets[i];
+
+              labels.forEach((label, index) => {
+                const dataset = chart.data.datasets[index];
                 label.lineWidth = 3;
-                if (dataset.borderDash?.length) label.lineDash = dataset.borderDash;
+                if (dataset.borderDash && dataset.borderDash.length > 0) {
+                  label.lineDash = dataset.borderDash;
+                }
               });
+
               return labels;
             },
           },
         },
-
-        title: { display: false },
+        title: {
+          display: false,
+          text: 'Temperature History',
+          font: {
+            size: window.innerWidth < 640 ? 14 : 16,
+          },
+        },
       },
-
       animations: false,
       radius: 0,
-
-      // ── scales ────────────────────────────────────────────────────────────
       scales: {
         x: {
           type: 'linear',
@@ -265,8 +271,12 @@ function makeChartData(data, selectedPhase, phaseRanges, isDarkMode = false, sho
           title: {},
           ticks: {
             source: 'auto',
-            callback: (value) => `${value?.toFixed()}s`,
-            font: { size: window.innerWidth < 640 ? 10 : 12 },
+            callback: (value, index, ticks) => {
+              return `${value?.toFixed()}s`;
+            },
+            font: {
+              size: window.innerWidth < 640 ? 10 : 12,
+            },
             maxTicksLimit: 10,
           },
         },
@@ -274,25 +284,39 @@ function makeChartData(data, selectedPhase, phaseRanges, isDarkMode = false, sho
           type: 'linear',
           display: true,
           position: 'left',
-          title: { display: true, text: 'Pressure (bar)' },
+          title: {
+            display: true,
+            text: 'Pressure (bar)',
+          },
           min: 0,
           max: 12,
-          ticks: { font: { size: window.innerWidth < 640 ? 10 : 12 } },
+          ticks: {
+            font: {
+              size: window.innerWidth < 640 ? 10 : 12,
+            },
+          },
         },
         y1: {
           type: 'linear',
           display: true,
           position: 'right',
-          title: { display: true, text: 'Flow (ml/s)' },
+          title: {
+            display: true,
+            text: 'Flow (ml/s)',
+          },
           min: 0,
           max: 10,
-          ticks: { font: { size: window.innerWidth < 640 ? 10 : 12 } },
+          ticks: {
+            font: {
+              size: window.innerWidth < 640 ? 10 : 12,
+            },
+          },
         },
       },
     },
   };
 
-  // ── annotations ───────────────────────────────────────────────────────────
+  // Always show phase dividers and labels
   chartData.options.plugins.annotation = {
     drawTime: 'afterDatasetsDraw',
     clip: false,
@@ -310,7 +334,7 @@ function makeChartData(data, selectedPhase, phaseRanges, isDarkMode = false, sho
       xMin: start + 0.1,
       xMax: end - 0.1,
       backgroundColor: 'rgba(0,105,255,0.2)',
-      borderColor: 'rgba(100,100,100,0)',
+      borderColor: 'rgba(100, 100, 100, 0)',
     });
   }
 
@@ -322,6 +346,7 @@ function makeChartData(data, selectedPhase, phaseRanges, isDarkMode = false, sho
   for (let i = 0; i < phases.length; i++) {
     const phase = phases[i];
     const phaseName = phase.name || `Phase ${i + 1}`;
+
     chartData.options.plugins.annotation.annotations.push({
       type: 'line',
       xMin: phaseRanges[i].start,
@@ -330,22 +355,24 @@ function makeChartData(data, selectedPhase, phaseRanges, isDarkMode = false, sho
       borderWidth: 1,
       label: showLabels
         ? {
-          display: true,
-          content: phaseName,
-          rotation: -90,
-          position: 'end',
-          xAdjust: i === 0 ? -7 : 8,
-          yAdjust: 0,
-          padding: { x: 4, y: 0 },
-          color: isDarkMode ? 'rgb(255,255,255)' : 'rgb(0,0,0)',
-          backgroundColor: isDarkMode ? 'rgba(22,33,50,0.75)' : 'rgba(255,255,255,0.75)',
-          textAlign: 'start',
-          font: { size: isSmall ? 9 : 11, weight: 500 },
-          clip: false,
-        }
+            display: true,
+            content: phaseName,
+            rotation: -90,
+            position: 'end', // anchor at top of line
+            xAdjust: i === 0 ? -7 : 8, // tweak first label inward to compensate for y-axis padding
+            yAdjust: 0,
+            padding: { x: 4, y: 0 },
+            color: isDarkMode ? 'rgb(255,255,255)' : 'rgb(0,0,0)',
+            backgroundColor: isDarkMode ? 'rgba(22,33,50,0.75)' : 'rgba(255,255,255,0.75)',
+            textAlign: 'start',
+            font: {
+              size: isSmall ? 9 : 11,
+              weight: 500,
+            },
+            clip: false,
+          }
         : undefined,
     });
-    phaseStart += Number.parseFloat(phase.duration);
   }
 
   // If we are in the edit profile page (we have phases and a phase is selected) set the hover effect and onPhaseClick()
@@ -411,15 +438,13 @@ export function ExtendedProfileChart({
   data,
   className = 'max-h-36 w-full',
   selectedPhase = null,
-  onPressureDrag = null,
-  onFlowDrag = null,
   onPhaseClick = null,
   showPhaseLabels = true,
   style,
   onPressureDrag = null,
   onFlowDrag = null,
 }) {
-  const isDarkMode =
+  const isDarkMode = () =>
     window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches;
   const phases = Array.isArray(data?.phases) ? data.phases : [];
   const phaseRanges = buildPhaseRanges(phases);

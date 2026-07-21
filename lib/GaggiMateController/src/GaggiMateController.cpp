@@ -350,7 +350,6 @@ void GaggiMateController::sendSensorData() {
         _comms.sendUnreliableBatch(batch, n); // telemetry: fire-and-forget
     } else {
         _comms.sendSensorData(this->thermocouple->read(), 0.0f, 0.0f, 0.0f, 0.0f, this->thermocouple->read2(), pumpPower, heaterPower);
->>>>>>> 8a827ad511a86a41a654c764dab6f893d5680959
     }
 }
 

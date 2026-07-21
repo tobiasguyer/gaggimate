@@ -73,7 +73,7 @@ const CUSTOM_THEME_FIELDS = [
 
 function ButtonBehaviorSelect({ id, label, value, onChange, profiles }) {
   return (
-    <SettingsFormField label={label} htmlFor={id} noMargin>
+    <SettingsFormField label={label} htmlFor={id} noMargin >
       <select
         id={id}
         name={id}
@@ -155,9 +155,9 @@ export function GeneralTab({
     Number(formData.themeMode) === 46 || Number(formData.standbyThemeMode) === 46;
 
   return (
-    <div className='space-y-4 sm:space-y-6'>
+    <div className='space-y-4 sm:space-y-6 lg:grid lg:grid-cols-2 lg:gap-4'>
       {/* User Preferences */}
-      <Section title='User Preferences'>
+      <Section title='User Preferences' className='h-full' >
         <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
           <SettingsFormField label='Startup Mode' htmlFor='startup-mode' noMargin>
             <select
@@ -305,7 +305,7 @@ export function GeneralTab({
       </Section>
 
       {/* Display Settings */}
-      <Section title='Display Settings'>
+      <Section title='Display Settings' className='h-full' >
         <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
           <SettingsFormField label='Main Brightness (1-16)' htmlFor='mainBrightness' noMargin>
             <input
@@ -495,7 +495,7 @@ export function GeneralTab({
       )}
 
       {/* Web Settings */}
-      <Section title='Web Settings'>
+      <Section title='Web Settings' className='h-full' >
         <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
           <SettingsFormField label='Theme' htmlFor='webui-theme' noMargin>
             <select
@@ -533,7 +533,7 @@ export function GeneralTab({
       </Section>
 
       {/* Network / System Preferences */}
-      <Section title='System & Network'>
+      <Section title='System & Network' className='h-full' >
         <div className='grid grid-cols-1 gap-4 md:grid-cols-2'>
           <SettingsFormField label='Wi-Fi SSID' htmlFor='wifiSsid' noMargin>
             <input
