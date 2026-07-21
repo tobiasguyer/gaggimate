@@ -192,7 +192,7 @@ void GaggiMateClient::registerHandlers() {
             temperature2 = p.content.sensor.boilers[0].temperature2;
         }
         _sensorCb(temperature, pressure, p.content.sensor.puck_flow, p.content.sensor.pump_flow,
-                  p.content.sensor.puck_resistance, temperature2);
+                  p.content.sensor.puck_resistance,  temperature2, p.content.sensor.pump_power, p.content.sensor.heater_power);
     });
     _endpoint.on(gaggimate_Payload_button_tag, [this](const gm::Payload &p) {
         if (_buttonCb)

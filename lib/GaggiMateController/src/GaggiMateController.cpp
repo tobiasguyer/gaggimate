@@ -325,6 +325,8 @@ void GaggiMateController::thermalRunawayShutdown() {
 }
 
 void GaggiMateController::sendSensorData() {
+    const float pumpPower = *pump->getPumpPowerPtr();
+    const float heaterPower = heater ? heater->getDutyCycle() : 0.0f;
     if (_config.capabilites.pressure) {
         // Flow/volumetric come from the DimmedPump; only cast when this board
         // actually has one (pressure and dimming are configured independently).
@@ -344,10 +346,11 @@ void GaggiMateController::sendSensorData() {
             }
         }
         batch[n++] = _comms.buildSensorData(this->thermocouple->read(), this->pressureSensor->getPressure(), puckFlow, pumpFlow,
-                                            puckResistance, this->thermocouple->read2());
+                                            puckResistance, this->thermocouple->read2(), pumpPower, heaterPower);
         _comms.sendUnreliableBatch(batch, n); // telemetry: fire-and-forget
     } else {
-        _comms.sendSensorData(this->thermocouple->read(), 0.0f, 0.0f, 0.0f, 0.0f, this->thermocouple->read2());
+        _comms.sendSensorData(this->thermocouple->read(), 0.0f, 0.0f, 0.0f, 0.0f, this->thermocouple->read2(), pumpPower, heaterPower);
+>>>>>>> 8a827ad511a86a41a654c764dab6f893d5680959
     }
 }
 
