@@ -2,6 +2,7 @@ on:
   push:
     branches:
       - "all_features"
+      - "master"
 
 permissions:
   contents: write
