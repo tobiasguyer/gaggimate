@@ -186,6 +186,12 @@ function buildSubmitFormData(formData, autowakeupSchedules, restart) {
     'clock24hFormat',
     'autowakeupEnabled',
     'smartGrindToggle',
+    'standbyTouchIcon',
+    'standbyLogo',
+    'standbyStatus',
+    'standbyBinaryClock',
+    'displayDate',
+    'standbyDisplayEnabled',
   ];
 
   for (const [key, value] of Object.entries(formData)) {
