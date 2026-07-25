@@ -445,6 +445,7 @@ export function GeneralTab({
               <option value={9}>minimal_android</option>
               <option value={10}>minimal_arc_v2</option>
               <option value={11}>minimal_arc_v3</option>
+              <option value={12}>minimal_arc_v4</option>
             </select>
           </SettingsFormField>
           <SettingsFormField label='Display Digital Clock' htmlFor='standbyDigitalClock' noMargin>
