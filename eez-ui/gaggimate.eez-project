@@ -186,7 +186,7 @@
         "objID": "61244af5-fae6-4b75-c201-48a56eb93a44",
         "name": "time_container",
         "type": "struct:time_struct",
-        "defaultValue": "{hour : 1, min : 20, sec : 45, analog_numerals : true, time_in_minutes : 120}",
+        "defaultValue": "{hour : 1, min : 20, sec : 45, analog_numerals : false, time_in_minutes : 120}",
         "persistent": false,
         "native": false
       },
@@ -1126,7 +1126,7 @@
                 "conditionalStyles": [],
                 "childStyles": []
               },
-              "hiddenInEditor": true,
+              "hiddenInEditor": false,
               "timeline": [],
               "eventHandlers": [],
               "leftUnit": "px",
@@ -2600,10 +2600,10 @@
             {
               "objID": "dae38c01-474f-419d-d926-11b60701797c",
               "type": "LVGLLabelWidget",
-              "left": 18,
+              "left": 0,
               "top": 92,
-              "width": 241,
-              "height": 15,
+              "width": 260,
+              "height": 14,
               "customInputs": [],
               "customOutputs": [],
               "style": {
@@ -2636,7 +2636,7 @@
                 "definition": {
                   "MAIN": {
                     "DEFAULT": {
-                      "text_font": "rolblox_18",
+                      "text_font": "rolblox _16",
                       "align": "CENTER",
                       "text_color": "NiceWhite"
                     }
@@ -2649,7 +2649,7 @@
               "textType": "expression",
               "longMode": "WRAP",
               "recolor": false,
-              "previewValue": "MONDAY 17.04.2025"
+              "previewValue": "WEDNESDAY 17.04.2025"
             }
           ],
           "widgetFlags": "CLICKABLE|PRESS_LOCK|CLICK_FOCUSABLE|GESTURE_BUBBLE|SNAPPABLE|SCROLL_ELASTIC|SCROLL_MOMENTUM|SCROLL_CHAIN_HOR|SCROLL_CHAIN_VER",
@@ -24965,6 +24965,35 @@
       "lvglGlyphs": {
         "encodings": [],
         "symbols": "0123456789 :./-MONDAYTUESWHRFImodayntueswhrfi"
+      },
+      "embeddedFontFileIndex": 1
+    },
+    {
+      "objID": "81740e94-00f5-4795-e22b-087448f28251",
+      "name": "rolblox _16",
+      "renderingEngine": "LVGL",
+      "source": {
+        "objID": "278d9662-66fb-4162-d483-bad64b7011f1",
+        "filePath": "..\\src\\display\\ui\\default\\RollboxRegular-jE2lv.ttf",
+        "size": 16
+      },
+      "bpp": 8,
+      "threshold": 128,
+      "height": 14,
+      "ascent": 11,
+      "descent": 3,
+      "glyphs": [],
+      "lvglRanges": "",
+      "lvglSymbols": "a0123456789 :./-MONDAYTUESWNHRFFImodayntueswnhrffi",
+      "lvglAdditionalSources": [],
+      "lvglGlyphs": {
+        "encodings": [
+          {
+            "from": 32,
+            "to": 127
+          }
+        ],
+        "symbols": ""
       },
       "embeddedFontFileIndex": 1
     }

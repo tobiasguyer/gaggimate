@@ -281,6 +281,10 @@ void Settings::setStandbyBinaryClock(bool standby_binary_clock) {
     standbyBinaryClock.set(standby_binary_clock);
 }
 
+void Settings::setStandbyAnalogClockNumerals(bool standby_analog_clock_numerals) {
+    standbyAnalogClockNumerals.set(standby_analog_clock_numerals);
+}
+
 
 void Settings::setDisplayDate(bool display_date){
     displayDate.set(display_date);

@@ -474,6 +474,12 @@ export function GeneralTab({
             checked={!!formData.displayDate}
             onChange={onChange('displayDate')}
           />
+          <ToggleField
+            label='Display Numerals on Analog Clock'
+            htmlFor='analogClockNumerals'
+            checked={!!formData.analogClockNumerals}
+            onChange={onChange('analogClockNumerals')}
+          />
         </div>
       </Section>
 

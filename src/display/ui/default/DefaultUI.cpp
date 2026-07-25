@@ -619,7 +619,7 @@ void DefaultUI::updateSystemStatus() {
     systemStatus.standby_analog_clock(settings.getStandbyAnalogClock());
     systemStatus.standby_digital_clock(settings.getStandbyDigitalClock());
     systemStatus.standby_binary_clock(settings.getStandbyBinaryClock());
-
+    time_container.analog_numerals(settings.getAnalogClockNumerals());
 
     char timeBuf[40] = "";
     struct tm timeinfo;

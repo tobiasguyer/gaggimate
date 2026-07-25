@@ -139,6 +139,7 @@ class Settings {
     int getStandbyAnalogClock() const { return standbyAnalogClock.get(); }
     int getStandbyDigitalClock() const { return standbyDigitalClock.get(); }
     bool getStandbyBinaryClock() const { return standbyBinaryClock.get(); }
+    bool getAnalogClockNumerals() const { return standbyAnalogClockNumerals.get(); }
     int getHistoryIndex() const { return historyIndex.get(); }
 
     [[deprecated]]
@@ -246,6 +247,7 @@ class Settings {
     void setStandbyAnalogClock(int standby_analog_clock);
     void setStandbyDigitalClock(int standby_digital_clock);
     void setStandbyBinaryClock(bool standby_binary_clock);
+    void setStandbyAnalogClockNumerals(bool standby_analog_clock_numerals);
     void setDisplayDate(bool display_date);
     void setHistoryIndex(int history_index);
     [[deprecated]]
@@ -349,6 +351,7 @@ class Settings {
     Property<int> standbyAnalogClock{registry, "standby_analog_clock", 1};
     Property<int> standbyDigitalClock{registry, "standby_digital_clock", 1};
     Property<bool> standbyBinaryClock{registry, "standby_binary_clock", false};
+    Property<bool> standbyAnalogClockNumerals{registry, "standby_analog_clock_numerals", false};
     Property<bool> displayDate{registry, "display_date", true};
     // Sunrise settings (r/g/b/w are legacy load-only values that seed the idle color default)
     int sunriseR = 0;

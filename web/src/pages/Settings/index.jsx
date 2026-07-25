@@ -192,6 +192,7 @@ function buildSubmitFormData(formData, autowakeupSchedules, restart) {
     'standbyBinaryClock',
     'displayDate',
     'standbyDisplayEnabled',
+    'analogClockNumerals',
   ];
 
   for (const [key, value] of Object.entries(formData)) {

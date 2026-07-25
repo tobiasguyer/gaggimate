@@ -1315,9 +1315,9 @@ void create_screen_new_standby_screen() {
         {
             lv_obj_t *obj = lv_label_create(parent_obj);
             objects.obj14 = obj;
-            lv_obj_set_pos(obj, 18, 92);
+            lv_obj_set_pos(obj, 0, 92);
             lv_obj_set_size(obj, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
-            lv_obj_set_style_text_font(obj, &ui_font_rolblox_18, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_text_font(obj, &ui_font_rolblox__16, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_text_color(obj, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][1]), LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_label_set_text(obj, "");
@@ -10735,6 +10735,7 @@ ext_font_desc_t fonts[] = {
     { "rolbox_90", &ui_font_rolbox_90 },
     { "montserrat_b_120", &ui_font_montserrat_b_120 },
     { "rolblox_18", &ui_font_rolblox_18 },
+    { "rolblox _16", &ui_font_rolblox__16 },
 #if LV_FONT_MONTSERRAT_8
     { "MONTSERRAT_8", &lv_font_montserrat_8 },
 #endif
