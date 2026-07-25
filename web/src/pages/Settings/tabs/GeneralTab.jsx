@@ -460,6 +460,7 @@ export function GeneralTab({
               <option value={2}>Numerical clock</option>
               <option value={3}>Montserrat</option>
               <option value={4}>Colored</option>
+              <option value={5}>Super Mario</option>
             </select>
           </SettingsFormField>
           <ToggleField

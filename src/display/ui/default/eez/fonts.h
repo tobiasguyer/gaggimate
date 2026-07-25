@@ -12,6 +12,7 @@ extern const lv_font_t ui_font_rolbox_90;
 extern const lv_font_t ui_font_montserrat_b_120;
 extern const lv_font_t ui_font_rolblox_18;
 extern const lv_font_t ui_font_rolblox__16;
+extern const lv_font_t ui_font_super_mario_120;
 
 #ifndef EXT_FONT_DESC_T
 #define EXT_FONT_DESC_T

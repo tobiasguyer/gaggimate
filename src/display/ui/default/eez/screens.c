@@ -13,7 +13,7 @@
 objects_t objects;
 
 static const char *screen_names[] = { "NewStandbyScreen", "StandbyScreen", "BrewScreen", "StatusScreen", "MenuScreen", "MenuScreenNew", "SteamScreen", "WaterScreen", "ProfileScreen", "GrindScreen", "InfoScreen", "NewProfileScreen" };
-static const char *object_names[] = { "new_standby_screen", "standby_screen", "brew_screen", "status_screen", "menu_screen", "menu_screen_new", "steam_screen", "water_screen", "profile_screen", "grind_screen", "info_screen", "new_profile_screen", "obj0", "obj0__hours_1", "obj0__min", "obj0__obj0", "obj0__hours", "obj0__obj1", "obj0__sec", "obj1", "obj1__obj6", "obj1__obj7", "obj1__obj8", "obj1__obj9", "obj1__obj10", "obj1__obj11", "obj1__obj12", "obj1__obj13", "obj1__obj14", "obj1__obj15", "obj1__obj16", "obj1__obj17", "obj1__obj18", "obj1__obj19", "obj1__obj20", "obj1__obj21", "obj1__obj22", "obj1__obj23", "obj1__obj24", "obj1__obj25", "obj1__obj26", "obj1__obj27", "obj1__obj28", "obj1__obj29", "obj1__obj30", "obj1__obj31", "obj1__obj32", "obj1__obj33", "obj1__obj34", "obj1__obj35", "obj1__obj36", "obj1__obj37", "obj1__obj38", "obj1__obj39", "obj1__obj40", "obj1__obj41", "obj2", "obj2__hours_2", "obj2__min_1", "obj2__hours_3", "obj2__obj42", "obj2__sec_1", "obj3", "obj3__obj43", "obj3__obj44", "obj3__obj45", "obj3__obj46", "obj3__obj47", "obj3__obj48", "obj3__obj49", "obj3__min_2", "obj3__hours_5", "obj4", "obj4__obj50", "obj4__obj51", "obj4__obj52", "obj4__obj53", "obj4__obj54", "obj4__obj55", "obj4__obj56", "obj4__min_3", "obj4__hours_6", "obj5", "obj5__hours_7", "obj5__min_4", "obj5__sec_2", "obj5__obj93", "obj6", "obj6__hours_8", "obj6__min_5", "obj6__sec_3", "obj7", "obj7__min_6", "obj7__obj94", "obj7__hours_9", "obj8", "obj8__min_7", "obj8__obj95", "obj8__hours_10", "obj8__obj96", "obj9", "obj9__hours_11", "obj9__min_8", "obj10", "obj10__hours_12", "obj10__min_9", "obj10__sec_4", "obj11", "obj11__hours_13", "obj11__sec_5", "obj11__min_10", "brew_dials", "brew_dials__temp_gauge", "brew_dials__temp_gauge_full", "brew_dials__pressure_gauge", "brew_dials__standby_icon", "brew_dials__menu_icon", "brew_dials__temp_icon", "brew_dials__pressure_icon", "brew_dials__pressure_text", "brew_dials__temp_text", "brew_dials__temp_text_full", "brew_dials__temp_gauge_2", "brew_dials__temp_text_2", "brew_dials__temp_text_full_2", "status_dials", "status_dials__temp_gauge", "status_dials__temp_gauge_full", "status_dials__pressure_gauge", "status_dials__standby_icon", "status_dials__menu_icon", "status_dials__temp_icon", "status_dials__pressure_icon", "status_dials__pressure_text", "status_dials__temp_text", "status_dials__temp_text_full", "status_dials__temp_gauge_2", "status_dials__temp_text_2", "status_dials__temp_text_full_2", "menu_dials", "menu_dials__temp_gauge", "menu_dials__temp_gauge_full", "menu_dials__pressure_gauge", "menu_dials__standby_icon", "menu_dials__menu_icon", "menu_dials__temp_icon", "menu_dials__pressure_icon", "menu_dials__pressure_text", "menu_dials__temp_text", "menu_dials__temp_text_full", "menu_dials__temp_gauge_2", "menu_dials__temp_text_2", "menu_dials__temp_text_full_2", "new_menu_dials", "new_menu_dials__temp_gauge", "new_menu_dials__temp_gauge_full", "new_menu_dials__pressure_gauge", "new_menu_dials__standby_icon", "new_menu_dials__menu_icon", "new_menu_dials__temp_icon", "new_menu_dials__pressure_icon", "new_menu_dials__pressure_text", "new_menu_dials__temp_text", "new_menu_dials__temp_text_full", "new_menu_dials__temp_gauge_2", "new_menu_dials__temp_text_2", "new_menu_dials__temp_text_full_2", "steam_dials", "steam_dials__temp_gauge", "steam_dials__temp_gauge_full", "steam_dials__pressure_gauge", "steam_dials__standby_icon", "steam_dials__menu_icon", "steam_dials__temp_icon", "steam_dials__pressure_icon", "steam_dials__pressure_text", "steam_dials__temp_text", "steam_dials__temp_text_full", "steam_dials__temp_gauge_2", "steam_dials__temp_text_2", "steam_dials__temp_text_full_2", "water_dials", "water_dials__temp_gauge", "water_dials__temp_gauge_full", "water_dials__pressure_gauge", "water_dials__standby_icon", "water_dials__menu_icon", "water_dials__temp_icon", "water_dials__pressure_icon", "water_dials__pressure_text", "water_dials__temp_text", "water_dials__temp_text_full", "water_dials__temp_gauge_2", "water_dials__temp_text_2", "water_dials__temp_text_full_2", "profile_dials", "profile_dials__temp_gauge", "profile_dials__temp_gauge_full", "profile_dials__pressure_gauge", "profile_dials__standby_icon", "profile_dials__menu_icon", "profile_dials__temp_icon", "profile_dials__pressure_icon", "profile_dials__pressure_text", "profile_dials__temp_text", "profile_dials__temp_text_full", "profile_dials__temp_gauge_2", "profile_dials__temp_text_2", "profile_dials__temp_text_full_2", "grind_dials", "grind_dials__temp_gauge", "grind_dials__temp_gauge_full", "grind_dials__pressure_gauge", "grind_dials__standby_icon", "grind_dials__menu_icon", "grind_dials__temp_icon", "grind_dials__pressure_icon", "grind_dials__pressure_text", "grind_dials__temp_text", "grind_dials__temp_text_full", "grind_dials__temp_gauge_2", "grind_dials__temp_text_2", "grind_dials__temp_text_full_2", "obj12", "obj12__temp_gauge", "obj12__temp_gauge_full", "obj12__pressure_gauge", "obj12__standby_icon", "obj12__menu_icon", "obj12__temp_icon", "obj12__pressure_icon", "obj12__pressure_text", "obj12__temp_text", "obj12__temp_text_full", "obj12__temp_gauge_2", "obj12__temp_text_2", "obj12__temp_text_full_2", "time_1", "obj13", "touch_icon_1", "standby_icons_2", "wifi_icon_2", "bluetooth_icon_2", "update_icon_2", "status_1", "digital_v2", "time_hr_1", "time_min_1", "digital_montserrat", "digital_colored", "time_hr", "time_min", "obj14", "obj15", "touch_icon", "time", "standby_icons", "wifi_icon", "bluetooth_icon", "update_icon", "status", "obj16", "obj17", "start_button", "control_container", "mode_switch", "bluetooth_scale_icon", "flow_prediction_icon", "weight_label", "profile_info", "obj18", "profile_select_button", "profile_name", "settings_button", "adjustments", "temp_container", "target_temp", "down_temp_button", "up_temp_button", "obj19", "brew_target_time_container", "target_duration", "obj20", "up_duration_button", "down_duration_button", "brew_target_weight_container", "target_weight_1", "obj21", "up_weight_button", "down_weight_button", "remove_volumetric_button", "save_button", "accept_button", "save_as_new_button", "obj22", "obj23", "target_duration_1", "target_weight_2", "target_temp_1", "image7", "image8", "image9", "pause_button", "check_button", "current_duration", "step_label", "phase_label", "bar_container", "brew_bar", "phase_progress", "process_volume", "btn_brew", "btn_steam", "btn_water", "btn_grind", "btn_brew_1", "btn_steam_1", "btn_water_1", "btn_grind_1", "btn_settings_1", "status_icons", "obj24", "obj25", "obj26", "info_btn", "standby_btn", "obj27", "main_label5", "image5_1", "target_temp2", "steam_down_temp_button", "steam_up_temp_button", "obj28", "main_label6", "water_down_temp_button", "target_temp3", "image10", "water_up_temp_button", "water_start_button", "obj29", "obj30", "profile_name_1", "profile_temp_time", "obj31", "obj32", "obj33", "obj34", "obj35", "obj36", "obj37", "select_profile", "previous_profile", "next_profile", "main_label4", "grind_start_button", "mode_switch1", "obj38", "obj39", "target_weight", "target_duration3_1", "target_symbol_1", "grind_down_weight_button", "grind_up_weight_button", "target_time", "target_duration3", "target_symbol", "grind_down_duration_button", "grind_up_duration_button", "obj40", "standby_icons_1", "wifi_icon_1", "bluetooth_icon_1", "update_icon_1", "obj41", "obj42", "obj43", "obj44", "qrcode", "obj45", "info_menu_icon", "obj46", "single_view", "prev_button", "obj47", "phase_preview", "obj48", "obj49", "obj50", "obj51", "obj52", "obj53", "obj54", "image_preview", "profile_preview", "obj55", "select_button", "next_button", "list_view", "obj56", "obj57", "obj58", "obj59", "obj60", "obj61", "obj62", "obj63", "obj64", "obj65", "obj66", "obj67", "obj68", "obj69", "obj70", "obj71", "obj72", "obj73", "obj74", "obj75", "obj76", "obj77", "obj78", "obj79", "obj80", "obj81", "obj82" };
+static const char *object_names[] = { "new_standby_screen", "standby_screen", "brew_screen", "status_screen", "menu_screen", "menu_screen_new", "steam_screen", "water_screen", "profile_screen", "grind_screen", "info_screen", "new_profile_screen", "obj0", "obj0__hours_1", "obj0__min", "obj0__obj0", "obj0__hours", "obj0__obj1", "obj0__sec", "obj1", "obj1__obj6", "obj1__obj7", "obj1__obj8", "obj1__obj9", "obj1__obj10", "obj1__obj11", "obj1__obj12", "obj1__obj13", "obj1__obj14", "obj1__obj15", "obj1__obj16", "obj1__obj17", "obj1__obj18", "obj1__obj19", "obj1__obj20", "obj1__obj21", "obj1__obj22", "obj1__obj23", "obj1__obj24", "obj1__obj25", "obj1__obj26", "obj1__obj27", "obj1__obj28", "obj1__obj29", "obj1__obj30", "obj1__obj31", "obj1__obj32", "obj1__obj33", "obj1__obj34", "obj1__obj35", "obj1__obj36", "obj1__obj37", "obj1__obj38", "obj1__obj39", "obj1__obj40", "obj1__obj41", "obj2", "obj2__hours_2", "obj2__min_1", "obj2__hours_3", "obj2__obj42", "obj2__sec_1", "obj3", "obj3__obj43", "obj3__obj44", "obj3__obj45", "obj3__obj46", "obj3__obj47", "obj3__obj48", "obj3__obj49", "obj3__min_2", "obj3__hours_5", "obj4", "obj4__obj50", "obj4__obj51", "obj4__obj52", "obj4__obj53", "obj4__obj54", "obj4__obj55", "obj4__obj56", "obj4__min_3", "obj4__hours_6", "obj5", "obj5__hours_7", "obj5__min_4", "obj5__sec_2", "obj5__obj93", "obj6", "obj6__hours_8", "obj6__min_5", "obj6__sec_3", "obj7", "obj7__min_6", "obj7__obj94", "obj7__hours_9", "obj8", "obj8__min_7", "obj8__obj95", "obj8__hours_10", "obj8__obj96", "obj9", "obj9__hours_11", "obj9__min_8", "obj10", "obj10__hours_12", "obj10__min_9", "obj10__sec_4", "obj11", "obj11__hours_13", "obj11__sec_5", "obj11__min_10", "brew_dials", "brew_dials__temp_gauge", "brew_dials__temp_gauge_full", "brew_dials__pressure_gauge", "brew_dials__standby_icon", "brew_dials__menu_icon", "brew_dials__temp_icon", "brew_dials__pressure_icon", "brew_dials__pressure_text", "brew_dials__temp_text", "brew_dials__temp_text_full", "brew_dials__temp_gauge_2", "brew_dials__temp_text_2", "brew_dials__temp_text_full_2", "status_dials", "status_dials__temp_gauge", "status_dials__temp_gauge_full", "status_dials__pressure_gauge", "status_dials__standby_icon", "status_dials__menu_icon", "status_dials__temp_icon", "status_dials__pressure_icon", "status_dials__pressure_text", "status_dials__temp_text", "status_dials__temp_text_full", "status_dials__temp_gauge_2", "status_dials__temp_text_2", "status_dials__temp_text_full_2", "menu_dials", "menu_dials__temp_gauge", "menu_dials__temp_gauge_full", "menu_dials__pressure_gauge", "menu_dials__standby_icon", "menu_dials__menu_icon", "menu_dials__temp_icon", "menu_dials__pressure_icon", "menu_dials__pressure_text", "menu_dials__temp_text", "menu_dials__temp_text_full", "menu_dials__temp_gauge_2", "menu_dials__temp_text_2", "menu_dials__temp_text_full_2", "new_menu_dials", "new_menu_dials__temp_gauge", "new_menu_dials__temp_gauge_full", "new_menu_dials__pressure_gauge", "new_menu_dials__standby_icon", "new_menu_dials__menu_icon", "new_menu_dials__temp_icon", "new_menu_dials__pressure_icon", "new_menu_dials__pressure_text", "new_menu_dials__temp_text", "new_menu_dials__temp_text_full", "new_menu_dials__temp_gauge_2", "new_menu_dials__temp_text_2", "new_menu_dials__temp_text_full_2", "steam_dials", "steam_dials__temp_gauge", "steam_dials__temp_gauge_full", "steam_dials__pressure_gauge", "steam_dials__standby_icon", "steam_dials__menu_icon", "steam_dials__temp_icon", "steam_dials__pressure_icon", "steam_dials__pressure_text", "steam_dials__temp_text", "steam_dials__temp_text_full", "steam_dials__temp_gauge_2", "steam_dials__temp_text_2", "steam_dials__temp_text_full_2", "water_dials", "water_dials__temp_gauge", "water_dials__temp_gauge_full", "water_dials__pressure_gauge", "water_dials__standby_icon", "water_dials__menu_icon", "water_dials__temp_icon", "water_dials__pressure_icon", "water_dials__pressure_text", "water_dials__temp_text", "water_dials__temp_text_full", "water_dials__temp_gauge_2", "water_dials__temp_text_2", "water_dials__temp_text_full_2", "profile_dials", "profile_dials__temp_gauge", "profile_dials__temp_gauge_full", "profile_dials__pressure_gauge", "profile_dials__standby_icon", "profile_dials__menu_icon", "profile_dials__temp_icon", "profile_dials__pressure_icon", "profile_dials__pressure_text", "profile_dials__temp_text", "profile_dials__temp_text_full", "profile_dials__temp_gauge_2", "profile_dials__temp_text_2", "profile_dials__temp_text_full_2", "grind_dials", "grind_dials__temp_gauge", "grind_dials__temp_gauge_full", "grind_dials__pressure_gauge", "grind_dials__standby_icon", "grind_dials__menu_icon", "grind_dials__temp_icon", "grind_dials__pressure_icon", "grind_dials__pressure_text", "grind_dials__temp_text", "grind_dials__temp_text_full", "grind_dials__temp_gauge_2", "grind_dials__temp_text_2", "grind_dials__temp_text_full_2", "obj12", "obj12__temp_gauge", "obj12__temp_gauge_full", "obj12__pressure_gauge", "obj12__standby_icon", "obj12__menu_icon", "obj12__temp_icon", "obj12__pressure_icon", "obj12__pressure_text", "obj12__temp_text", "obj12__temp_text_full", "obj12__temp_gauge_2", "obj12__temp_text_2", "obj12__temp_text_full_2", "time_1", "obj13", "touch_icon_1", "standby_icons_2", "wifi_icon_2", "bluetooth_icon_2", "update_icon_2", "status_1", "digital_v2", "time_hr_1", "time_min_1", "digital_montserrat", "digital_colored", "time_hr", "time_min", "digital_colored_1", "time_hr_2", "time_min_2", "obj14", "obj15", "touch_icon", "time", "standby_icons", "wifi_icon", "bluetooth_icon", "update_icon", "status", "obj16", "obj17", "start_button", "control_container", "mode_switch", "bluetooth_scale_icon", "flow_prediction_icon", "weight_label", "profile_info", "obj18", "profile_select_button", "profile_name", "settings_button", "adjustments", "temp_container", "target_temp", "down_temp_button", "up_temp_button", "obj19", "brew_target_time_container", "target_duration", "obj20", "up_duration_button", "down_duration_button", "brew_target_weight_container", "target_weight_1", "obj21", "up_weight_button", "down_weight_button", "remove_volumetric_button", "save_button", "accept_button", "save_as_new_button", "obj22", "obj23", "target_duration_1", "target_weight_2", "target_temp_1", "image7", "image8", "image9", "pause_button", "check_button", "current_duration", "step_label", "phase_label", "bar_container", "brew_bar", "phase_progress", "process_volume", "btn_brew", "btn_steam", "btn_water", "btn_grind", "btn_brew_1", "btn_steam_1", "btn_water_1", "btn_grind_1", "btn_settings_1", "status_icons", "obj24", "obj25", "obj26", "info_btn", "standby_btn", "obj27", "main_label5", "image5_1", "target_temp2", "steam_down_temp_button", "steam_up_temp_button", "obj28", "main_label6", "water_down_temp_button", "target_temp3", "image10", "water_up_temp_button", "water_start_button", "obj29", "obj30", "profile_name_1", "profile_temp_time", "obj31", "obj32", "obj33", "obj34", "obj35", "obj36", "obj37", "select_profile", "previous_profile", "next_profile", "main_label4", "grind_start_button", "mode_switch1", "obj38", "obj39", "target_weight", "target_duration3_1", "target_symbol_1", "grind_down_weight_button", "grind_up_weight_button", "target_time", "target_duration3", "target_symbol", "grind_down_duration_button", "grind_up_duration_button", "obj40", "standby_icons_1", "wifi_icon_1", "bluetooth_icon_1", "update_icon_1", "obj41", "obj42", "obj43", "obj44", "qrcode", "obj45", "info_menu_icon", "obj46", "single_view", "prev_button", "obj47", "phase_preview", "obj48", "obj49", "obj50", "obj51", "obj52", "obj53", "obj54", "image_preview", "profile_preview", "obj55", "select_button", "next_button", "list_view", "obj56", "obj57", "obj58", "obj59", "obj60", "obj61", "obj62", "obj63", "obj64", "obj65", "obj66", "obj67", "obj68", "obj69", "obj70", "obj71", "obj72", "obj73", "obj74", "obj75", "obj76", "obj77", "obj78", "obj79", "obj80", "obj81", "obj82" };
 
 screen_new_standby_screen_state_t screen_new_standby_screen_state;
 screen_brew_screen_state_t screen_brew_screen_state;
@@ -1268,6 +1268,51 @@ void create_screen_new_standby_screen() {
             }
         }
         {
+            // digital_colored_1
+            lv_obj_t *obj = lv_obj_create(parent_obj);
+            objects.digital_colored_1 = obj;
+            lv_obj_set_pos(obj, 0, 0);
+            lv_obj_set_size(obj, 480, 480);
+            lv_obj_set_style_pad_left(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_pad_top(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_pad_right(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_set_style_radius(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
+            lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
+            lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+            {
+                lv_obj_t *parent_obj = obj;
+                {
+                    // time_hr_2
+                    lv_obj_t *obj = lv_label_create(parent_obj);
+                    objects.time_hr_2 = obj;
+                    lv_obj_set_pos(obj, -75, -38);
+                    lv_obj_set_size(obj, 330, LV_SIZE_CONTENT);
+                    lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
+                    lv_obj_set_style_text_color(obj, lv_color_lighten(lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][7]), 64), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_font(obj, &ui_font_super_mario_120, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_label_set_text(obj, "");
+                }
+                {
+                    // time_min_2
+                    lv_obj_t *obj = lv_label_create(parent_obj);
+                    objects.time_min_2 = obj;
+                    lv_obj_set_pos(obj, 75, 21);
+                    lv_obj_set_size(obj, 330, LV_SIZE_CONTENT);
+                    lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
+                    lv_obj_set_style_text_color(obj, lv_color_hex(theme_colors[eez_flow_get_selected_theme_index()][2]), LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_align(obj, LV_TEXT_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_obj_set_style_text_font(obj, &ui_font_super_mario_120, LV_PART_MAIN | LV_STATE_DEFAULT);
+                    lv_label_set_text(obj, "");
+                }
+            }
+        }
+        {
             lv_obj_t *obj = lv_obj_create(parent_obj);
             objects.obj9 = obj;
             lv_obj_set_pos(obj, 0, 0);
@@ -1278,7 +1323,7 @@ void create_screen_new_standby_screen() {
             lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            create_user_widget_clock_minimal_hand_1(obj, getFlowState(flowState, 25), 101, &state->clock_minimal_hand_11_state);
+            create_user_widget_clock_minimal_hand_1(obj, getFlowState(flowState, 28), 101, &state->clock_minimal_hand_11_state);
             lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
             lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
         }
@@ -1293,7 +1338,7 @@ void create_screen_new_standby_screen() {
             lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            create_user_widget_clock_minimal_arc_1(obj, getFlowState(flowState, 26), 104, &state->clock_minimal_arc_11_state);
+            create_user_widget_clock_minimal_arc_1(obj, getFlowState(flowState, 29), 104, &state->clock_minimal_arc_11_state);
             lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
             lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
         }
@@ -1308,7 +1353,7 @@ void create_screen_new_standby_screen() {
             lv_obj_set_style_pad_bottom(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_bg_opa(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
             lv_obj_set_style_border_width(obj, 0, LV_PART_MAIN | LV_STATE_DEFAULT);
-            create_user_widget_clock_minimal_arc_2(obj, getFlowState(flowState, 27), 108, &state->clock_minimal_arc_21_state);
+            create_user_widget_clock_minimal_arc_2(obj, getFlowState(flowState, 30), 108, &state->clock_minimal_arc_21_state);
             lv_obj_clear_flag(obj, LV_OBJ_FLAG_CLICKABLE|LV_OBJ_FLAG_CLICK_FOCUSABLE|LV_OBJ_FLAG_GESTURE_BUBBLE|LV_OBJ_FLAG_PRESS_LOCK|LV_OBJ_FLAG_SCROLLABLE|LV_OBJ_FLAG_SCROLL_CHAIN_HOR|LV_OBJ_FLAG_SCROLL_CHAIN_VER|LV_OBJ_FLAG_SCROLL_ELASTIC|LV_OBJ_FLAG_SCROLL_MOMENTUM|LV_OBJ_FLAG_SCROLL_WITH_ARROW|LV_OBJ_FLAG_SNAPPABLE);
             lv_obj_set_style_align(obj, LV_ALIGN_CENTER, LV_PART_MAIN | LV_STATE_DEFAULT);
         }
@@ -1354,6 +1399,9 @@ void delete_screen_new_standby_screen() {
     objects.digital_colored = 0;
     objects.time_hr = 0;
     objects.time_min = 0;
+    objects.digital_colored_1 = 0;
+    objects.time_hr_2 = 0;
+    objects.time_min_2 = 0;
     objects.obj9 = 0;
     objects.obj10 = 0;
     objects.obj11 = 0;
@@ -1768,9 +1816,40 @@ void tick_screen_new_standby_screen() {
             tick_value_change_obj = NULL;
         }
     }
-    tick_user_widget_clock_minimal_hand_1(getFlowState(flowState, 25), 101, &state->clock_minimal_hand_11_state);
     {
         bool new_val = evalBooleanProperty(flowState, 25, 3, "Failed to evaluate Hidden flag");
+        bool cur_val = lv_obj_has_flag(objects.digital_colored_1, LV_OBJ_FLAG_HIDDEN);
+        if (new_val != cur_val) {
+            tick_value_change_obj = objects.digital_colored_1;
+            if (new_val) {
+                lv_obj_add_flag(objects.digital_colored_1, LV_OBJ_FLAG_HIDDEN);
+            } else {
+                lv_obj_clear_flag(objects.digital_colored_1, LV_OBJ_FLAG_HIDDEN);
+            }
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        const char *new_val = evalTextProperty(flowState, 26, 3, "Failed to evaluate Text in Label widget");
+        const char *cur_val = lv_label_get_text(objects.time_hr_2);
+        if (strcmp(new_val, cur_val) != 0) {
+            tick_value_change_obj = objects.time_hr_2;
+            lv_label_set_text(objects.time_hr_2, new_val);
+            tick_value_change_obj = NULL;
+        }
+    }
+    {
+        const char *new_val = evalTextProperty(flowState, 27, 3, "Failed to evaluate Text in Label widget");
+        const char *cur_val = lv_label_get_text(objects.time_min_2);
+        if (strcmp(new_val, cur_val) != 0) {
+            tick_value_change_obj = objects.time_min_2;
+            lv_label_set_text(objects.time_min_2, new_val);
+            tick_value_change_obj = NULL;
+        }
+    }
+    tick_user_widget_clock_minimal_hand_1(getFlowState(flowState, 28), 101, &state->clock_minimal_hand_11_state);
+    {
+        bool new_val = evalBooleanProperty(flowState, 28, 3, "Failed to evaluate Hidden flag");
         bool cur_val = lv_obj_has_flag(objects.obj9, LV_OBJ_FLAG_HIDDEN);
         if (new_val != cur_val) {
             tick_value_change_obj = objects.obj9;
@@ -1782,9 +1861,9 @@ void tick_screen_new_standby_screen() {
             tick_value_change_obj = NULL;
         }
     }
-    tick_user_widget_clock_minimal_arc_1(getFlowState(flowState, 26), 104, &state->clock_minimal_arc_11_state);
+    tick_user_widget_clock_minimal_arc_1(getFlowState(flowState, 29), 104, &state->clock_minimal_arc_11_state);
     {
-        bool new_val = evalBooleanProperty(flowState, 26, 3, "Failed to evaluate Hidden flag");
+        bool new_val = evalBooleanProperty(flowState, 29, 3, "Failed to evaluate Hidden flag");
         bool cur_val = lv_obj_has_flag(objects.obj10, LV_OBJ_FLAG_HIDDEN);
         if (new_val != cur_val) {
             tick_value_change_obj = objects.obj10;
@@ -1796,9 +1875,9 @@ void tick_screen_new_standby_screen() {
             tick_value_change_obj = NULL;
         }
     }
-    tick_user_widget_clock_minimal_arc_2(getFlowState(flowState, 27), 108, &state->clock_minimal_arc_21_state);
+    tick_user_widget_clock_minimal_arc_2(getFlowState(flowState, 30), 108, &state->clock_minimal_arc_21_state);
     {
-        bool new_val = evalBooleanProperty(flowState, 27, 3, "Failed to evaluate Hidden flag");
+        bool new_val = evalBooleanProperty(flowState, 30, 3, "Failed to evaluate Hidden flag");
         bool cur_val = lv_obj_has_flag(objects.obj11, LV_OBJ_FLAG_HIDDEN);
         if (new_val != cur_val) {
             tick_value_change_obj = objects.obj11;
@@ -1811,7 +1890,7 @@ void tick_screen_new_standby_screen() {
         }
     }
     {
-        const char *new_val = evalTextProperty(flowState, 28, 4, "Failed to evaluate Text in Label widget");
+        const char *new_val = evalTextProperty(flowState, 31, 4, "Failed to evaluate Text in Label widget");
         const char *cur_val = lv_label_get_text(objects.obj14);
         if (strcmp(new_val, cur_val) != 0) {
             tick_value_change_obj = objects.obj14;
@@ -1820,7 +1899,7 @@ void tick_screen_new_standby_screen() {
         }
     }
     {
-        bool new_val = evalBooleanProperty(flowState, 28, 3, "Failed to evaluate Hidden flag");
+        bool new_val = evalBooleanProperty(flowState, 31, 3, "Failed to evaluate Hidden flag");
         bool cur_val = lv_obj_has_flag(objects.obj14, LV_OBJ_FLAG_HIDDEN);
         if (new_val != cur_val) {
             tick_value_change_obj = objects.obj14;
@@ -10736,6 +10815,7 @@ ext_font_desc_t fonts[] = {
     { "montserrat_b_120", &ui_font_montserrat_b_120 },
     { "rolblox_18", &ui_font_rolblox_18 },
     { "rolblox _16", &ui_font_rolblox__16 },
+    { "super_mario_120", &ui_font_super_mario_120 },
 #if LV_FONT_MONTSERRAT_8
     { "MONTSERRAT_8", &lv_font_montserrat_8 },
 #endif
@@ -10825,6 +10905,8 @@ void change_color_theme(uint32_t theme_index) {
         if (objects.digital_montserrat) lv_obj_set_style_text_color(objects.digital_montserrat, lv_color_hex(theme_colors[theme_index][1]), LV_PART_MAIN | LV_STATE_DEFAULT);
         if (objects.time_hr) lv_obj_set_style_text_color(objects.time_hr, lv_color_hex(theme_colors[theme_index][7]), LV_PART_MAIN | LV_STATE_DEFAULT);
         if (objects.time_min) lv_obj_set_style_text_color(objects.time_min, lv_color_hex(theme_colors[theme_index][2]), LV_PART_MAIN | LV_STATE_DEFAULT);
+        if (objects.time_hr_2) lv_obj_set_style_text_color(objects.time_hr_2, lv_color_lighten(lv_color_hex(theme_colors[theme_index][7]), 64), LV_PART_MAIN | LV_STATE_DEFAULT);
+        if (objects.time_min_2) lv_obj_set_style_text_color(objects.time_min_2, lv_color_hex(theme_colors[theme_index][2]), LV_PART_MAIN | LV_STATE_DEFAULT);
         if (objects.obj14) lv_obj_set_style_text_color(objects.obj14, lv_color_hex(theme_colors[theme_index][1]), LV_PART_MAIN | LV_STATE_DEFAULT);
         {
             screen_new_standby_screen_state_t *parent_state = state;

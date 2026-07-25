@@ -279,6 +279,9 @@ typedef struct _objects_t {
     lv_obj_t *digital_colored;
     lv_obj_t *time_hr;
     lv_obj_t *time_min;
+    lv_obj_t *digital_colored_1;
+    lv_obj_t *time_hr_2;
+    lv_obj_t *time_min_2;
     lv_obj_t *obj14;
     lv_obj_t *obj15;
     lv_obj_t *touch_icon;
