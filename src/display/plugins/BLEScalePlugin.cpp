@@ -93,7 +93,7 @@ void BLEScalePlugin::setup(Controller *controller, PluginManager *manager) {
         ESP_LOGW("BLEScalePlugin", "Controller disconnected, stopping BLE scan");
         active = false;
     });
-    manager->on("controller:brew:prestart", [this](Event const &) { onProcessStart(); });
+    manager->on("controller:brew:prestart", [this](Event const &) { onProcessStart(); delay(100); });
     manager->on("controller:brew:end", [this](Event const &) {
         if (scale != nullptr && scale->isConnected() && scale->hasTimerControl()) {
             scale->stopTimer();
@@ -260,7 +260,6 @@ void BLEScalePlugin::pollScaleMetadata() {
 }
 
 void BLEScalePlugin::tare() const {
-    controller->onVolumetricMeasurement(0.0, VolumetricMeasurementSource::BLUETOOTH);
     onProcessStart();
 }
 
