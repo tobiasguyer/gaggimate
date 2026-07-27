@@ -145,7 +145,7 @@ void BLEScalePlugin::update() {
         hasConnectedScale = scale->isConnected();
     }
 
-    //if (controller->isVolumetricAvailable())
+    if (controller->isVolumetricAvailable())
         controller->setVolumetricOverride(hasConnectedScale);
 
     if (!active)
@@ -259,7 +259,10 @@ void BLEScalePlugin::pollScaleMetadata() {
     }
 }
 
-void BLEScalePlugin::tare() const { onProcessStart(); }
+void BLEScalePlugin::tare() const {
+    controller->onVolumetricMeasurement(0.0, VolumetricMeasurementSource::BLUETOOTH);
+    onProcessStart();
+}
 
 void BLEScalePlugin::establishConnection() {
     if (uuid.empty()) {
