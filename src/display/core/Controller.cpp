@@ -995,7 +995,7 @@ void Controller::activate() {
             pluginManager->trigger("controller:brew:prestart");
         }
     }
-    delay(200);
+    delay(400);
     switch (mode) {
     case MODE_BREW:
         brewProcessFlag = true;
